@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-pQi0pc+Zks4ozY3ICaNf3UUBHS5PDfZl+hL5DI/F3+SXL0fW4IzQfKzKW0gjL70HskdBbEQ26z9I1ARt/rlRWQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+      <link rel="stylesheet" href="restaurant-management-system.css">
+      <script src="restaurant-management-system.js"></script>
+      <title> Mgmt. System | Cara's Food Haven </title>
+      <link rel="shortcut icon" type="x-icon" href="../RestaurantLogo-Cut.png">
+  </head>
+
+  <body>
+      
+    <!-- ============================================================ -->
+    
+    <nav>
+      <a href="#"> <img src="../RestaurantLogo-Cut.png" class="RestaurantLogo_Nav"> </a>
+      <div id="nav-header">RESTAURANT MANAGEMENT SYSTEM</div>
+      <ul>
+        <img id="staff_img" src="manager-pic-cut.png">
+        <li class="current-page"><a href="#">[ MANAGER ] - Kirby Adrian P. Saligan</a></li>
+      </ul>
+    </nav>
+      
+    <!-- ============================================================ -->
+
+
+
+
+    <!-- ============================================================ -->
+
+    <div class="verticalmenu_container">
+      <div id="verticalmenu"></div>
+        <button class="verticalmenu-btn" id="orderManagementPage">Order Management</button>
+        <!-- <span>=====================</span> -->
+        <button class="verticalmenu-btn" id="employeePage">Employee</button>
+        <button class="verticalmenu-btn" id="supplierPage">Supplier</button>
+        <button class="verticalmenu-btn" id="customerPage">Customer</button>
+        <!-- <span>=====================</span> -->
+        <button class="verticalmenu-btn" id="menuItemPage">Menu Item List</button>
+        <button class="verticalmenu-btn" id="menuCategoriesPage">Menu Categories</button>
+        <button class="verticalmenu-btn" id="ingredientPage">Ingredient List</button>
+        <button class="verticalmenu-btn" id="ingredientCategoriesPage">Ingredient Category</button>
+        <button class="verticalmenu-btn" id="ingredientUnitPage">Ingredient Unit</button>
+        <!-- <span>=====================</span> -->
+        <button class="verticalmenu-btn" id="reportsPage">Reports</button>
+        <button class="verticalmenu-btn" id="chartsPage">Charts</button>
+        <!-- <button class="verticalmenu-btn" id="invRestockRequestsPage">Inventory Restock Requests</button> -->
+        <!-- <button class="verticalmenu-btn" id=""></button> -->
+      </div>
+    </div>
+      
+    <!-- ============================================================ -->
+
+
+
+
+
+
+
+
+
+
+    <!-- ============================================================ -->
+
+    <div class="modal" id="employee-modal">
+      <div class="modal-content">
+          <span class="close" onclick="closeEmployeeModal()">x</span>
+
+          <h2 id="employeeModal_header">FILLING UP <br> EMPLOYEE FORM</h2>
+
+          <form id="employee-form">
+
+            <label for="emp-id">Employee ID:</label>
+            <input type="text" id="emp-id" name="emp-id" placeholder="Enter employee ID" required>
+
+            <label for="first-name">First Name:</label>
+            <input type="text" id="first-name" name="first-name" placeholder="Enter first name" required>
+    
+            <label for="middle-name">Middle Name:</label>
+            <input type="text" id="middle-name" name="middle-name" placeholder="Enter middle name" required>
+    
+            <label for="last-name">Last Name:</label>
+            <input type="text" id="last-name" name="last-name" placeholder="Enter last name" required>
+    
+            <label for="designation">Designation:</label>
+            <input type="text" id="designation" name="designation" placeholder="Enter designation" required>
+
+            <label for="sex">Sex:</label>
+            <select id="sex" name="sex">
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+            </select>
+
+            <br>
+            <br>
+
+            <label for="birthdate">Birth Date:</label>
+            <input type="date" id="birthdate" name="birthdate" placeholder="Enter birthdate" required/>
+    
+            <label for="phonenumber">Contact Number:</label>
+            <input type="text" id="phonenumber" name="phonenumber" placeholder="Enter phone number" required>
+    
+            <label for="address">Address Line:</label>
+            <textarea id="address" name="address" placeholder="Enter address" rows="4" required></textarea>
+
+            <label for="employee-email">Email:</label>
+            <input type="text" id="employee-email" name="employee-email" placeholder="Enter employee's email" required>
+            
+            <button type="submit" class="modal_submitButton" onclick="addEmployeeOnTable()">Submit</button>
+
+          </form>
+
+      </div>
+
+    </div>
+
+    <!-- ============================================================ -->
+
+    <div class="container" id="employee">
+
+      <div class="tool-bar">
+        <div class="left-section">
+            <input id="employee_attributeInput" type="text" placeholder="Enter employee attribute here">
+            <button id="employee_searchButton" type="button">Search</button>
+        </div>
+        <div class="right-section">
+            <button id="employee_addButton" type="button" onclick="openEmployeeModal('fill')">Add New Employee</button>
+        </div>
+      </div>
+      
+      <div class="tool-bar">
+        <div class="left-section">
+          <select id="employee_sortOptions">
+            <option>Select an attribute to sort by</option>
+            <option value="employee_IDAsc">ID: Ascending</option>
+            <option value="employee_IDDesc">ID: Descending</option>
+            <option value="employee_firstNameAsc">First Name: A-Z</option>
+            <option value="employee_firstNameDesc">First Name: Z-A</option>
+            <option value="employee_middleNameAsc">Middle Name: A-Z</option>
+            <option value="employee_middleNameDesc">Middle Name: Z-A</option>
+            <option value="employee_lastNameAsc">Last Name: A-Z</option>
+            <option value="employee_lastNameDesc">Last Name: Z-A</option>
+          </select>
+        </div>
+      </div>
+      
+      <br>
+      
+      <h1 id="table_label">EMPLOYEE TABLE</h1>
+      <div id="employeeTable_DisplayContainer">
+        <table id="employee-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Full Name</th>
+              <th>Contact Info</th>
+              <th>Designation</th>
+              <th>Action Buttons</th>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+      
+    <!-- ============================================================ -->
+
+
+
+
+
+
+
+
+
+
+    <!-- ============================================================ -->
+
+    <div class="modal" id="supplier-modal">
+      <div class="modal-content">
+          <span class="close" onclick="closeSupplierModal()">x</span>
+
+          <h2 id="supplierModal_header">FILLING UP <br> SUPPLIER FORM</h2>
+
+          <form id="supplier-form">
+
+            <label for="supplier-name">Supplier:</label>
+            <input type="text" id="supplier-name" name="supplier-name" placeholder="Enter supplier name" required>
+
+            <label for="contact-person-name">Contact Person:</label>
+            <input type="text" id="contact-person-name" name="contact-person-name" placeholder="Enter contact person name" required>
+            
+            <label for="supplier-address">Address:</label>
+            <textarea id="supplier-address" name="supplier-address" placeholder="Enter company's address" rows="4" required></textarea>
+    
+            <label for="supplier-phonenumber">Contact Number:</label>
+            <input type="text" id="supplier-phonenumber" name="supplier-phonenumber" placeholder="Enter supplier's phone number" required>
+
+            <label for="supplier-email">Email:</label>
+            <input type="text" id="supplier-email" name="supplier-email" placeholder="Enter supplier's email" required>
+            
+            <button type="submit" class="modal_submitButton" onclick="addSupplierOnTable()">Submit</button>
+
+          </form>
+
+      </div>
+
+    </div>
+
+    <!-- ============================================================ -->
+
+    <div class="container" id="supplier">
+
+      <div class="tool-bar">
+        <div class="left-section">
+            <input id="supplier_attributeInput" type="text" placeholder="Enter supplier attribute here">
+            <button id="supplier_searchButton" type="button">Search</button>
+        </div>
+        <div class="right-section">
+            <button id="supplier_addButton" type="button" onclick="openSupplierModal('fill')">Add New Supplier</button>
+        </div>
+      </div>
+      
+      <div class="tool-bar">
+        <div class="left-section">
+          <select id="supplier_sortOptions">
+            <option>Select an attribute to sort by</option>
+            <option value="supplier_IDAsc">ID: Ascending</option>
+            <option value="supplier_IDDesc">ID: Descending</option>
+            <option value="supplier_nameAsc">Supplier: A-Z</option>
+            <option value="supplier_nameDesc">Supplier: Z-A</option>
+            <option value="supplier_contactPersonNameAsc">Contact Person: A-Z</option>
+            <option value="supplier_contactPersonNameDesc">Contact Person: Z-A</option>
+          </select>
+        </div>
+      </div>
+
+      <br>  
+
+      <h1 id="table_label">SUPPLIER TABLE</h1>
+      <div id="supplierTable_DisplayContainer">
+        <table id="supplier-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Supplier</th>
+              <th>Contact Person</th>
+              <th>Contact Info</th>
+              <th>Company Address</th>
+              <th>Action Buttons</th>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+      
+    <!-- ============================================================ -->
+
+
+
+
+
+
+
+
+
+    
+    <!-- ============================================================ -->
+
+    <div class="modal" id="menuItem-modal">
+      <div class="modal-content">
+          <span class="close" onclick="closeMenuItemModal()">x</span>
+
+          <h2 id="menuItemModal_header">FILLING UP <br> MENU ITEM FORM</h2>
+
+          <form id="menuItem-form">
+
+            <div id="imgBox_Display">
+              <img src="../img_placeholder.png">
+            </div>
+
+            <br>
+
+            <label for="menu-item-img">Menu Item Image:</label>
+            <input type="file" id="menu-item-img" name="menu-item-img">
+
+            <label for="menu-item-name">Menu Item Name:</label>
+            <input type="text" id="menu-item-name" name="menu-item-name" placeholder="Enter menu item name" required>
+
+            <label for="menu-category">Menu Category:</label>
+            <select id="menu-category" name="menu-category">
+              <option value="Cara's Specials">Cara's Specials</option>
+              <option value="Appetizers">Appetizers</option>
+              <option value="Platters">Platters</option>
+              <option value="Sizzles">Sizzles</option>
+              <option value="Soup">Soup</option>
+              <option value="Pasta">Pasta</option>
+              <option value="Sandwiches">Sandwiches</option>
+              <option value="Frosties">Frosties</option>
+              <option value="Beverages">Beverages</option>
+              <option value="Delighted Bites">Delighted Bites</option>
+            </select>
+
+            <br>
+            <br>
+
+            <label for="menu-item-price">Menu Item Price (Php):</label>
+            <input type="number" id="menu-item-price" name="menu-item-price" placeholder="Enter menu item price (Php)" required>
+    
+            <label for="menu-item-description">Menu Item Description:</label>
+            <textarea id="menu-item-description" name="menu-item-description" placeholder="Enter menu item description" rows="4"></textarea>
+
+            <br>
+            <br>
+
+            <span>===========================================</span>
+
+            <br>
+            <br>
+            <br>
+
+            <h2>INGREDIENT LIST</h2>
+
+            <span id="ingredient-list"></span>
+
+            <br>
+            <br>
+
+            <span>===========================================</span>
+            
+            <br>
+            <br>
+            <br>
+
+            <label for="ingredient-name-comboBox">Ingredient to Add:</label>
+            <br>
+            <select id="ingredient-name-comboBox" name="ingredient-name-comboBox">
+              <option>Select an Ingredient to Add</option>
+            </select>
+
+            <button class="ingredientList_AddButton" type="button" onclick="addIngredientToTheList()">Add to the List</button>
+
+            <br>
+            <br>
+
+            <label for="quantity-consumed">Quantity consumed:</label>
+            <input type="number" id="quantity-consumed" name="quantity-consumed" placeholder="Enter quantity consumed of the selected ingredient">
+
+            <label for="measurement-details">Measurement Details:</label>
+            <br>
+            <select id="measurement-type-menuItemModal" name="measurement-type-menuItemModal">
+            </select>
+
+            <select id="unit-measurement-menuItemModal" name="unit-measurement-menuItemModal">
+            </select>
+
+            <br>
+            <br>
+            <br>
+            
+            <button type="submit" class="modal_submitButton" onclick="addMenuItemOnTable()">Submit</button>
+
+          </form>
+
+      </div>
+
+    </div>
+
+    <!-- ============================================================ -->
+
+    <div class="container" id="menuItem">
+
+      <div class="tool-bar">
+        <div class="left-section">
+            <input id="menuItem_attributeInput" type="text" placeholder="Enter menu item attribute here">
+            <button id="menuItem_searchButton" type="button">Search</button>
+        </div>
+        <div class="right-section">
+            <button id="menuItem_addButton" type="button" onclick="openMenuItemModal('fill')">Add New Menu Item</button>
+        </div>
+      </div>
+      
+      <div class="tool-bar">
+        <div class="left-section">
+          <select id="menuItem_sortOptions">
+            <option>Select an attribute to sort by</option>
+            <option value="menuItem_IDAsc">ID: Ascending</option>
+            <option value="menuItem_IDDesc">ID: Descending</option>
+            <option value="menuItem_nameAsc">Menu Item Name: A-Z</option>
+            <option value="menuItem_nameDesc">Menu Item Name: Z-A</option>
+            <option value="menuItem_categoryNameAsc">Menu Category Name: A-Z</option>
+            <option value="menuItem_categoryNameDesc">Menu Category Name: Z-A</option>
+            <option value="menuItem_priceAsc">Price: Low to High</option>
+            <option value="supplier_priceDesc">Price: High to Low</option>
+          </select>
+        </div>
+      </div>
+
+      <br>
+
+      <h1 id="table_label">MENU ITEM TABLE</h1>
+        <div id="menuItemTable_DisplayContainer">
+          <table id="menuItem-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Menu Item Name</th>
+                <th>Menu Category</th>
+                <th>Price</th>
+                <th>Ingredient List</th>
+                <th>Action Buttons</th>
+              </tr>
+            </thead>
+            <tbody id="menuItem-table_body">
+            </tbody>
+          </table>
+      </div>
+
+    </div>
+      
+    <!-- ============================================================ -->
+      
+
+
+
+
+
+
+
+
+      
+    <!-- ============================================================ -->
+
+    <div class="modal" id="ingredient-modal">
+      <div class="modal-content">
+          <span class="close" onclick="closeIngredientModal()">x</span>
+
+          <h2 id="ingredientModal_header">FILLING UP <br> INGREDIENT FORM</h2>
+
+          <form id="ingredient-form">
+
+            <label for="ingredient-name">Ingredient Name:</label>
+            <input type="text" id="ingredient-name" name="ingredient-name" placeholder="Enter ingredient name" required>
+
+            <label for="expiration-date">Expiration Date:</label>
+            <input type="date" id="expiration-date" name="expiration-date"/>
+
+            <label for="quantity">Quantity:</label>
+            <input type="" id="quantity" name="quantity" placeholder="Enter quantity" required>
+
+            <label for="measurement-details">Measurement Details:</label>
+            <br>
+            <select id="measurement-type-ingredientModal" name="measurement-type-ingredientModal">
+              <option value="VOLUME">VOLUME</option>
+              <option value="WEIGHT">WEIGHT</option>
+              <option value="COUNT">COUNT</option>
+            </select>
+
+            <select id="unit-measurement-ingredientModal" name="unit-measurement-ingredientModal">
+            </select>
+
+            <br>
+            <br>
+
+            <label for="reorder-point">Reorder Point:</label>
+            <input type="number" id="reorder-point" name="reorder-point" placeholder="Enter reorder point" required>
+
+            <label for="minimum-inventory-level">Minimum Inventory Level:</label>
+            <input type="number" id="minimum-inventory-level" name="minimum-inventory-level" placeholder="Enter minimum inventory level" required>
+
+            <label for="low-stock-threshold">Low Stock Threshold:</label>
+            <input type="number" id="low-stock-threshold" name="low-stock-threshold" placeholder="Enter low stock threshold point" required>
+
+            <label for="medium-stock-threshold">Medium Stock Threshold:</label>
+            <input type="number" id="medium-stock-threshold" name="medium-stock-threshold" placeholder="Enter medium low stock threshold point" required>
+
+            <br>
+            <br>
+
+            <span>===========================================</span>
+
+            <br>
+            <br>
+            <br>
+
+            <h2>SELECTED SUPPLIERS</h2>
+
+            <span id="suppliers-selectedList"></span>
+
+            <br>
+            <br>
+
+            <span>===========================================</span>
+            
+            <br>
+            <br>
+            <br>
+
+            <label for="supplier-comboBox">Suppliers to Assign:</label>
+            <br>
+            <select id="supplier-comboBox" name="supplier-comboBox">
+              <option>Select a Supplier to assign</option>
+            </select>
+
+            <button class="supplierList_AddButton" type="button" onclick="addSupplierToTheList()">Add to the List</button>
+
+            <br>
+            <br>
+
+            <button type="submit" class="modal_submitButton" onclick="addIngredientOnTable()">Submit</button>
+
+          </form>
+
+      </div>
+
+    </div>
+
+    <!-- ============================================================ -->
+
+    <div class="container" id="ingredient">
+
+      <div class="tool-bar">
+        <div class="left-section">
+            <input id="subitem_attributeInput" type="text" placeholder="Enter subitem attribute here">
+            <button id="subitem_searchButton" type="button">Search</button>
+        </div>
+        <div class="right-section">
+            <button id="subitem_addButton" type="button" onclick="openIngredientModal('fill')">Add New Subitem</button>
+            <button id="subitem_stockInButton" type="button">Stock In</button>
+            <button id="subitem_stockOutButton" type="button">Stock Out</button>
+        </div>
+      </div>
+      
+      <div class="tool-bar">
+        <div class="left-section">
+          <select id="subitem_sortOptions">
+            <option>Select an attribute to sort by</option>
+            <option value="subitem_IDAsc">ID: Ascending</option>
+            <option value="subitem_IDDesc">ID: Descending</option>
+            <option value="subitem_nameAsc">Subitem Name: A-Z</option>
+            <option value="subitem_nameDesc">Subitem Name: Z-A</option>
+            <option value="subitem_expDateNearest">Expiration Date: Nearest First</option>
+            <option value="subitem_expDateFurthest">Expiration Date: Furthest First</option>
+            <option value="subitem_quantityAsc">Quantity: Low to High</option>
+            <option value="subitem_quantityDesc">Quantity: High to Low</option>
+          </select>
+        </div>
+      </div>
+      
+      <br>
+
+      <h1 id="table_label">INGREDIENT TABLE</h1>
+      <div id="ingredientTable_DisplayContainer">
+        <table id="ingredient-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Subitem Name</th>
+              <th>Expiration Date</th>
+              <th>Quantity</th>
+              <th>Unit Type</th>
+              <th>Unit Measurement</th>
+              <th>Action Buttons</th>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- <div class="button-container"> <button class="containerButton" type="button" onclick="openIngredientModal('fill')">Add New Subitem</button> </div> -->
+
+    </div>
+      
+    <!-- ============================================================ -->
+
+
+
+
+
+
+
+
+
+
+    <!-- ============================================================ -->
+
+    <script>
+
+      /*============================================================*/
+
+      document.addEventListener("DOMContentLoaded", function() {
+
+        // Hide all div containers initially
+        const divContainers = document.querySelectorAll(".container");
+        divContainers.forEach(container => {
+            container.style.display = "none";
+        });
+
+        // Function to show the selected div container and hide others
+        function showContainer(containerId) {
+            divContainers.forEach(container => {
+                if (container.id === containerId) {
+                    container.style.display = "block";
+                } else {
+                    container.style.display = "none";
+                }
+            });
+        }
+
+        // Add event listeners to vertical menu buttons
+        const verticalMenuButtons = document.querySelectorAll(".verticalmenu-btn");
+        verticalMenuButtons.forEach(button => {
+            button.addEventListener("click", function() {
+                const containerId = button.id.replace("Page", "");
+                showContainer(containerId);
+                // Make the clicked button active and others inactive
+                verticalMenuButtons.forEach(btn => {
+                    btn.classList.remove("active");
+                });
+                button.classList.add("active");
+            });
+        });
+
+        // Set the "menuItemPage" container as active by default
+        const defaultContainerId = "employee";
+        const defaultButton = document.getElementById(defaultContainerId + "Page");
+
+        showContainer(defaultContainerId);
+        defaultButton.classList.add("active");
+      });
+      
+      /*============================================================*/
+
+      const measurementTypeSelect = document.getElementById('measurement-type-ingredientModal');
+      const unitMeasurementSelect = document.getElementById('unit-measurement-ingredientModal');
+
+      function updateUnitValueOptions() {
+        const selectedCategory = measurementTypeSelect.value;
+        unitMeasurementSelect.innerHTML = ""; // Clear existing options
+
+        if (selectedCategory === "VOLUME") {
+          unitMeasurementSelect.add(new Option("LITERS (L)", "LITERS (L)"));
+          unitMeasurementSelect.add(new Option("MILLILITERS (mL)", "MILLILITERS (mL)"));
+          unitMeasurementSelect.add(new Option("GALLONS (gal)", "GALLONS (gal)"));
+          unitMeasurementSelect.add(new Option("CUPS (c)", "CUPS (c)"));
+          unitMeasurementSelect.add(new Option("TABLESPOONS (tbsp)", "TABLESPOONS (tbsp)"));
+          unitMeasurementSelect.add(new Option("TEASPOONS (tsp)", "TEASPOONS (tsp)"));
+        } else if (selectedCategory === "WEIGHT") {
+          unitMeasurementSelect.add(new Option("GRAMS (g)", "GRAMS (g)"));
+          unitMeasurementSelect.add(new Option("KILOGRAMS (kg)", "KILOGRAMS (kg)"));
+          unitMeasurementSelect.add(new Option("OUNCES (oz)", "OUNCES (oz)"));
+          unitMeasurementSelect.add(new Option("POUNDS (lb)", "POUNDS (lb)"));
+        } else if (selectedCategory === "COUNT") {
+          unitMeasurementSelect.add(new Option("EACH (each)", "EACH (each)"));
+          unitMeasurementSelect.add(new Option("PIECES (pcs)", "PIECES (pcs)"));
+          unitMeasurementSelect.add(new Option("DOZEN (doz)", "DOZEN (doz)"));
+          unitMeasurementSelect.add(new Option("BAGS (bags)", "BAGS (bags)"));
+          unitMeasurementSelect.add(new Option("BOXES (boxes)", "BOXES (boxes)"));
+          unitMeasurementSelect.add(new Option("BUNCHES (bunches)", "BUNCHES (bunches)"));
+          unitMeasurementSelect.add(new Option("CARTONS (cartons)", "CARTONS (cartons)"));
+          unitMeasurementSelect.add(new Option("CASES (cases)", "CASES (cases)"));
+          unitMeasurementSelect.add(new Option("PACKS (packs)", "PACKS (packs)"));
+          unitMeasurementSelect.add(new Option("ROLLS (rolls)", "ROLLS (rolls)"));
+        }
+      }
+
+      // Update options on initial page load
+      updateUnitValueOptions();
+
+      // Update options whenever the category selection changes
+      measurementTypeSelect.addEventListener('change', updateUnitValueOptions);
+      
+      /*============================================================*/
+
+      function updateUnitSelection() {
+        const selectedIngredient = document.getElementById("ingredient-name-comboBox").value;
+        const ingredientTable = document.getElementById("ingredient-table");
+        const measurementTypeSelect = document.getElementById("measurement-type-menuItemModal");
+        const unitMeasurementSelect = document.getElementById("unit-measurement-menuItemModal");
+
+        // Clear previous options from the unit selection menus
+        measurementTypeSelect.innerHTML = "";
+        unitMeasurementSelect.innerHTML = "";
+
+        if (!selectedIngredient) {
+          return; // Do nothing if no ingredient is selected
+        }
+
+        // Loop through each row of the ingredient table
+        for (let i = 1; i < ingredientTable.rows.length; i++) {
+          const row = ingredientTable.rows[i];
+          const ingredientNameCell = row.cells[0];
+
+          if (ingredientNameCell.textContent === selectedIngredient) {
+            const measurementType = row.cells[3].textContent;
+            const unitMeasurement = row.cells[4].textContent;
+
+            // Create and append new options to the unit selection menus
+            measurementTypeSelect.appendChild(new Option(measurementType, measurementType));
+            unitMeasurementSelect.appendChild(new Option(unitMeasurement, unitMeasurement));
+
+            break; // Stop looping after finding a match
+          }
+        }
+      }
+
+      // Attach the updateUnitSelection function to the change event of the ingredient-name-comboBox
+      document.getElementById("ingredient-name-comboBox").addEventListener("change", updateUnitSelection);
+      
+      /*============================================================*/
+
+    </script>
+      
+    <!-- ============================================================ -->
+    
+
+
+
+
+  </body>
+
+</html>
