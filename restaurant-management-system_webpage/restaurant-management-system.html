@@ -42,7 +42,7 @@
       <br>
       <label class="verticalmenu-label">INGREDIENT</label>
       <button class="verticalmenu-btn" id="ingredientPage">Ingredient List</button>
-      <button class="verticalmenu-btn" id="ingredientCategoriesPage">Ingredient Category</button>
+      <button class="verticalmenu-btn" id="ingredientCategoryPage">Ingredient Category</button>
       <button class="verticalmenu-btn" id="ingredientUnitPage">Ingredient Unit</button>
       <br>
       <label class="verticalmenu-label">RESTAURANT MGMT.</label>
@@ -240,12 +240,12 @@
 
       <div class="tool-bar">
         <div class="left-section">
-            <input id="menuCategory_attributeInput" type="text" placeholder="Enter category attribute here">
+            <input id="menuCategory_attributeInput" type="text" placeholder="Enter menu category attribute here">
             <button id="menuCategory_searchButton" type="button">Search</button>
         </div>
         <div class="right-section">
-            <input id="menuCategory_nameInput" type="text" placeholder="Enter category here">
-            <button id="menuCategory_addButton" type="button">Add New Category</button>
+            <input id="menuCategory_nameInput" type="text" placeholder="Enter menu category here">
+            <button id="menuCategory_addButton" type="button">Add New Menu Category</button>
         </div>
       </div>
       
@@ -416,7 +416,7 @@
             <button id="subitem_searchButton" type="button">Search</button>
         </div>
         <div class="right-section">
-            <button id="subitem_addButton" type="button" onclick="openIngredientModal('fill')">Add New Subitem</button>
+            <button id="subitem_addButton" type="button" onclick="openIngredientModal('fill')">Add New Ingredient</button>
             <button id="subitem_stockInButton" type="button">Stock In</button>
             <button id="subitem_stockOutButton" type="button">Stock Out</button>
         </div>
@@ -463,6 +463,122 @@
 
     </div>
       
+    <!-- ============================================================ -->
+
+
+
+
+
+
+
+
+
+
+    <!-- ============================================================ -->
+
+    <div class="container" id="ingredientCategory">
+
+      <div class="tool-bar">
+        <div class="left-section">
+            <input id="ingredientCategory_attributeInput" type="text" placeholder="Enter ingredient category attribute here">
+            <button id="ingredientCategory_searchButton" type="button">Search</button>
+        </div>
+        <div class="right-section">
+            <input id="ingredientCategory_nameInput" type="text" placeholder="Enter ingredient category here">
+            <button id="ingredientCategory_addButton" type="button">Add New Ingredient Category</button>
+        </div>
+      </div>
+      
+      <div class="tool-bar">
+        <div class="left-section">
+          <select id="ingredientCategory_sortOptions">
+            <option>Select an attribute to sort by</option>
+            <option value="ingredientCategory_IDAsc">ID: Ascending</option>
+            <option value="ingredientCategory_IDDesc">ID: Descending</option>
+            <option value="ingredientCategory_nameAsc">Ingredient Category: A-Z</option>
+            <option value="ingredientCategory_nameDesc">Ingredient Category: Z-A</option>
+          </select>
+        </div>
+      </div>
+      
+      <br>
+
+      <h1 id="table_label">INGREDIENT CATEGORY TABLE</h1>
+
+      <div id="ingredientCategoryTable_DisplayContainer">
+        <table id="ingredientCategory-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Ingredient Category</th>
+              <th>Action Buttons</th>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+    <!-- ============================================================ -->
+
+
+
+
+
+
+
+
+
+
+    <!-- ============================================================ -->
+
+    <div class="container" id="ingredientUnit">
+
+      <div class="tool-bar">
+        <div class="left-section">
+            <input id="ingredientUnit_attributeInput" type="text" placeholder="Enter ingredient unit attribute here">
+            <button id="ingredientUnit_searchButton" type="button">Search</button>
+        </div>
+        <div class="right-section">
+            <input id="ingredientUnit_nameInput" type="text" placeholder="Enter ingredient unit here">
+            <button id="ingredientUnit_addButton" type="button">Add New Ingredient Unit</button>
+        </div>
+      </div>
+      
+      <div class="tool-bar">
+        <div class="left-section">
+          <select id="ingredientUnit_sortOptions">
+            <option>Select an attribute to sort by</option>
+            <option value="ingredientUnit_IDAsc">ID: Ascending</option>
+            <option value="ingredientUnit_IDDesc">ID: Descending</option>
+            <option value="ingredientUnit_nameAsc">Ingredient Unit: A-Z</option>
+            <option value="ingredientUnit_nameDesc">Ingredient Unit: Z-A</option>
+          </select>
+        </div>
+      </div>
+      
+      <br>
+
+      <h1 id="table_label">INGREDIENT UNIT TABLE</h1>
+
+      <div id="ingredientUnitTable_DisplayContainer">
+        <table id="ingredientUnit-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Ingredient Unit</th>
+              <th>Action Buttons</th>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
     <!-- ============================================================ -->
 
 
@@ -663,6 +779,128 @@
               <th>Contact Person</th>
               <th>Contact Info</th>
               <th>Company Address</th>
+              <th>Action Buttons</th>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+      
+    <!-- ============================================================ -->
+
+
+
+
+
+
+
+
+
+
+    <!-- ============================================================ -->
+
+    <div class="modal" id="customer-modal">
+      <div class="modal-content">
+          <span class="close" onclick="closeCustomerModal()">x</span>
+
+          <h2 id="customerModal_header">FILLING UP <br> CUSTOMER FORM</h2>
+
+          <form id="customer-form">
+
+            <label for="customer-id">Customer ID:</label>
+            <input type="text" id="customer-id" name="customer-id" placeholder="Enter customer ID" required>  
+
+            <label for="customer-type">Customer Type:</label>
+            <select id="customer-type" name="customer-type">
+                <option value="GUEST">GUEST</option>
+                <option value="REGISTERED">REGISTERED</option>
+            </select>
+
+            <br>
+            <br>
+
+            <label for="customer-first-name">First Name:</label>
+            <input type="text" id="customer-first-name" name="customer-first-name" placeholder="Enter customer's first name" required>
+    
+            <label for="customer-middle-name">Middle Name:</label>
+            <input type="text" id="customer-middle-name" name="customer-middle-name" placeholder="Enter customer's middle name" required>
+    
+            <label for="customer-last-name">Last Name:</label>
+            <input type="text" id="customer-last-name" name="customer-last-name" placeholder="Enter customer's last name" required>
+
+            <label for="sex">Sex:</label>
+            <select id="sex" name="sex">
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+            </select>
+
+            <br>
+            <br>
+
+            <label for="customer-birthdate">Birth Date:</label>
+            <input type="date" id="customer-birthdate" name="customer-birthdate" placeholder="Enter customer's birthdate" required/>
+    
+            <label for="customer-phonenumber">Contact Number:</label>
+            <input type="text" id="customer-phonenumber" name="customer-phonenumber" placeholder="Enter customer's phone number" required>
+    
+            <label for="customer-address">Address Line:</label>
+            <textarea id="customer-address" name="customer-address" placeholder="Enter customer's address" rows="4" required></textarea>
+
+            <label for="customer-email">Email:</label>
+            <input type="text" id="customer-email" name="customer-email" placeholder="Enter customer's email" required>
+            
+            <button type="submit" class="modal_submitButton" onclick="addCustomerOnTable()">Submit</button>
+
+          </form>
+
+      </div>
+
+    </div>
+
+    <!-- ============================================================ -->
+
+    <div class="container" id="customer">
+
+      <div class="tool-bar">
+        <div class="left-section">
+            <input id="customer_attributeInput" type="text" placeholder="Enter customer attribute here">
+            <button id="customer_searchButton" type="button">Search</button>
+        </div>
+        <div class="right-section">
+            <button id="customer_addButton" type="button" onclick="openCustomerModal('fill')">Add New Customer</button>
+        </div>
+      </div>
+      
+      <div class="tool-bar">
+        <div class="left-section">
+          <select id="customer_sortOptions">
+            <option>Select an attribute to sort by</option>
+            <option value="customer_IDAsc">ID: Ascending</option>
+            <option value="customer_IDDesc">ID: Descending</option>
+            <option value="customer_firstNameAsc">First Name: A-Z</option>
+            <option value="customer_firstNameDesc">First Name: Z-A</option>
+            <option value="customer_middleNameAsc">Middle Name: A-Z</option>
+            <option value="customer_middleNameDesc">Middle Name: Z-A</option>
+            <option value="customer_lastNameAsc">Last Name: A-Z</option>
+            <option value="customer_lastNameDesc">Last Name: Z-A</option>
+          </select>
+        </div>
+      </div>
+      
+      <br>
+      
+      <h1 id="table_label">CUSTOMER TABLE</h1>
+      <div id="customerTable_DisplayContainer">
+        <table id="customer-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Full Name</th>
+              <th>Contact Info</th>
+              <th>Designation</th>
               <th>Action Buttons</th>
             </tr>
           </thead>

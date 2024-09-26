@@ -492,6 +492,42 @@ tbody tr:nth-child(even) {
 
 /*============================================================*/
 
+#ingredientCategory {
+    overflow-x: auto; /* Enable horizontal scroll if needed */
+    width: calc(100% - 240px); /* Adjust width as needed */
+    margin-left: 240px;
+    height: calc(100% - 90px);
+    padding-top: 90px; 
+}
+
+#ingredientCategoryTable_DisplayContainer {
+    margin: 20px 80px;
+    height: 420px;
+    max-height: 420px;
+    overflow: auto;
+    background-color: #e4b26d;
+}
+
+/*============================================================*/
+
+#ingredientUnit {
+    overflow-x: auto; /* Enable horizontal scroll if needed */
+    width: calc(100% - 240px); /* Adjust width as needed */
+    margin-left: 240px;
+    height: calc(100% - 90px);
+    padding-top: 90px; 
+}
+
+#ingredientUnitTable_DisplayContainer {
+    margin: 20px 80px;
+    height: 420px;
+    max-height: 420px;
+    overflow: auto;
+    background-color: #e4b26d;
+}
+
+/*============================================================*/
+
 #imgBox_Display {
     position: relative;
     width: 150px;
@@ -539,6 +575,24 @@ tbody tr:nth-child(even) {
 }
 
 #supplierTable_DisplayContainer {
+    margin: 20px 80px;
+    height: 420px;
+    max-height: 420px;
+    overflow: auto;
+    background-color: #e4b26d;
+}
+
+/*============================================================*/
+
+#customer {
+    overflow-x: auto; /* Enable horizontal scroll if needed */
+    width: calc(100% - 240px); /* Adjust width as needed */
+    margin-left: 240px;
+    height: calc(100% - 90px);
+    padding-top: 90px; 
+}
+
+#customerTable_DisplayContainer {
     margin: 20px 80px;
     height: 420px;
     max-height: 420px;
