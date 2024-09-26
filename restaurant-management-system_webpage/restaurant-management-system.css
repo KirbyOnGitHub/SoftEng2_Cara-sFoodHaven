@@ -388,6 +388,7 @@ h1 {
 table {
     border-collapse: collapse;
     width: 100%; /* Set table width to 100% of container */
+    grid-template-rows: auto repeat(5, 1fr); /* Shows 5 rows */
 }
 
 th, td {
@@ -437,42 +438,6 @@ tbody tr:nth-child(even) {
 
 /*============================================================*/
 
-#employee {
-    overflow-x: auto; /* Enable horizontal scroll if needed */
-    width: calc(100% - 240px); /* Adjust width as needed */
-    margin-left: 240px;
-    height: calc(100% - 90px);
-    padding-top: 90px; 
-}
-
-#employeeTable_DisplayContainer {
-    margin: 20px 80px;
-    height: 420px;
-    max-height: 420px;
-    overflow: auto;
-    background-color: #e4b26d;
-}
-
-/*============================================================*/
-
-#supplier {
-    overflow-x: auto; /* Enable horizontal scroll if needed */
-    width: calc(100% - 240px); /* Adjust width as needed */
-    margin-left: 240px;
-    height: calc(100% - 90px);
-    padding-top: 90px; 
-}
-
-#supplierTable_DisplayContainer {
-    margin: 20px 80px;
-    height: 420px;
-    max-height: 420px;
-    overflow: auto;
-    background-color: #e4b26d;
-}
-
-/*============================================================*/
-
 #menuItem {
     overflow-x: auto; /* Enable horizontal scroll if needed */
     width: calc(100% - 240px); /* Adjust width as needed */
@@ -482,6 +447,24 @@ tbody tr:nth-child(even) {
 }
 
 #menuItemTable_DisplayContainer {
+    margin: 20px 80px;
+    height: 420px;
+    max-height: 420px;
+    overflow: auto;
+    background-color: #e4b26d;
+}
+
+/*============================================================*/
+
+#menuCategory {
+    overflow-x: auto; /* Enable horizontal scroll if needed */
+    width: calc(100% - 240px); /* Adjust width as needed */
+    margin-left: 240px;
+    height: calc(100% - 90px);
+    padding-top: 90px; 
+}
+
+#menuCategoryTable_DisplayContainer {
     margin: 20px 80px;
     height: 420px;
     max-height: 420px;
@@ -525,6 +508,42 @@ tbody tr:nth-child(even) {
     object-fit: cover;
     border: 3px solid rgb(9, 6, 30);
     border-radius: 10px;
+}
+
+/*============================================================*/
+
+#employee {
+    overflow-x: auto; /* Enable horizontal scroll if needed */
+    width: calc(100% - 240px); /* Adjust width as needed */
+    margin-left: 240px;
+    height: calc(100% - 90px);
+    padding-top: 90px; 
+}
+
+#employeeTable_DisplayContainer {
+    margin: 20px 80px;
+    height: 420px;
+    max-height: 420px;
+    overflow: auto;
+    background-color: #e4b26d;
+}
+
+/*============================================================*/
+
+#supplier {
+    overflow-x: auto; /* Enable horizontal scroll if needed */
+    width: calc(100% - 240px); /* Adjust width as needed */
+    margin-left: 240px;
+    height: calc(100% - 90px);
+    padding-top: 90px; 
+}
+
+#supplierTable_DisplayContainer {
+    margin: 20px 80px;
+    height: 420px;
+    max-height: 420px;
+    overflow: auto;
+    background-color: #e4b26d;
 }
 
 /*============================================================*/

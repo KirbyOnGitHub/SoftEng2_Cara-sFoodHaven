@@ -33,23 +33,434 @@
 
     <div class="verticalmenu_container">
       <div id="verticalmenu"></div>
-        <button class="verticalmenu-btn" id="orderManagementPage">Order Management</button>
-        <!-- <span>=====================</span> -->
-        <button class="verticalmenu-btn" id="employeePage">Employee</button>
-        <button class="verticalmenu-btn" id="supplierPage">Supplier</button>
-        <button class="verticalmenu-btn" id="customerPage">Customer</button>
-        <!-- <span>=====================</span> -->
-        <button class="verticalmenu-btn" id="menuItemPage">Menu Item List</button>
-        <button class="verticalmenu-btn" id="menuCategoriesPage">Menu Categories</button>
-        <button class="verticalmenu-btn" id="ingredientPage">Ingredient List</button>
-        <button class="verticalmenu-btn" id="ingredientCategoriesPage">Ingredient Category</button>
-        <button class="verticalmenu-btn" id="ingredientUnitPage">Ingredient Unit</button>
-        <!-- <span>=====================</span> -->
-        <button class="verticalmenu-btn" id="reportsPage">Reports</button>
-        <button class="verticalmenu-btn" id="chartsPage">Charts</button>
-        <!-- <button class="verticalmenu-btn" id="invRestockRequestsPage">Inventory Restock Requests</button> -->
+      <button class="verticalmenu-btn" id="orderManagementPage">Order Management</button>
+      <!-- <span>=====================</span> -->
+      <br>
+      <label class="verticalmenu-label">MENU ITEM</label>
+      <button class="verticalmenu-btn" id="menuItemPage">Menu Item List</button>
+      <button class="verticalmenu-btn" id="menuCategoryPage">Menu Category</button>
+      <br>
+      <label class="verticalmenu-label">INGREDIENT</label>
+      <button class="verticalmenu-btn" id="ingredientPage">Ingredient List</button>
+      <button class="verticalmenu-btn" id="ingredientCategoriesPage">Ingredient Category</button>
+      <button class="verticalmenu-btn" id="ingredientUnitPage">Ingredient Unit</button>
+      <br>
+      <label class="verticalmenu-label">RESTAURANT MGMT.</label>
+      <button class="verticalmenu-btn" id="employeePage">Employee</button>
+      <button class="verticalmenu-btn" id="supplierPage">Supplier</button>
+      <button class="verticalmenu-btn" id="customerPage">Customer</button>
+      <button class="verticalmenu-btn" id="reportsPage">Reports</button>
+      <button class="verticalmenu-btn" id="chartsPage">Charts</button>
+      <!-- <button class="verticalmenu-btn" id="invRestockRequestsPage">Inventory Restock Requests</button> -->
         <!-- <button class="verticalmenu-btn" id=""></button> -->
       </div>
+    </div>
+      
+    <!-- ============================================================ -->
+
+
+
+
+
+
+
+
+
+    
+    <!-- ============================================================ -->
+
+    <div class="modal" id="menuItem-modal">
+      <div class="modal-content">
+          <span class="close" onclick="closeMenuItemModal()">x</span>
+
+          <h2 id="menuItemModal_header">FILLING UP <br> MENU ITEM FORM</h2>
+
+          <form id="menuItem-form">
+
+            <div id="imgBox_Display">
+              <img src="../img_placeholder.png">
+            </div>
+
+            <br>
+
+            <label for="menu-item-img">Menu Item Image:</label>
+            <input type="file" id="menu-item-img" name="menu-item-img">
+
+            <label for="menu-item-id">Menu Item ID:</label>
+            <input type="text" id="menu-item-id" name="menu-item-id" placeholder="Enter menu item ID" required>
+
+            <label for="menu-item-name">Menu Item Name:</label>
+            <input type="text" id="menu-item-name" name="menu-item-name" placeholder="Enter menu item name" required>
+
+            <label for="menu-category">Menu Category:</label>
+            <select id="menu-category" name="menu-category">
+              <option value="Cara's Specials">Cara's Specials</option>
+              <option value="Appetizers">Appetizers</option>
+              <option value="Platters">Platters</option>
+              <option value="Sizzles">Sizzles</option>
+              <option value="Soup">Soup</option>
+              <option value="Pasta">Pasta</option>
+              <option value="Sandwiches">Sandwiches</option>
+              <option value="Frosties">Frosties</option>
+              <option value="Beverages">Beverages</option>
+              <option value="Delighted Bites">Delighted Bites</option>
+            </select>
+
+            <br>
+            <br>
+
+            <label for="menu-item-price">Menu Item Price (Php):</label>
+            <input type="number" id="menu-item-price" name="menu-item-price" placeholder="Enter menu item price (Php)" required step="0.01">
+    
+            <label for="menu-item-description">Menu Item Description:</label>
+            <textarea id="menu-item-description" name="menu-item-description" placeholder="Enter menu item description" rows="4"></textarea>
+
+            <br>
+            <br>
+
+            <span>===========================================</span>
+
+            <br>
+            <br>
+            <br>
+
+            <h2>INGREDIENT LIST</h2>
+
+            <span id="ingredient-list"></span>
+
+            <br>
+            <br>
+
+            <span>===========================================</span>
+            
+            <br>
+            <br>
+            <br>
+
+            <label for="ingredient-name-comboBox">Ingredient to Add:</label>
+            <br>
+            <select id="ingredient-name-comboBox" name="ingredient-name-comboBox">
+              <option>Select an Ingredient to Add</option>
+            </select>
+
+            <button class="ingredientList_AddButton" type="button" onclick="addIngredientToTheList()">Add to the List</button>
+
+            <br>
+            <br>
+
+            <label for="quantity-consumed">Quantity consumed:</label>
+            <input type="number" id="quantity-consumed" name="quantity-consumed" placeholder="Enter quantity consumed of the selected ingredient" step="0.01">
+
+            <label for="measurement-details">Measurement Details:</label>
+            <br>
+            <select id="measurement-type-menuItemModal" name="measurement-type-menuItemModal">
+            </select>
+
+            <select id="unit-measurement-menuItemModal" name="unit-measurement-menuItemModal">
+            </select>
+
+            <br>
+            <br>
+            <br>
+            
+            <button type="submit" class="modal_submitButton" onclick="addMenuItemOnTable()">Submit</button>
+
+          </form>
+
+      </div>
+
+    </div>
+
+    <!-- ============================================================ -->
+
+    <div class="container" id="menuItem">
+
+      <div class="tool-bar">
+        <div class="left-section">
+            <input id="menuItem_attributeInput" type="text" placeholder="Enter menu item attribute here">
+            <button id="menuItem_searchButton" type="button">Search</button>
+        </div>
+        <div class="right-section">
+            <button id="menuItem_addButton" type="button" onclick="openMenuItemModal('fill')">Add New Menu Item</button>
+        </div>
+      </div>
+      
+      <div class="tool-bar">
+        <div class="left-section">
+          <select id="menuItem_sortOptions">
+            <option>Select an attribute to sort by</option>
+            <option value="menuItem_IDAsc">ID: Ascending</option>
+            <option value="menuItem_IDDesc">ID: Descending</option>
+            <option value="menuItem_nameAsc">Menu Item Name: A-Z</option>
+            <option value="menuItem_nameDesc">Menu Item Name: Z-A</option>
+            <option value="menuItem_categoryNameAsc">Menu Category Name: A-Z</option>
+            <option value="menuItem_categoryNameDesc">Menu Category Name: Z-A</option>
+            <option value="menuItem_priceAsc">Price: Low to High</option>
+            <option value="supplier_priceDesc">Price: High to Low</option>
+          </select>
+        </div>
+      </div>
+
+      <br>
+
+      <h1 id="table_label">MENU ITEM TABLE</h1>
+        <div id="menuItemTable_DisplayContainer">
+          <table id="menuItem-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Menu Item Name</th>
+                <th>Menu Category</th>
+                <th>Price</th>
+                <th>Ingredient List</th>
+                <th>Action Buttons</th>
+              </tr>
+            </thead>
+            <tbody id="menuItem-table_body">
+            </tbody>
+          </table>
+      </div>
+
+    </div>
+      
+    <!-- ============================================================ -->
+
+
+
+
+
+
+
+
+
+
+    <!-- ============================================================ -->
+
+    <div class="container" id="menuCategory">
+
+      <div class="tool-bar">
+        <div class="left-section">
+            <input id="menuCategory_attributeInput" type="text" placeholder="Enter category attribute here">
+            <button id="menuCategory_searchButton" type="button">Search</button>
+        </div>
+        <div class="right-section">
+            <input id="menuCategory_nameInput" type="text" placeholder="Enter category here">
+            <button id="menuCategory_addButton" type="button">Add New Category</button>
+        </div>
+      </div>
+      
+      <div class="tool-bar">
+        <div class="left-section">
+          <select id="menuCategory_sortOptions">
+            <option>Select an attribute to sort by</option>
+            <option value="menuCategory_IDAsc">ID: Ascending</option>
+            <option value="menuCategory_IDDesc">ID: Descending</option>
+            <option value="menuCategory_nameAsc">Menu Category: A-Z</option>
+            <option value="menuCategory_nameDesc">Menu Category: Z-A</option>
+          </select>
+        </div>
+      </div>
+      
+      <br>
+
+      <h1 id="table_label">MENU CATEGORY TABLE</h1>
+
+      <div id="menuCategoryTable_DisplayContainer">
+        <table id="menuCategory-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Menu Category</th>
+              <th>Action Buttons</th>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+    <!-- ============================================================ -->
+      
+
+
+
+
+
+
+
+
+      
+    <!-- ============================================================ -->
+
+    <div class="modal" id="ingredient-modal">
+      <div class="modal-content">
+          <span class="close" onclick="closeIngredientModal()">x</span>
+
+          <h2 id="ingredientModal_header">FILLING UP <br> INGREDIENT FORM</h2>
+
+          <form id="ingredient-form">
+
+            <label for="ingredient-id">Ingredient ID:</label>
+            <input type="text" id="ingredient-id" name="ingredient-id" placeholder="Enter ingredient ID" required>
+
+            <label for="ingredient-name">Ingredient Name:</label>
+            <input type="text" id="ingredient-name" name="ingredient-name" placeholder="Enter ingredient name" required>
+
+            <label for="ingredient-category">Ingredient Category:</label>
+            <select id="ingredient-category" name="ingredient-category">
+              <option value="meat-poultry">Meat & Poultry</option>
+              <option value="seafood">Seafood</option>
+              <option value="vegetables">Vegetables</option>
+              <option value="fruits">Fruits</option>
+              <option value="dairy-products">Dairy Products</option>
+              <option value="grains-starches">Grains & Starches</option>
+              <option value="legumes-beans">Legumes & Beans</option>
+              <option value="herbs-spices">Herbs & Spices</option>
+              <option value="sauces-condiments">Sauces & Condiments</option>
+              <option value="oils-fats">Oils & Fats</option>
+              <option value="baking-pastry-ingredients">Baking & Pastry Ingredients</option>
+              <option value="beverages-syrups">Beverages & Syrups</option>
+              <option value="frozen-prepackaged-items">Frozen & Pre-packaged Items</option>
+              <option value="nuts-seeds">Nuts & Seeds</option>
+              <option value="eggs">Eggs</option>
+            </select>
+
+            <br>
+            <br>
+
+            <!-- <label for="expiration-date">Expiration Date:</label>
+            <input type="date" id="expiration-date" name="expiration-date"/>
+
+            <label for="quantity">Quantity:</label>
+            <input type="" id="quantity" name="quantity" placeholder="Enter quantity" required step="0.01"> -->
+
+            <label for="ingredient-total-quantity">Total Quantity:</label>
+            <input type="number" id="ingredient-total-quantity" name="ingredient-total-quantity" placeholder="Enter total quantity of ingredient" step="0.01">
+
+            <label for="measurement-details">Measurement Details:</label>
+            <br>
+            <select id="measurement-type-ingredientModal" name="measurement-type-ingredientModal">
+              <option value="VOLUME">VOLUME</option>
+              <option value="WEIGHT">WEIGHT</option>
+              <option value="COUNT">COUNT</option>
+            </select>
+
+            <select id="unit-measurement-ingredientModal" name="unit-measurement-ingredientModal">
+            </select>
+
+            <br>
+            <br>
+
+            <label for="reorder-point">Reorder Point:</label>
+            <input type="number" id="reorder-point" name="reorder-point" placeholder="Enter reorder point" required step="0.01">
+
+            <label for="minimum-inventory-level">Minimum Inventory Level:</label>
+            <input type="number" id="minimum-inventory-level" name="minimum-inventory-level" placeholder="Enter minimum inventory level" required step="0.01">
+
+            <label for="low-stock-threshold">Low Stock Threshold:</label>
+            <input type="number" id="low-stock-threshold" name="low-stock-threshold" placeholder="Enter low stock threshold point" required step="0.01">
+
+            <label for="medium-stock-threshold">Medium Stock Threshold:</label>
+            <input type="number" id="medium-stock-threshold" name="medium-stock-threshold" placeholder="Enter medium low stock threshold point" required step="0.01">
+
+            <br>
+            <br>
+
+            <span>===========================================</span>
+
+            <br>
+            <br>
+            <br>
+
+            <h2>SELECTED SUPPLIERS</h2>
+
+            <span id="suppliers-selectedList"></span>
+
+            <br>
+            <br>
+
+            <span>===========================================</span>
+            
+            <br>
+            <br>
+            <br>
+
+            <label for="supplier-comboBox">Suppliers to Assign:</label>
+            <br>
+            <select id="supplier-comboBox" name="supplier-comboBox">
+              <option>Select a Supplier to assign</option>
+            </select>
+
+            <button class="supplierList_AddButton" type="button" onclick="addSupplierToTheList()">Add to the List</button>
+
+            <br>
+            <br>
+
+            <button type="submit" class="modal_submitButton" onclick="addIngredientOnTable()">Submit</button>
+
+          </form>
+
+      </div>
+
+    </div>
+
+    <!-- ============================================================ -->
+
+    <div class="container" id="ingredient">
+
+      <div class="tool-bar">
+        <div class="left-section">
+            <input id="subitem_attributeInput" type="text" placeholder="Enter ingredient attribute here">
+            <button id="subitem_searchButton" type="button">Search</button>
+        </div>
+        <div class="right-section">
+            <button id="subitem_addButton" type="button" onclick="openIngredientModal('fill')">Add New Subitem</button>
+            <button id="subitem_stockInButton" type="button">Stock In</button>
+            <button id="subitem_stockOutButton" type="button">Stock Out</button>
+        </div>
+      </div>
+      
+      <div class="tool-bar">
+        <div class="left-section">
+          <select id="subitem_sortOptions">
+            <option>Select an attribute to sort by</option>
+            <option value="subitem_IDAsc">ID: Ascending</option>
+            <option value="subitem_IDDesc">ID: Descending</option>
+            <option value="subitem_nameAsc">Subitem Name: A-Z</option>
+            <option value="subitem_nameDesc">Subitem Name: Z-A</option>
+            <!-- <option value="subitem_expDateNearest">Expiration Date: Nearest First</option>
+            <option value="subitem_expDateFurthest">Expiration Date: Furthest First</option>
+            <option value="subitem_quantityAsc">Quantity: Low to High</option>
+            <option value="subitem_quantityDesc">Quantity: High to Low</option> -->
+          </select>
+        </div>
+      </div>
+      
+      <br>
+
+      <h1 id="table_label">INGREDIENT TABLE</h1>
+      <div id="ingredientTable_DisplayContainer">
+        <table id="ingredient-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Ingredient</th>
+              <th>Category</th>
+              <th>Total Quantity</th>
+              <th>Unit Type</th>
+              <th>Unit Measurement</th>
+              <th>Action Buttons</th>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- <div class="button-container"> <button class="containerButton" type="button" onclick="openIngredientModal('fill')">Add New Subitem</button> </div> -->
+
     </div>
       
     <!-- ============================================================ -->
@@ -272,324 +683,6 @@
 
 
 
-    
-    <!-- ============================================================ -->
-
-    <div class="modal" id="menuItem-modal">
-      <div class="modal-content">
-          <span class="close" onclick="closeMenuItemModal()">x</span>
-
-          <h2 id="menuItemModal_header">FILLING UP <br> MENU ITEM FORM</h2>
-
-          <form id="menuItem-form">
-
-            <div id="imgBox_Display">
-              <img src="../img_placeholder.png">
-            </div>
-
-            <br>
-
-            <label for="menu-item-img">Menu Item Image:</label>
-            <input type="file" id="menu-item-img" name="menu-item-img">
-
-            <label for="menu-item-name">Menu Item Name:</label>
-            <input type="text" id="menu-item-name" name="menu-item-name" placeholder="Enter menu item name" required>
-
-            <label for="menu-category">Menu Category:</label>
-            <select id="menu-category" name="menu-category">
-              <option value="Cara's Specials">Cara's Specials</option>
-              <option value="Appetizers">Appetizers</option>
-              <option value="Platters">Platters</option>
-              <option value="Sizzles">Sizzles</option>
-              <option value="Soup">Soup</option>
-              <option value="Pasta">Pasta</option>
-              <option value="Sandwiches">Sandwiches</option>
-              <option value="Frosties">Frosties</option>
-              <option value="Beverages">Beverages</option>
-              <option value="Delighted Bites">Delighted Bites</option>
-            </select>
-
-            <br>
-            <br>
-
-            <label for="menu-item-price">Menu Item Price (Php):</label>
-            <input type="number" id="menu-item-price" name="menu-item-price" placeholder="Enter menu item price (Php)" required>
-    
-            <label for="menu-item-description">Menu Item Description:</label>
-            <textarea id="menu-item-description" name="menu-item-description" placeholder="Enter menu item description" rows="4"></textarea>
-
-            <br>
-            <br>
-
-            <span>===========================================</span>
-
-            <br>
-            <br>
-            <br>
-
-            <h2>INGREDIENT LIST</h2>
-
-            <span id="ingredient-list"></span>
-
-            <br>
-            <br>
-
-            <span>===========================================</span>
-            
-            <br>
-            <br>
-            <br>
-
-            <label for="ingredient-name-comboBox">Ingredient to Add:</label>
-            <br>
-            <select id="ingredient-name-comboBox" name="ingredient-name-comboBox">
-              <option>Select an Ingredient to Add</option>
-            </select>
-
-            <button class="ingredientList_AddButton" type="button" onclick="addIngredientToTheList()">Add to the List</button>
-
-            <br>
-            <br>
-
-            <label for="quantity-consumed">Quantity consumed:</label>
-            <input type="number" id="quantity-consumed" name="quantity-consumed" placeholder="Enter quantity consumed of the selected ingredient">
-
-            <label for="measurement-details">Measurement Details:</label>
-            <br>
-            <select id="measurement-type-menuItemModal" name="measurement-type-menuItemModal">
-            </select>
-
-            <select id="unit-measurement-menuItemModal" name="unit-measurement-menuItemModal">
-            </select>
-
-            <br>
-            <br>
-            <br>
-            
-            <button type="submit" class="modal_submitButton" onclick="addMenuItemOnTable()">Submit</button>
-
-          </form>
-
-      </div>
-
-    </div>
-
-    <!-- ============================================================ -->
-
-    <div class="container" id="menuItem">
-
-      <div class="tool-bar">
-        <div class="left-section">
-            <input id="menuItem_attributeInput" type="text" placeholder="Enter menu item attribute here">
-            <button id="menuItem_searchButton" type="button">Search</button>
-        </div>
-        <div class="right-section">
-            <button id="menuItem_addButton" type="button" onclick="openMenuItemModal('fill')">Add New Menu Item</button>
-        </div>
-      </div>
-      
-      <div class="tool-bar">
-        <div class="left-section">
-          <select id="menuItem_sortOptions">
-            <option>Select an attribute to sort by</option>
-            <option value="menuItem_IDAsc">ID: Ascending</option>
-            <option value="menuItem_IDDesc">ID: Descending</option>
-            <option value="menuItem_nameAsc">Menu Item Name: A-Z</option>
-            <option value="menuItem_nameDesc">Menu Item Name: Z-A</option>
-            <option value="menuItem_categoryNameAsc">Menu Category Name: A-Z</option>
-            <option value="menuItem_categoryNameDesc">Menu Category Name: Z-A</option>
-            <option value="menuItem_priceAsc">Price: Low to High</option>
-            <option value="supplier_priceDesc">Price: High to Low</option>
-          </select>
-        </div>
-      </div>
-
-      <br>
-
-      <h1 id="table_label">MENU ITEM TABLE</h1>
-        <div id="menuItemTable_DisplayContainer">
-          <table id="menuItem-table">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Menu Item Name</th>
-                <th>Menu Category</th>
-                <th>Price</th>
-                <th>Ingredient List</th>
-                <th>Action Buttons</th>
-              </tr>
-            </thead>
-            <tbody id="menuItem-table_body">
-            </tbody>
-          </table>
-      </div>
-
-    </div>
-      
-    <!-- ============================================================ -->
-      
-
-
-
-
-
-
-
-
-      
-    <!-- ============================================================ -->
-
-    <div class="modal" id="ingredient-modal">
-      <div class="modal-content">
-          <span class="close" onclick="closeIngredientModal()">x</span>
-
-          <h2 id="ingredientModal_header">FILLING UP <br> INGREDIENT FORM</h2>
-
-          <form id="ingredient-form">
-
-            <label for="ingredient-name">Ingredient Name:</label>
-            <input type="text" id="ingredient-name" name="ingredient-name" placeholder="Enter ingredient name" required>
-
-            <label for="expiration-date">Expiration Date:</label>
-            <input type="date" id="expiration-date" name="expiration-date"/>
-
-            <label for="quantity">Quantity:</label>
-            <input type="" id="quantity" name="quantity" placeholder="Enter quantity" required>
-
-            <label for="measurement-details">Measurement Details:</label>
-            <br>
-            <select id="measurement-type-ingredientModal" name="measurement-type-ingredientModal">
-              <option value="VOLUME">VOLUME</option>
-              <option value="WEIGHT">WEIGHT</option>
-              <option value="COUNT">COUNT</option>
-            </select>
-
-            <select id="unit-measurement-ingredientModal" name="unit-measurement-ingredientModal">
-            </select>
-
-            <br>
-            <br>
-
-            <label for="reorder-point">Reorder Point:</label>
-            <input type="number" id="reorder-point" name="reorder-point" placeholder="Enter reorder point" required>
-
-            <label for="minimum-inventory-level">Minimum Inventory Level:</label>
-            <input type="number" id="minimum-inventory-level" name="minimum-inventory-level" placeholder="Enter minimum inventory level" required>
-
-            <label for="low-stock-threshold">Low Stock Threshold:</label>
-            <input type="number" id="low-stock-threshold" name="low-stock-threshold" placeholder="Enter low stock threshold point" required>
-
-            <label for="medium-stock-threshold">Medium Stock Threshold:</label>
-            <input type="number" id="medium-stock-threshold" name="medium-stock-threshold" placeholder="Enter medium low stock threshold point" required>
-
-            <br>
-            <br>
-
-            <span>===========================================</span>
-
-            <br>
-            <br>
-            <br>
-
-            <h2>SELECTED SUPPLIERS</h2>
-
-            <span id="suppliers-selectedList"></span>
-
-            <br>
-            <br>
-
-            <span>===========================================</span>
-            
-            <br>
-            <br>
-            <br>
-
-            <label for="supplier-comboBox">Suppliers to Assign:</label>
-            <br>
-            <select id="supplier-comboBox" name="supplier-comboBox">
-              <option>Select a Supplier to assign</option>
-            </select>
-
-            <button class="supplierList_AddButton" type="button" onclick="addSupplierToTheList()">Add to the List</button>
-
-            <br>
-            <br>
-
-            <button type="submit" class="modal_submitButton" onclick="addIngredientOnTable()">Submit</button>
-
-          </form>
-
-      </div>
-
-    </div>
-
-    <!-- ============================================================ -->
-
-    <div class="container" id="ingredient">
-
-      <div class="tool-bar">
-        <div class="left-section">
-            <input id="subitem_attributeInput" type="text" placeholder="Enter subitem attribute here">
-            <button id="subitem_searchButton" type="button">Search</button>
-        </div>
-        <div class="right-section">
-            <button id="subitem_addButton" type="button" onclick="openIngredientModal('fill')">Add New Subitem</button>
-            <button id="subitem_stockInButton" type="button">Stock In</button>
-            <button id="subitem_stockOutButton" type="button">Stock Out</button>
-        </div>
-      </div>
-      
-      <div class="tool-bar">
-        <div class="left-section">
-          <select id="subitem_sortOptions">
-            <option>Select an attribute to sort by</option>
-            <option value="subitem_IDAsc">ID: Ascending</option>
-            <option value="subitem_IDDesc">ID: Descending</option>
-            <option value="subitem_nameAsc">Subitem Name: A-Z</option>
-            <option value="subitem_nameDesc">Subitem Name: Z-A</option>
-            <option value="subitem_expDateNearest">Expiration Date: Nearest First</option>
-            <option value="subitem_expDateFurthest">Expiration Date: Furthest First</option>
-            <option value="subitem_quantityAsc">Quantity: Low to High</option>
-            <option value="subitem_quantityDesc">Quantity: High to Low</option>
-          </select>
-        </div>
-      </div>
-      
-      <br>
-
-      <h1 id="table_label">INGREDIENT TABLE</h1>
-      <div id="ingredientTable_DisplayContainer">
-        <table id="ingredient-table">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Subitem Name</th>
-              <th>Expiration Date</th>
-              <th>Quantity</th>
-              <th>Unit Type</th>
-              <th>Unit Measurement</th>
-              <th>Action Buttons</th>
-            </tr>
-          </thead>
-          <tbody>
-          </tbody>
-        </table>
-      </div>
-
-      <!-- <div class="button-container"> <button class="containerButton" type="button" onclick="openIngredientModal('fill')">Add New Subitem</button> </div> -->
-
-    </div>
-      
-    <!-- ============================================================ -->
-
-
-
-
-
-
-
-
-
 
     <!-- ============================================================ -->
 
@@ -631,7 +724,7 @@
         });
 
         // Set the "menuItemPage" container as active by default
-        const defaultContainerId = "employee";
+        const defaultContainerId = "menuItem";
         const defaultButton = document.getElementById(defaultContainerId + "Page");
 
         showContainer(defaultContainerId);
@@ -698,11 +791,11 @@
         // Loop through each row of the ingredient table
         for (let i = 1; i < ingredientTable.rows.length; i++) {
           const row = ingredientTable.rows[i];
-          const ingredientNameCell = row.cells[0];
+          const ingredientNameCell = row.cells[1];
 
           if (ingredientNameCell.textContent === selectedIngredient) {
-            const measurementType = row.cells[3].textContent;
-            const unitMeasurement = row.cells[4].textContent;
+            const measurementType = row.cells[4].textContent;
+            const unitMeasurement = row.cells[5].textContent;
 
             // Create and append new options to the unit selection menus
             measurementTypeSelect.appendChild(new Option(measurementType, measurementType));
