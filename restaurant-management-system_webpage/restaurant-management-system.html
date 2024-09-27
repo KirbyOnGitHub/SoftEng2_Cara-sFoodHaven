@@ -34,7 +34,6 @@
     <div class="verticalmenu_container">
       <div id="verticalmenu"></div>
       <button class="verticalmenu-btn" id="orderManagementPage">Order Management</button>
-      <!-- <span>=====================</span> -->
       <br>
       <label class="verticalmenu-label">MENU ITEM</label>
       <button class="verticalmenu-btn" id="menuItemPage">Menu Item List</button>
@@ -52,7 +51,8 @@
       <button class="verticalmenu-btn" id="reportsPage">Reports</button>
       <button class="verticalmenu-btn" id="chartsPage">Charts</button>
       <!-- <button class="verticalmenu-btn" id="invRestockRequestsPage">Inventory Restock Requests</button> -->
-        <!-- <button class="verticalmenu-btn" id=""></button> -->
+      <!-- <button class="verticalmenu-btn" id=""></button> -->
+      <!-- <span>=====================</span> -->
       </div>
     </div>
       
@@ -92,9 +92,10 @@
             <label for="menu-item-name">Menu Item Name:</label>
             <input type="text" id="menu-item-name" name="menu-item-name" placeholder="Enter menu item name" required>
 
-            <label for="menu-category">Menu Category:</label>
-            <select id="menu-category" name="menu-category">
-              <option value="Cara's Specials">Cara's Specials</option>
+            <label for="menu-category-combobox">Menu Category:</label>
+            <select id="menu-category-combobox" name="menu-category-combobox">
+              <option>Select a menu category for this item</option>
+              <!-- <option value="Cara's Specials">Cara's Specials</option>
               <option value="Appetizers">Appetizers</option>
               <option value="Platters">Platters</option>
               <option value="Sizzles">Sizzles</option>
@@ -103,7 +104,7 @@
               <option value="Sandwiches">Sandwiches</option>
               <option value="Frosties">Frosties</option>
               <option value="Beverages">Beverages</option>
-              <option value="Delighted Bites">Delighted Bites</option>
+              <option value="Delighted Bites">Delighted Bites</option> -->
             </select>
 
             <br>
@@ -245,7 +246,7 @@
         </div>
         <div class="right-section">
             <input id="menuCategory_nameInput" type="text" placeholder="Enter menu category here">
-            <button id="menuCategory_addButton" type="button">Add New Menu Category</button>
+            <button id="menuCategory_addButton" type="button" onclick="addMenuCategoryOnTable()">Add New Menu Category</button>
         </div>
       </div>
       
@@ -308,9 +309,11 @@
             <label for="ingredient-name">Ingredient Name:</label>
             <input type="text" id="ingredient-name" name="ingredient-name" placeholder="Enter ingredient name" required>
 
-            <label for="ingredient-category">Ingredient Category:</label>
-            <select id="ingredient-category" name="ingredient-category">
-              <option value="meat-poultry">Meat & Poultry</option>
+            <label for="ingredient-category-combobox">Ingredient Category:</label>
+            <br>
+            <select id="ingredient-category-combobox" name="ingredient-category-combobox">
+              <option>Select a category for this ingredient</option>
+              <!-- <option value="meat-poultry">Meat & Poultry</option>
               <option value="seafood">Seafood</option>
               <option value="vegetables">Vegetables</option>
               <option value="fruits">Fruits</option>
@@ -324,17 +327,11 @@
               <option value="beverages-syrups">Beverages & Syrups</option>
               <option value="frozen-prepackaged-items">Frozen & Pre-packaged Items</option>
               <option value="nuts-seeds">Nuts & Seeds</option>
-              <option value="eggs">Eggs</option>
+              <option value="eggs">Eggs</option> -->
             </select>
 
             <br>
             <br>
-
-            <!-- <label for="expiration-date">Expiration Date:</label>
-            <input type="date" id="expiration-date" name="expiration-date"/>
-
-            <label for="quantity">Quantity:</label>
-            <input type="" id="quantity" name="quantity" placeholder="Enter quantity" required step="0.01"> -->
 
             <label for="ingredient-total-quantity">Total Quantity:</label>
             <input type="number" id="ingredient-total-quantity" name="ingredient-total-quantity" placeholder="Enter total quantity of ingredient" step="0.01">
@@ -412,28 +409,24 @@
 
       <div class="tool-bar">
         <div class="left-section">
-            <input id="subitem_attributeInput" type="text" placeholder="Enter ingredient attribute here">
+            <input id="ingredient_attributeInput" type="text" placeholder="Enter ingredient attribute here">
             <button id="subitem_searchButton" type="button">Search</button>
         </div>
         <div class="right-section">
-            <button id="subitem_addButton" type="button" onclick="openIngredientModal('fill')">Add New Ingredient</button>
-            <button id="subitem_stockInButton" type="button">Stock In</button>
-            <button id="subitem_stockOutButton" type="button">Stock Out</button>
+            <button id="ingredient_addButton" type="button" onclick="openIngredientModal('fill')">Add New Ingredient</button>
+            <button id="ingredient_stockInButton" type="button">Stock In</button>
+            <button id="ingredient_stockOutButton" type="button">Stock Out</button>
         </div>
       </div>
       
       <div class="tool-bar">
         <div class="left-section">
-          <select id="subitem_sortOptions">
+          <select id="ingredient_sortOptions">
             <option>Select an attribute to sort by</option>
-            <option value="subitem_IDAsc">ID: Ascending</option>
-            <option value="subitem_IDDesc">ID: Descending</option>
-            <option value="subitem_nameAsc">Subitem Name: A-Z</option>
-            <option value="subitem_nameDesc">Subitem Name: Z-A</option>
-            <!-- <option value="subitem_expDateNearest">Expiration Date: Nearest First</option>
-            <option value="subitem_expDateFurthest">Expiration Date: Furthest First</option>
-            <option value="subitem_quantityAsc">Quantity: Low to High</option>
-            <option value="subitem_quantityDesc">Quantity: High to Low</option> -->
+            <option value="ingredient_IDAsc">ID: Ascending</option>
+            <option value="ingredient_IDDesc">ID: Descending</option>
+            <option value="ingredient_nameAsc">Ingredient Name: A-Z</option>
+            <option value="ingredient_nameDesc">Ingredient Name: Z-A</option>
           </select>
         </div>
       </div>
@@ -459,8 +452,6 @@
         </table>
       </div>
 
-      <!-- <div class="button-container"> <button class="containerButton" type="button" onclick="openIngredientModal('fill')">Add New Subitem</button> </div> -->
-
     </div>
       
     <!-- ============================================================ -->
@@ -485,7 +476,7 @@
         </div>
         <div class="right-section">
             <input id="ingredientCategory_nameInput" type="text" placeholder="Enter ingredient category here">
-            <button id="ingredientCategory_addButton" type="button">Add New Ingredient Category</button>
+            <button id="ingredientCategory_addButton" type="button" onclick="addIngredientCategoryOnTable()">Add New Ingredient Category</button>
         </div>
       </div>
       

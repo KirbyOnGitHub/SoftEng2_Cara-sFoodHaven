@@ -214,7 +214,7 @@ function addMenuItemOnTable() {
     // Getting form values
     const menuItemID = document.getElementById("menu-item-id").value;
     const menuItemName = document.getElementById("menu-item-name").value;
-    const menuCategory = document.getElementById("menu-category").value;
+    const menuCategory = document.getElementById("menu-category-combobox").value;
     const menuItemPrice = document.getElementById("menu-item-price").value;
     const menuItemDescription = document.getElementById("menu-item-description").value;
     const ingredientList = document.getElementById("ingredient-list").innerHTML;
@@ -423,7 +423,7 @@ function fillMenuItemForm(menuItemData) {
     // Get modal elements
     const menuItemIDInput = document.getElementById("menu-item-id");
     const menuItemNameInput = document.getElementById("menu-item-name");
-    const menuCategoryInput = document.getElementById("menu-category");
+    const menuCategoryInput = document.getElementById("menu-category-combobox");
     const menuItemPriceInput = document.getElementById("menu-item-price");
     const menuItemDescriptionInput = document.getElementById("menu-item-description");
     const ingredientListInput = document.getElementById("ingredient-list");
@@ -455,7 +455,7 @@ function menuItemInfo_saveChanges(event, tableRow) {
     // Getting form values
     const menuItemID = document.getElementById("menu-item-id").value;
     const menuItemName = document.getElementById("menu-item-name").value;
-    const menuCategory = document.getElementById("menu-category").value;
+    const menuCategory = document.getElementById("menu-category-combobox").value;
     const menuItemPrice = document.getElementById("menu-item-price").value;
     const menuItemDescription = document.getElementById("menu-item-description").value;
     const ingredientList = document.getElementById("ingredient-list").innerHTML;
@@ -530,6 +530,79 @@ function deleteMenuItemTableRowData(event, tableRow) {
 
 /*============================================================*/
 
+function addMenuCategoryOnTable() {
+
+    // alert("Hey!");
+
+    // Getting form values
+    const menuCategoryID = 0;
+    const menuCategory = document.getElementById("menuCategory_nameInput").value;
+
+    // Creating a new table row element
+    const newRow = document.createElement("tr");
+
+    // Creating menuItem data object
+    const menuCategoryData = {
+        menuCategoryID,
+        menuCategory
+    };
+
+    // Setting menuItem data as a custom attribute on the row
+    newRow.setAttribute("data-menuCategory", JSON.stringify(menuCategoryData));  
+
+    // Creating cells
+    const menuCategoryIDCell = document.createElement("td");
+    const menuCategoryCell = document.createElement("td");
+    const actionCell = document.createElement("td");
+
+    // Setting cell content
+    menuCategoryIDCell.textContent = menuCategoryID;
+    menuCategoryCell.textContent = menuCategory;
+
+    const buttonContainer = document.createElement("div"); // Sub-cell element
+
+    const modifyButton = document.createElement("button");
+    modifyButton.textContent = "Modify";
+    modifyButton.classList.add("modify-btn");
+
+    const deleteButton = document.createElement("button");
+    deleteButton.textContent = "Delete";
+    deleteButton.classList.add("delete-btn");
+
+    buttonContainer.appendChild(modifyButton);
+    buttonContainer.appendChild(deleteButton);
+
+    actionCell.appendChild(buttonContainer);
+
+    // Append cells to the new row
+    newRow.appendChild(menuCategoryIDCell);
+    newRow.appendChild(menuCategoryCell);
+    newRow.appendChild(actionCell);
+
+    // Appending a new row to table
+    var table = document.getElementById("menuCategory-table");
+    table.querySelector("tbody").appendChild(newRow);
+
+    const menuCategory_comboBox = document.getElementById("menu-category-combobox");
+    menuCategory_comboBox.add(new Option(menuCategory));
+}
+
+/*============================================================*/
+
+
+
+
+
+/*============================================================*/ /*============================================================*/
+/*============================================================*/ /*============================================================*/
+/*============================================================*/ /*============================================================*/
+
+
+
+
+
+/*============================================================*/
+
 // Open the ingredient modal
 function openIngredientModal(action) {
     document.getElementById("ingredient-modal").style.display = "block";
@@ -545,16 +618,12 @@ function openIngredientModal(action) {
 
     if (action === "fill") {
         header.innerHTML = "FILLING UP <br> INGREDIENT FORM";
-        // header2.innerHTML = "FILLING UP <br> SUPPLIER FORM";
     } else if (action === "view") {
         header.innerHTML = "VIEWING <br> INGREDIENT FORM";
-        // header2.innerHTML = "VIEWING <br> SUPPLIER FORM";
     } else if (action === "modify") {
         header.innerHTML = "MODIFYING <br> INGREDIENT FORM";
-        // header2.innerHTML = "MODIFYING <br> SUPPLIER FORM";
     } else if (action === "delete") {
         header.innerHTML = "DELETE THIS <br> INGREDIENT FORM?";
-        // header2.innerHTML = "DELETE THIS <br> SUPPLIER FORM?";
     }
 
     const container = document.querySelector('.modal');
@@ -616,8 +685,6 @@ function addIngredientOnTable() {
     const ingredientName = document.getElementById("ingredient-name").value;
     const ingredientCategory = document.getElementById("ingredient-category").value;
     const ingredientTotalQuantity = 0;
-    // const expirationDate = document.getElementById("expiration-date").value;
-    // const quantity = document.getElementById("quantity").value;
     const measurementType = document.getElementById("measurement-type-ingredientModal").value;
     const unitMeasurement = document.getElementById("unit-measurement-ingredientModal").value;
     const reorderPoint = document.getElementById("reorder-point").value;
@@ -634,8 +701,6 @@ function addIngredientOnTable() {
         ingredientName,
         ingredientCategory,
         ingredientTotalQuantity,
-    //   expirationDate: expirationDate ? expirationDate : "N/A", // Check if expirationDate has a value, if not use "N/A"
-    //   quantity,
         measurementType,
         unitMeasurement,
         reorderPoint,
@@ -652,8 +717,6 @@ function addIngredientOnTable() {
     const ingredientNameCell = document.createElement("td");
     const ingredientCategoryCell = document.createElement("td");
     const totalQuantityCell = document.createElement("td");
-    // const expirationDateCell = document.createElement("td");
-    // const quantityCell = document.createElement("td");
     const measurementTypeCell = document.createElement("td");
     const unitMeasurementCell = document.createElement("td");
     const actionCell = document.createElement("td");
@@ -662,9 +725,7 @@ function addIngredientOnTable() {
     ingredientIDCell.textContent = ingredientID;
     ingredientNameCell.textContent = ingredientName;
     ingredientCategoryCell.textContent = ingredientCategory;
-    totalQuantityCell.textContent = 0;
-    // expirationDateCell.textContent = ingredientData.expirationDate; // Use the value from ingredientData object
-    // quantityCell.textContent = quantity;
+    totalQuantityCell.textContent = ingredientTotalQuantity;
     measurementTypeCell.textContent = measurementType;
     unitMeasurementCell.textContent = unitMeasurement;
   
@@ -696,8 +757,6 @@ function addIngredientOnTable() {
     newRow.appendChild(ingredientNameCell);
     newRow.appendChild(ingredientCategoryCell);
     newRow.appendChild(totalQuantityCell);
-    // newRow.appendChild(expirationDateCell);
-    // newRow.appendChild(quantityCell);
     newRow.appendChild(measurementTypeCell);
     newRow.appendChild(unitMeasurementCell);
     newRow.appendChild(actionCell);
@@ -823,8 +882,6 @@ function fillIngredientForm(ingredientData) {
     const ingredientNameInput = document.getElementById("ingredient-name");
     const ingredientCategoryInput = document.getElementById("ingredient-category");
     const ingredientTotalQuantityInput = document.getElementById("ingredient-total-quantity");
-    // const expirationDate = document.getElementById("expiration-date").value;
-    // const quantity = document.getElementById("quantity").value;
     const measurementTypeInput = document.getElementById("measurement-type-ingredientModal");
     const unitMeasurementInput = document.getElementById("unit-measurement-ingredientModal");
     const reorderPointInput = document.getElementById("reorder-point");
@@ -837,8 +894,6 @@ function fillIngredientForm(ingredientData) {
     ingredientNameInput.value = ingredientData.ingredientName;
     ingredientCategoryInput.value = ingredientData.ingredientName;
     ingredientTotalQuantityInput.value = ingredientData.ingredientTotalQuantity;
-    // expirationDateInput.value = ingredientData.expirationDate;
-    // quantityInput.value = ingredientData.quantity;
     measurementTypeInput.value = ingredientData.measurementType;
     unitMeasurementInput.value = ingredientData.unitMeasurement;
     reorderPointInput.value = ingredientData.reorderPoint;
@@ -866,9 +921,7 @@ function ingredientInfo_saveChanges(event, tableRow) {
     const ingredientID = document.getElementById("ingredient-id").value;
     const ingredientName = document.getElementById("ingredient-name").value;
     const ingredientCategory = document.getElementById("ingredient-category").value;
-    const ingredientTotalQuantity = 0;
-    // const expirationDate = document.getElementById("expiration-date").value;
-    // const quantity = document.getElementById("quantity").value;
+    const ingredientTotalQuantity = document.getElementById("ingredient-total-quantity").value;
     const measurementType = document.getElementById("measurement-type-ingredientModal").value;
     const unitMeasurement = document.getElementById("unit-measurement-ingredientModal").value;
     const reorderPoint = document.getElementById("reorder-point").value;
@@ -882,8 +935,6 @@ function ingredientInfo_saveChanges(event, tableRow) {
     ingredientName,
     ingredientCategory,
     ingredientTotalQuantity,
-//   expirationDate: expirationDate ? expirationDate : "N/A", // Check if expirationDate has a value, if not use "N/A"
-//   quantity,
     measurementType,
     unitMeasurement,
     reorderPoint,
@@ -901,8 +952,6 @@ function ingredientInfo_saveChanges(event, tableRow) {
   cells[1].textContent = ingredientName;
   cells[2].textContent = ingredientCategory;
   cells[3].textContent = ingredientTotalQuantity;
-//   cells[1].textContent = ingredientData.expirationDate; // Use the value from ingredientData object
-//   cells[2].textContent = quantity;
   cells[4].textContent = measurementType;
   cells[5].textContent = unitMeasurement;
 
@@ -991,6 +1040,69 @@ function updateIngredientComboBoxes() {
 /*============================================================*/ /*============================================================*/
 
 
+
+
+
+/*============================================================*/
+
+function addIngredientCategoryOnTable() {
+
+    // alert("Hey!");
+
+    // Getting form values
+    const ingredientCategoryID = 0;
+    const ingredientCategory = document.getElementById("ingredientCategory_nameInput").value;
+
+    // Creating a new table row element
+    const newRow = document.createElement("tr");
+
+    // Creating ingredientItem data object
+    const ingredientItemData = {
+        ingredientCategoryID,
+        ingredientCategory
+    };
+
+    // Setting ingredientItem data as a custom attribute on the row
+    newRow.setAttribute("data-ingredientCategory", JSON.stringify(ingredientItemData));  
+
+    // Creating cells
+    const ingredientCategoryIDCell = document.createElement("td");
+    const ingredientCategoryCell = document.createElement("td");
+    const actionCell = document.createElement("td");
+
+    // Setting cell content
+    ingredientCategoryIDCell.textContent = ingredientCategoryID;
+    ingredientCategoryCell.textContent = ingredientCategory;
+
+    const buttonContainer = document.createElement("div"); // Sub-cell element
+
+    const modifyButton = document.createElement("button");
+    modifyButton.textContent = "Modify";
+    modifyButton.classList.add("modify-btn");
+
+    const deleteButton = document.createElement("button");
+    deleteButton.textContent = "Delete";
+    deleteButton.classList.add("delete-btn");
+
+    buttonContainer.appendChild(modifyButton);
+    buttonContainer.appendChild(deleteButton);
+
+    actionCell.appendChild(buttonContainer);
+
+    // Append cells to the new row
+    newRow.appendChild(ingredientCategoryIDCell);
+    newRow.appendChild(ingredientCategoryCell);
+    newRow.appendChild(actionCell);
+
+    // Appending a new row to table
+    var table = document.getElementById("ingredientCategory-table");
+    table.querySelector("tbody").appendChild(newRow);
+
+    const ingredientCategory_comboBox = document.getElementById("ingredient-category-combobox");
+    ingredientCategory_comboBox.add(new Option(ingredientCategory));
+}
+
+/*============================================================*/
 
 
 
