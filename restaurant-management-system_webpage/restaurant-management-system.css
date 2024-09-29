@@ -100,16 +100,14 @@ nav ul li.current-page a:before {
     position: fixed;
     top: 0;
     left: 0;
-    width: 27.5vh;
-    /* width: 200px; */
-    height: 100vh;
+    width: 200px;
+    height: 100%;
     background-color: #e4e4e4;
     border-right: 3px solid #939393;
     padding: 20px;
     overflow-y: auto; 
     display: flex; 
     flex-direction: column; 
-    /* justify-content: center;  */
     align-items: center;
     padding-top: 20vh;
 }
@@ -132,6 +130,7 @@ nav ul li.current-page a:before {
     border: 2px solid #333; 
     text-align: left;
     cursor: pointer;
+    border-radius: 0;
 }
 
 .verticalmenu-btn:hover {
@@ -150,45 +149,130 @@ nav ul li.current-page a:before {
 
 /*============================================================*/
 
-/* button:not(.verticalmenu-btn,.ingredientList_AddButton,.remove-ingredient-from-list-btn) {
-    color: #fff;
+label {
+    font-weight: bold;
+}
+
+input {
+    border: 2px solid #ff6600;
+    padding: 1vh 5px;
+    width: 220px;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+button {
+    border: 2px solid #ff6600;
+    background-color: #eee869;
+    color: #cc5907;
+    font-size: 15px;
     padding: 1vh 3vh;
     border-radius: 5px;
     cursor: pointer;
-    margin: 0 5px;
+    box-sizing: border-box;
 }
 
-button:hover:not(.verticalmenu-btn,.ingredientList_AddButton,.remove-ingredient-from-list-btn) {
-    transform: scale(1.15);
-} */
+button:hover {
+    transform: scale(1.1);
+}
+
+button:hover:not(.verticalmenu-btn):not(.addButtons):not(.updateButtons):not(.deleteButtons):not(.formFeaturesButtons) {
+    transform: scale(1.1);
+    background-color: #eeba4c;
+}
+
+select {
+    border: 2px solid #ff6600;
+    padding: 1vh 5px;
+    width: 220px;
+    border-radius: 5px;
+    cursor: pointer;
+    box-sizing: border-box;
+}
+
+textarea {
+    border: 2px solid #ff6600;
+    padding: 1vh 5px;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
 
 /*============================================================*/
 
-.view-info-btn {
-    background-color:#3a973a; 
-    border: 2px solid #287028;
+.container {
+    display: flex;
+    overflow-x: hidden;
+    width: calc(100% - 240px);
+    height: calc(100% - 60px);
+    top: 60px;    
+    left: 240px;
+    position: relative;
+    text-align: center;
 }
 
-.modify-btn {
-    background-color:#daa322; 
-    border: 2px solid #ac7d0f;
+.container-left-side {
+    float: left;    
+    width: 70%;   
+    height: 100%; 
+    padding-top: 30px;
+    box-sizing: border-box;
+    text-align: center;
 }
 
-.delete-btn {
-    background-color:#a83333; 
-    border: 2px solid #8d1212;
+#ingredient-list-table-label{
+    text-align: center;
 }
 
-.view-info-btn,.modify-btn,.delete-btn {
-    color: #fff;
-    padding: 1vh 2vh;
-    border-radius: 5px;
-    cursor: pointer;
-    margin: 0 5px;
+.table-container {
+    margin: 20px 80px;
+    height: 420px;
+    max-height: 420px;
+    overflow: auto;
+    background-color: #e4b26d;
+    border: 3px solid #913a00;
 }
 
-button:hover:not(.verticalmenu-btn) {
-    transform: scale(1.1);
+#ingredient-list-table-container {
+    margin: 20px 0;
+    height: 300px;
+    max-height: 300px;
+    overflow: auto;
+    background-color: #e4b26d;
+    border: 3px solid #913a00;
+}
+
+.container-right-side {
+    float: right;
+    width: 30%;
+    height: 100%; 
+    background-color: #e4e4e4;  
+    border-left: 3px solid #939393;
+    box-sizing: border-box;
+    text-align: center;
+    padding-top: 30px;
+    overflow-y: auto;
+}
+
+.details-display-container {
+    text-align: left;
+    padding: 20px;
+}
+
+.details-display-container label,
+.details-display-container input,
+.details-display-container select,
+.details-display-container textarea,
+.details-display-container button,
+.details-display-container span,
+.details-display-container h2 {
+    display: block;
+}
+
+.details-display-container input,
+.details-display-container select,
+.details-display-container textarea,
+.details-display-container button {
+    width: 100%;
 }
 
 /*============================================================*/
@@ -211,191 +295,83 @@ button:hover:not(.verticalmenu-btn) {
 .right-section {
     display: flex;
     gap: 10px;
+    /* background-color: #e4e4e4;  
+    padding: 10px; */
 }
 
-.tool-bar input {
-    border: 2px solid #cc5907;
-    padding: 5px;
-    width: 200px;
-    border-radius: 5px;
-}
-
-.tool-bar button {
-    border: 2px solid #cc5907;
-    background-color: #eee869;
-    color: #cc5907;
-    font-size: 15px;
-    padding: 1vh 3vh;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.tool-bar button:hover {
-    background-color: #eeba4c;
-    /* transform: none; */
-}
-
-.tool-bar select {
-    border: 2px solid #cc5907;
-    padding: 5px;
-    width: 213px;
-    border-radius: 5px;
-}
-
-/*============================================================*/
-
-.modal {
-    display: none;
-    position: fixed;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.4);
-    z-index: 999;
-    overflow-x: auto;
-}
-
-.modal-content {
-    position: relative;
-    background-color: #fefefe;
-    max-width: 400px;
-    margin: 0 auto;
-    padding: 20px;
-    border-radius: 5px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-    overflow-x: auto;
-}
-
-.modal h2{
-    text-align: center;
-    margin-bottom: 25px;
-}
-
-label {
-    font-weight: bold;
-}
-
-.modal input, textarea {
-    padding: 8px;
-    margin-bottom: 15px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    width: 96%;
-    max-width: 96%;
-    min-width: 96%;
-}
-
-.modal textarea {
-    height: 11vh;
-    max-height: 11vh;
-    min-height: 11vh;
-}
-
-.close {
-    position: relative;
-    top: -15px;
-    left: 397px;
-    cursor: pointer;
-    font-size: 25px;
-    color: #353535;
-}
-
-.close:hover {
-    color: #000000;
-    font-weight: bolder;
-}
-
-button[type="submit"]:not(#search_button) {
-    font-size: 15px;
-    position: relative;
-    left: 50%;
-    transform: translateX(-50%);
-    bottom: -5px; 
+.addButtons,.updateButtons,.deleteButtons,.formFeaturesButtons {
     color: #fff;
-    padding: 1vh 3vh;
+    padding: 1vh 2vh;
     border-radius: 5px;
     cursor: pointer;
-    margin: 0 5px;
 }
 
-/*============================================================*/
-
-.ingredientList_AddButton {
-    padding: 5px 5px;
-    background-color: #64b664;
-    border: 1.5px solid #369336;
-    border-radius: 5px;
-    color: white;
+.addButtons {
+    background-color:#3a973a; 
+    border: 2px solid #287028;
 }
 
-.ingredientList_AddButton:hover {
-    padding: 5px 5px;
-    background-color: #4a9a4a;
-    border: 1.5px solid #369336;
-    transform: scale(1.05);
+.updateButtons {
+    background-color:#e2ad31; 
+    border: 2px solid #bc6501;
 }
 
-.remove-ingredient-from-list-btn {
-    padding: 1px 5px;
-    background-color: #ce4e4e;
-    border: 1.5px solid #9d2828;
-    border-radius: 5px;
-    color: white;
+.deleteButtons {
+    background-color:#a12828; 
+    border: 2px solid #8d1212;
 }
 
-.remove-ingredient-from-list-btn:hover {
-    background-color: #a53d3d;
-    border: 1.5px solid #9d2828;
-    transform: scale(1.05);
-}
-
-.supplierList_AddButton {
-    padding: 5px 5px;
-    background-color: #64b664;
-    border: 1.5px solid #369336;
-    border-radius: 5px;
-    color: white;
-}
-
-.supplierList_AddButton:hover {
-    padding: 5px 5px;
-    background-color: #4a9a4a;
-    border: 1.5px solid #369336;
-    transform: scale(1.05);
-}
-
-.remove-supplier-from-list-btn {
-    padding: 1px 5px;
-    background-color: #ce4e4e;
-    border: 1.5px solid #9d2828;
-    border-radius: 5px;
-    color: white;
-}
-
-.remove-supplier-from-list-btn:hover {
-    background-color: #a53d3d;
-    border: 1.5px solid #9d2828;
-    transform: scale(1.05);
+.formFeaturesButtons {
+    background-color: #e4e4e4;  
+    border: 2px solid #939393;
+    color: black;
 }
 
 /*============================================================*/
 
 h1 {
-    text-align: center;
+    display: inline-block;    
+    background-color: #dc7a18; 
+    padding: 12px 25px;
+    border: 3px solid #913a00;
+    color: whitesmoke;
+}
+
+h2 {
+    display: inline-block;    
+    background-color: #dc7a18; 
+    padding: 12px 25px;
+    border: 3px solid #913a00;
+    color: whitesmoke;
+    font-size: 20px;
 }
 
 table {
     border-collapse: collapse;
-    width: 100%; /* Set table width to 100% of container */
-    grid-template-rows: auto repeat(5, 1fr); /* Shows 5 rows */
+    width: 100%; 
+    /* grid-template-rows: auto repeat(5, 1fr);  */
 }
 
 th, td {
     padding: 10px;
     text-align: center;
-    border-left: 1.5px solid #9b530a;
-    border-right: 1.5px solid #9b530a;
+    border-left: 3px solid #913a00;
+    border-right: 3px solid #913a00;
+    color: whitesmoke;
+}
+
+#ingredient-list-table th, #ingredient-list-table  td {
+    font-size: 12px;
+}
+
+th:first-child,
+td:first-child {
+    border-left: none;
+}
+
+th:last-child,
+td:last-child {
+    border-right: none; 
 }
 
 th {
@@ -403,127 +379,31 @@ th {
     top: 0px;
     background-color: #dc7a18;
     padding: 13px;
+    border-bottom: 3px solid #913a00;
 }
 
 .left-align {
     text-align: left;
   }
 
-.employeeImage {
-    width: 55px;
-    height: 55px;
-}
-
 tbody tr:nth-child(odd) {
     background-color: #dfa14a;
-    /* background-color: #dea657; */
 }
 
 tbody tr:nth-child(even) {
     background-color: #d9973a;
-    /* background-color: #dfa14a; */
 }
 
-.modal_submitButton  {
-    font-size: 22px;
-    background-color: #1569c4;
-    border: 2px solid #054589;
+tr.clickedTableRow {
+    background-color: #b6b6b6 !important;
+    border-top: 3px solid #333 !important; 
+    border-bottom: 3px solid #333 !important; 
+    font-weight: bolder !important;
+    cursor: pointer !important;
 }
 
-.modal_submitButton:hover {
-    background-color: #0056b3;
-    border: 2px solid #054589;
-    font-weight: bolder;
-}
-
-/*============================================================*/
-
-#menuItem {
-    overflow-x: auto; /* Enable horizontal scroll if needed */
-    width: calc(100% - 240px); /* Adjust width as needed */
-    margin-left: 240px;
-    height: calc(100% - 90px);
-    padding-top: 90px; 
-}
-
-#menuItemTable_DisplayContainer {
-    margin: 20px 80px;
-    height: 420px;
-    max-height: 420px;
-    overflow: auto;
-    background-color: #e4b26d;
-}
-
-/*============================================================*/
-
-#menuCategory {
-    overflow-x: auto; /* Enable horizontal scroll if needed */
-    width: calc(100% - 240px); /* Adjust width as needed */
-    margin-left: 240px;
-    height: calc(100% - 90px);
-    padding-top: 90px; 
-}
-
-#menuCategoryTable_DisplayContainer {
-    margin: 20px 80px;
-    height: 420px;
-    max-height: 420px;
-    overflow: auto;
-    background-color: #e4b26d;
-}
-
-/*============================================================*/
-
-#ingredient {
-    overflow-x: auto; /* Enable horizontal scroll if needed */
-    width: calc(100% - 240px); /* Adjust width as needed */
-    margin-left: 240px;
-    height: calc(100% - 90px);
-    padding-top: 90px; 
-}
-
-#ingredientTable_DisplayContainer {
-    margin: 20px 80px;
-    height: 420px;
-    max-height: 420px;
-    overflow: auto;
-    background-color: #e4b26d;
-}
-
-/*============================================================*/
-
-#ingredientCategory {
-    overflow-x: auto; /* Enable horizontal scroll if needed */
-    width: calc(100% - 240px); /* Adjust width as needed */
-    margin-left: 240px;
-    height: calc(100% - 90px);
-    padding-top: 90px; 
-}
-
-#ingredientCategoryTable_DisplayContainer {
-    margin: 20px 80px;
-    height: 420px;
-    max-height: 420px;
-    overflow: auto;
-    background-color: #e4b26d;
-}
-
-/*============================================================*/
-
-#ingredientUnit {
-    overflow-x: auto; /* Enable horizontal scroll if needed */
-    width: calc(100% - 240px); /* Adjust width as needed */
-    margin-left: 240px;
-    height: calc(100% - 90px);
-    padding-top: 90px; 
-}
-
-#ingredientUnitTable_DisplayContainer {
-    margin: 20px 80px;
-    height: 420px;
-    max-height: 420px;
-    overflow: auto;
-    background-color: #e4b26d;
+tr.clickedTableRow td {
+    color: black !important;
 }
 
 /*============================================================*/
@@ -543,61 +423,40 @@ tbody tr:nth-child(even) {
     height: 100%;
     object-fit: cover;
     border: 3px solid rgb(9, 6, 30);
-    border-radius: 10px;
+    border-radius: 15px;
 }
 
 /*============================================================*/
 
-#employee {
-    overflow-x: auto; /* Enable horizontal scroll if needed */
-    width: calc(100% - 240px); /* Adjust width as needed */
-    margin-left: 240px;
-    height: calc(100% - 90px);
-    padding-top: 90px; 
+/* Basic styling for the notification */
+.notification {
+    position: relative;
+    margin-bottom: 20px;
+    border: 3px solid #ff6600;
+    /* border: 3px solid #ab4400; */
+    background-color: #eee869;
+    color: #cc5907;
+    padding: 15px 25px;
+    box-shadow: 0 12px 12px rgba(0, 0, 0, 0.2); 
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    z-index: 1000;             
+    opacity: 0;                
+    transform: translateY(-20px); /* Slide in from the top */
+    transition: opacity 0.5s ease, transform 0.5s ease; /* Smooth animation */
+    text-align: center;
 }
 
-#employeeTable_DisplayContainer {
-    margin: 20px 80px;
-    height: 420px;
-    max-height: 420px;
-    overflow: auto;
-    background-color: #e4b26d;
+/* Fade-in effect when the notification is added to the DOM */
+.notification.show {
+    opacity: 1;
+    transform: translateY(0); /* Reset position */
 }
 
-/*============================================================*/
-
-#supplier {
-    overflow-x: auto; /* Enable horizontal scroll if needed */
-    width: calc(100% - 240px); /* Adjust width as needed */
-    margin-left: 240px;
-    height: calc(100% - 90px);
-    padding-top: 90px; 
-}
-
-#supplierTable_DisplayContainer {
-    margin: 20px 80px;
-    height: 420px;
-    max-height: 420px;
-    overflow: auto;
-    background-color: #e4b26d;
-}
-
-/*============================================================*/
-
-#customer {
-    overflow-x: auto; /* Enable horizontal scroll if needed */
-    width: calc(100% - 240px); /* Adjust width as needed */
-    margin-left: 240px;
-    height: calc(100% - 90px);
-    padding-top: 90px; 
-}
-
-#customerTable_DisplayContainer {
-    margin: 20px 80px;
-    height: 420px;
-    max-height: 420px;
-    overflow: auto;
-    background-color: #e4b26d;
+/* Fade-out effect before removal */
+.notification.hide {
+    opacity: 0;
+    transform: translateY(-20px);
 }
 
 /*============================================================*/

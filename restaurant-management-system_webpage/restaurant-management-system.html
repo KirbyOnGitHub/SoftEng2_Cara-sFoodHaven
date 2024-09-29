@@ -14,6 +14,8 @@
   <body>
       
     <!-- ============================================================ -->
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
     
     <nav>
       <a href="#"> <img src="../RestaurantLogo-Cut.png" class="RestaurantLogo_Nav"> </a>
@@ -25,10 +27,7 @@
     </nav>
       
     <!-- ============================================================ -->
-
-
-
-
+    <!-- ============================================================ -->
     <!-- ============================================================ -->
 
     <div class="verticalmenu_container">
@@ -43,13 +42,14 @@
       <button class="verticalmenu-btn" id="ingredientPage">Ingredient List</button>
       <button class="verticalmenu-btn" id="ingredientCategoryPage">Ingredient Category</button>
       <button class="verticalmenu-btn" id="ingredientUnitPage">Ingredient Unit</button>
+      <button class="verticalmenu-btn" id="ingredientStocksPage">Ingredient Stocks</button>
       <br>
       <label class="verticalmenu-label">RESTAURANT MGMT.</label>
-      <button class="verticalmenu-btn" id="employeePage">Employee</button>
+      <button class="verticalmenu-btn" id="staffPage">Staff</button>
       <button class="verticalmenu-btn" id="supplierPage">Supplier</button>
       <button class="verticalmenu-btn" id="customerPage">Customer</button>
-      <button class="verticalmenu-btn" id="reportsPage">Reports</button>
-      <button class="verticalmenu-btn" id="chartsPage">Charts</button>
+      <!-- <button class="verticalmenu-btn" id="reportsPage">Reports</button>
+      <button class="verticalmenu-btn" id="chartsPage">Charts</button> -->
       <!-- <button class="verticalmenu-btn" id="invRestockRequestsPage">Inventory Restock Requests</button> -->
       <!-- <button class="verticalmenu-btn" id=""></button> -->
       <!-- <span>=====================</span> -->
@@ -57,6 +57,8 @@
     </div>
       
     <!-- ============================================================ -->
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
 
 
 
@@ -68,162 +70,172 @@
 
     
     <!-- ============================================================ -->
-
-    <div class="modal" id="menuItem-modal">
-      <div class="modal-content">
-          <span class="close" onclick="closeMenuItemModal()">x</span>
-
-          <h2 id="menuItemModal_header">FILLING UP <br> MENU ITEM FORM</h2>
-
-          <form id="menuItem-form">
-
-            <div id="imgBox_Display">
-              <img src="../img_placeholder.png">
-            </div>
-
-            <br>
-
-            <label for="menu-item-img">Menu Item Image:</label>
-            <input type="file" id="menu-item-img" name="menu-item-img">
-
-            <label for="menu-item-id">Menu Item ID:</label>
-            <input type="text" id="menu-item-id" name="menu-item-id" placeholder="Enter menu item ID" required>
-
-            <label for="menu-item-name">Menu Item Name:</label>
-            <input type="text" id="menu-item-name" name="menu-item-name" placeholder="Enter menu item name" required>
-
-            <label for="menu-category-combobox">Menu Category:</label>
-            <select id="menu-category-combobox" name="menu-category-combobox">
-              <option>Select a menu category for this item</option>
-              <!-- <option value="Cara's Specials">Cara's Specials</option>
-              <option value="Appetizers">Appetizers</option>
-              <option value="Platters">Platters</option>
-              <option value="Sizzles">Sizzles</option>
-              <option value="Soup">Soup</option>
-              <option value="Pasta">Pasta</option>
-              <option value="Sandwiches">Sandwiches</option>
-              <option value="Frosties">Frosties</option>
-              <option value="Beverages">Beverages</option>
-              <option value="Delighted Bites">Delighted Bites</option> -->
-            </select>
-
-            <br>
-            <br>
-
-            <label for="menu-item-price">Menu Item Price (Php):</label>
-            <input type="number" id="menu-item-price" name="menu-item-price" placeholder="Enter menu item price (Php)" required step="0.01">
-    
-            <label for="menu-item-description">Menu Item Description:</label>
-            <textarea id="menu-item-description" name="menu-item-description" placeholder="Enter menu item description" rows="4"></textarea>
-
-            <br>
-            <br>
-
-            <span>===========================================</span>
-
-            <br>
-            <br>
-            <br>
-
-            <h2>INGREDIENT LIST</h2>
-
-            <span id="ingredient-list"></span>
-
-            <br>
-            <br>
-
-            <span>===========================================</span>
-            
-            <br>
-            <br>
-            <br>
-
-            <label for="ingredient-name-comboBox">Ingredient to Add:</label>
-            <br>
-            <select id="ingredient-name-comboBox" name="ingredient-name-comboBox">
-              <option>Select an Ingredient to Add</option>
-            </select>
-
-            <button class="ingredientList_AddButton" type="button" onclick="addIngredientToTheList()">Add to the List</button>
-
-            <br>
-            <br>
-
-            <label for="quantity-consumed">Quantity consumed:</label>
-            <input type="number" id="quantity-consumed" name="quantity-consumed" placeholder="Enter quantity consumed of the selected ingredient" step="0.01">
-
-            <label for="measurement-details">Measurement Details:</label>
-            <br>
-            <select id="measurement-type-menuItemModal" name="measurement-type-menuItemModal">
-            </select>
-
-            <select id="unit-measurement-menuItemModal" name="unit-measurement-menuItemModal">
-            </select>
-
-            <br>
-            <br>
-            <br>
-            
-            <button type="submit" class="modal_submitButton" onclick="addMenuItemOnTable()">Submit</button>
-
-          </form>
-
-      </div>
-
-    </div>
-
+    <!-- ============================================================ -->
     <!-- ============================================================ -->
 
     <div class="container" id="menuItem">
 
-      <div class="tool-bar">
-        <div class="left-section">
-            <input id="menuItem_attributeInput" type="text" placeholder="Enter menu item attribute here">
-            <button id="menuItem_searchButton" type="button">Search</button>
-        </div>
-        <div class="right-section">
-            <button id="menuItem_addButton" type="button" onclick="openMenuItemModal('fill')">Add New Menu Item</button>
-        </div>
-      </div>
-      
-      <div class="tool-bar">
-        <div class="left-section">
-          <select id="menuItem_sortOptions">
-            <option>Select an attribute to sort by</option>
-            <option value="menuItem_IDAsc">ID: Ascending</option>
-            <option value="menuItem_IDDesc">ID: Descending</option>
-            <option value="menuItem_nameAsc">Menu Item Name: A-Z</option>
-            <option value="menuItem_nameDesc">Menu Item Name: Z-A</option>
-            <option value="menuItem_categoryNameAsc">Menu Category Name: A-Z</option>
-            <option value="menuItem_categoryNameDesc">Menu Category Name: Z-A</option>
-            <option value="menuItem_priceAsc">Price: Low to High</option>
-            <option value="supplier_priceDesc">Price: High to Low</option>
-          </select>
-        </div>
-      </div>
+      <!-- ============================================================ -->
 
-      <br>
+      <div class="container-left-side">
 
-      <h1 id="table_label">MENU ITEM TABLE</h1>
-        <div id="menuItemTable_DisplayContainer">
-          <table id="menuItem-table">
+        <!-- ============================== -->
+
+        <div class="tool-bar">
+          <div class="left-section">
+              <input id="menuItem_attributeInput" type="text" placeholder="Enter ID, Menu Item, or Price">
+              <button type="button" onclick="">Filter</button>
+          </div>
+          <div class="right-section">
+            <button class="formFeaturesButtons" type="button" onclick="">Fill Form with ID</button>
+            <button class="formFeaturesButtons" type="button" onclick="clearFormFields('menu-item-form')">Clear Form</button>
+          </div>
+        </div>
+        
+        <div class="tool-bar">
+          <div class="left-section">
+            <select id="menuItem_sortOptions">
+              <option>Select an attribute to sort by</option>
+              <option value="menuItem_IDAsc">ID: Ascending</option>
+              <option value="menuItem_IDDesc">ID: Descending</option>
+              <option value="menuItem_nameAsc">Menu Item: A-Z</option>
+              <option value="menuItem_nameDesc">Menu Item: Z-A</option>
+              <option value="menuItem_nameAsc">Menu Category: A-Z</option>
+              <option value="menuItem_nameDesc">Menu Category: Z-A</option>
+              <option value="menuItem_priceAsc">Price: Low to High</option>
+              <option value="menuItem_priceDesc">Price: High to Low</option>
+            </select>
+          </div>
+          <div class="right-section">
+            <button class="addButtons" type="button">Add</button>
+            <button class="updateButtons" type="button">Update</button>
+            <button class="deleteButtons" type="button">Delete</button>
+          </div>
+        </div>
+
+        <br>
+
+        <h1>MENU ITEM TABLE</h1>
+
+        <div class="table-container">
+          <table id="menu-item-table">
             <thead>
               <tr>
                 <th>ID</th>
-                <th>Menu Item Name</th>
-                <th>Menu Category</th>
-                <th>Price</th>
-                <th>Ingredient List</th>
-                <th>Action Buttons</th>
+                <th>MENU ITEM</th>
+                <th>MENU CATEGORY</th>
+                <th>PRICE</th>
               </tr>
             </thead>
-            <tbody id="menuItem-table_body">
+            <tbody id="menu-item-table-body">
             </tbody>
           </table>
+        </div>
+
+        <!-- ============================== -->
+
       </div>
+
+      <!-- ============================================================ -->
+
+      <div class="container-right-side">
+
+        <!-- ============================== -->
+        
+        <h2>MENU ITEM FORM</h2>
+        
+        <div class="details-display-container">
+
+          <form id="menu-item-form">
+
+            <div id="imgBox_Display">
+              <img src="../img_placeholder.png">
+            </div>
+  
+            <br>
+  
+            <label for="menu-item-img">Menu Item Image:</label>
+            <input type="file" id="menu-item-img" name="menu-item-img">
+  
+            <br>
+  
+            <label for="menu-item-id">Menu Item ID:</label>
+            <input type="text" id="menu-item-id" name="menu-item-id" placeholder="Enter menu item ID" required>
+            
+            <br>
+  
+            <label for="menu-item-name">Menu Item Name:</label>
+            <input type="text" id="menu-item-name" name="menu-item-name" placeholder="Enter menu item name" required>
+            
+            <br>
+  
+            <label for="menu-category-combobox">Menu Item Category:</label>
+            <select id="menu-category-combobox" name="menu-category-combobox">
+              <option>Select a menu category for this item</option>
+            </select>
+  
+            <br>
+  
+            <label for="menu-item-price">Menu Item Price (Php):</label>
+            <input type="number" id="menu-item-price" name="menu-item-price" placeholder="Enter menu item price (Php)" required step="0.01">
+            
+            <br>
+    
+            <label for="menu-item-description">Menu Item Description:</label>
+            <textarea id="menu-item-description" name="menu-item-description" placeholder="Enter menu item description" rows="4"></textarea>
+  
+            <br>
+  
+            <span>====================================</span>
+            <br>
+  
+            <div id="ingredient-list-table-label">
+              <h2>INGREDIENT LIST</h2>
+            </div>
+  
+            <div class="table-container" id="ingredient-list-table-container">  
+              <table id="ingredient-list-table">
+                <thead>
+                  <tr>
+                    <th>QTY</th>
+                    <th>INGREDIENT & UNIT</th>
+                    <th>ACTION</th>
+                  </tr>
+                </thead>
+                <tbody id="ingredient-list-table-body">
+                </tbody>
+              </table>
+            </div>
+  
+            <span>====================================</span>
+            
+            <br>
+  
+            <label for="ingredient-name-combobox">Ingredient to Add:</label>
+            <select id="ingredient-name-combobox" name="ingredient-name-combobox">
+              <option>Select an Ingredient to Add</option>
+            </select>
+            
+            <br>
+  
+            <button type="button" onclick="">Add to the List</button>
+            
+            <br>
+            
+          </form>
+
+        </div>
+
+        <!-- ============================== -->
+        
+      </div>
+
+      <!-- ============================================================ -->
 
     </div>
       
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
     <!-- ============================================================ -->
 
 
@@ -234,226 +246,271 @@
 
 
 
-
+    
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
     <!-- ============================================================ -->
 
     <div class="container" id="menuCategory">
 
-      <div class="tool-bar">
-        <div class="left-section">
-            <input id="menuCategory_attributeInput" type="text" placeholder="Enter menu category attribute here">
-            <button id="menuCategory_searchButton" type="button">Search</button>
+      <!-- ============================================================ -->
+
+      <div class="container-left-side">
+
+        <!-- ============================== -->
+
+        <div class="tool-bar">
+          <div class="left-section">
+              <input id="menuCategory_attributeInput" type="text" placeholder="Enter ID or Menu Category">
+              <button type="button" onclick="">Filter</button>
+          </div>
+          <div class="right-section">
+            <button class="formFeaturesButtons" type="button" onclick="fillMenuCategoryForm()">Fill Form with ID</button>
+            <button class="formFeaturesButtons" type="button" onclick="clearFormFields('menu-category-table','menu-category-form','YES')">Clear Form</button>
+          </div>
         </div>
-        <div class="right-section">
-            <input id="menuCategory_nameInput" type="text" placeholder="Enter menu category here">
-            <button id="menuCategory_addButton" type="button" onclick="addMenuCategoryOnTable()">Add New Menu Category</button>
+        
+        <div class="tool-bar">
+          <div class="left-section">
+            <select id="menuCategory_sortOptions">
+              <option>Select an attribute to sort by</option>
+              <option value="menuCategory_IDAsc">ID: Ascending</option>
+              <option value="menuCategory_IDDesc">ID: Descending</option>
+              <option value="menuCategory_nameAsc">Menu Category: A-Z</option>
+              <option value="menuCategory_nameDesc">Menu Category: Z-A</option>
+            </select>
+          </div>
+          <div class="right-section">
+            <button class="addButtons" type="button" onclick="addNewMenuCategory()">Add</button>
+            <button class="updateButtons" type="button" onclick="updateSelectedMenuCategory()">Update</button>
+            <button class="deleteButtons" type="button" onclick="deleteSelectedMenuCategory()">Delete</button>
+          </div>
         </div>
-      </div>
-      
-      <div class="tool-bar">
-        <div class="left-section">
-          <select id="menuCategory_sortOptions">
-            <option>Select an attribute to sort by</option>
-            <option value="menuCategory_IDAsc">ID: Ascending</option>
-            <option value="menuCategory_IDDesc">ID: Descending</option>
-            <option value="menuCategory_nameAsc">Menu Category: A-Z</option>
-            <option value="menuCategory_nameDesc">Menu Category: Z-A</option>
-          </select>
+
+        <br>
+
+        <h1>MENU CATEGORY TABLE</h1>
+
+        <div class="table-container">
+          <table id="menu-category-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>MENU CATEGORY</th>
+              </tr>
+            </thead>
+            <tbody id="menu-category-table-body">
+            </tbody>
+          </table>
         </div>
-      </div>
-      
-      <br>
 
-      <h1 id="table_label">MENU CATEGORY TABLE</h1>
+        <!-- ============================== -->
 
-      <div id="menuCategoryTable_DisplayContainer">
-        <table id="menuCategory-table">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Menu Category</th>
-              <th>Action Buttons</th>
-            </tr>
-          </thead>
-          <tbody>
-          </tbody>
-        </table>
       </div>
 
-    </div>
+      <!-- ============================================================ -->
 
-    <!-- ============================================================ -->
-      
+      <div class="container-right-side">
 
+        <!-- ============================== -->
+        
+        <h2>MENU CATEGORY FORM</h2>
+        
+        <div class="details-display-container">
 
+          <form id="menu-category-form">
 
-
-
-
-
-
-      
-    <!-- ============================================================ -->
-
-    <div class="modal" id="ingredient-modal">
-      <div class="modal-content">
-          <span class="close" onclick="closeIngredientModal()">x</span>
-
-          <h2 id="ingredientModal_header">FILLING UP <br> INGREDIENT FORM</h2>
-
-          <form id="ingredient-form">
-
-            <label for="ingredient-id">Ingredient ID:</label>
-            <input type="text" id="ingredient-id" name="ingredient-id" placeholder="Enter ingredient ID" required>
-
-            <label for="ingredient-name">Ingredient Name:</label>
-            <input type="text" id="ingredient-name" name="ingredient-name" placeholder="Enter ingredient name" required>
-
-            <label for="ingredient-category-combobox">Ingredient Category:</label>
-            <br>
-            <select id="ingredient-category-combobox" name="ingredient-category-combobox">
-              <option>Select a category for this ingredient</option>
-              <!-- <option value="meat-poultry">Meat & Poultry</option>
-              <option value="seafood">Seafood</option>
-              <option value="vegetables">Vegetables</option>
-              <option value="fruits">Fruits</option>
-              <option value="dairy-products">Dairy Products</option>
-              <option value="grains-starches">Grains & Starches</option>
-              <option value="legumes-beans">Legumes & Beans</option>
-              <option value="herbs-spices">Herbs & Spices</option>
-              <option value="sauces-condiments">Sauces & Condiments</option>
-              <option value="oils-fats">Oils & Fats</option>
-              <option value="baking-pastry-ingredients">Baking & Pastry Ingredients</option>
-              <option value="beverages-syrups">Beverages & Syrups</option>
-              <option value="frozen-prepackaged-items">Frozen & Pre-packaged Items</option>
-              <option value="nuts-seeds">Nuts & Seeds</option>
-              <option value="eggs">Eggs</option> -->
-            </select>
-
-            <br>
-            <br>
-
-            <label for="ingredient-total-quantity">Total Quantity:</label>
-            <input type="number" id="ingredient-total-quantity" name="ingredient-total-quantity" placeholder="Enter total quantity of ingredient" step="0.01">
-
-            <label for="measurement-details">Measurement Details:</label>
-            <br>
-            <select id="measurement-type-ingredientModal" name="measurement-type-ingredientModal">
-              <option value="VOLUME">VOLUME</option>
-              <option value="WEIGHT">WEIGHT</option>
-              <option value="COUNT">COUNT</option>
-            </select>
-
-            <select id="unit-measurement-ingredientModal" name="unit-measurement-ingredientModal">
-            </select>
-
-            <br>
-            <br>
-
-            <label for="reorder-point">Reorder Point:</label>
-            <input type="number" id="reorder-point" name="reorder-point" placeholder="Enter reorder point" required step="0.01">
-
-            <label for="minimum-inventory-level">Minimum Inventory Level:</label>
-            <input type="number" id="minimum-inventory-level" name="minimum-inventory-level" placeholder="Enter minimum inventory level" required step="0.01">
-
-            <label for="low-stock-threshold">Low Stock Threshold:</label>
-            <input type="number" id="low-stock-threshold" name="low-stock-threshold" placeholder="Enter low stock threshold point" required step="0.01">
-
-            <label for="medium-stock-threshold">Medium Stock Threshold:</label>
-            <input type="number" id="medium-stock-threshold" name="medium-stock-threshold" placeholder="Enter medium low stock threshold point" required step="0.01">
-
-            <br>
-            <br>
-
-            <span>===========================================</span>
-
-            <br>
-            <br>
-            <br>
-
-            <h2>SELECTED SUPPLIERS</h2>
-
-            <span id="suppliers-selectedList"></span>
-
-            <br>
-            <br>
-
-            <span>===========================================</span>
+            <label for="menu-category-id">Menu Category ID:</label>
+            <input type="text" id="menu-category-id" name="menu-category-id" placeholder="Enter menu category ID" required>
             
             <br>
-            <br>
-            <br>
 
-            <label for="supplier-comboBox">Suppliers to Assign:</label>
+            <label for="menu-category-name">Menu Category Name:</label>
+            <input type="text" id="menu-category-name" name="menu-category-name" placeholder="Enter menu category name" required>
+            
             <br>
-            <select id="supplier-comboBox" name="supplier-comboBox">
-              <option>Select a Supplier to assign</option>
-            </select>
-
-            <button class="supplierList_AddButton" type="button" onclick="addSupplierToTheList()">Add to the List</button>
-
-            <br>
-            <br>
-
-            <button type="submit" class="modal_submitButton" onclick="addIngredientOnTable()">Submit</button>
 
           </form>
 
+        </div>
+
+        <!-- ============================== -->
+        
       </div>
 
-    </div>
+      <!-- ============================================================ -->
 
+    </div>
+      
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+
+
+
+
+
+
+
+
+
+    
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
     <!-- ============================================================ -->
 
     <div class="container" id="ingredient">
 
-      <div class="tool-bar">
-        <div class="left-section">
-            <input id="ingredient_attributeInput" type="text" placeholder="Enter ingredient attribute here">
-            <button id="subitem_searchButton" type="button">Search</button>
-        </div>
-        <div class="right-section">
-            <button id="ingredient_addButton" type="button" onclick="openIngredientModal('fill')">Add New Ingredient</button>
-            <button id="ingredient_stockInButton" type="button">Stock In</button>
-            <button id="ingredient_stockOutButton" type="button">Stock Out</button>
-        </div>
-      </div>
-      
-      <div class="tool-bar">
-        <div class="left-section">
-          <select id="ingredient_sortOptions">
-            <option>Select an attribute to sort by</option>
-            <option value="ingredient_IDAsc">ID: Ascending</option>
-            <option value="ingredient_IDDesc">ID: Descending</option>
-            <option value="ingredient_nameAsc">Ingredient Name: A-Z</option>
-            <option value="ingredient_nameDesc">Ingredient Name: Z-A</option>
-          </select>
-        </div>
-      </div>
-      
-      <br>
+      <!-- ============================================================ -->
 
-      <h1 id="table_label">INGREDIENT TABLE</h1>
-      <div id="ingredientTable_DisplayContainer">
-        <table id="ingredient-table">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Ingredient</th>
-              <th>Category</th>
-              <th>Total Quantity</th>
-              <th>Unit Type</th>
-              <th>Unit Measurement</th>
-              <th>Action Buttons</th>
-            </tr>
-          </thead>
-          <tbody>
-          </tbody>
-        </table>
+      <div class="container-left-side">
+
+        <!-- ============================== -->
+
+        <div class="tool-bar">
+          <div class="left-section">
+              <input id="ingredient_attributeInput" type="text" placeholder="Enter ID or Ingredient">
+              <button type="button" onclick="">Filter</button>
+          </div>
+          <div class="right-section">
+            <button class="formFeaturesButtons" type="button" onclick="fillIngredientForm()">Fill Form with ID</button>
+            <button class="formFeaturesButtons" type="button" onclick="clearFormFields('ingredient-table','ingredient-form','YES')">Clear Form</button>
+          </div>
+        </div>
+        
+        <div class="tool-bar">
+          <div class="left-section">
+            <select id="ingredient_sortOptions">
+              <option>Select an attribute to sort by</option>
+              <option value="ingredient_IDAsc">ID: Ascending</option>
+              <option value="ingredient_IDDesc">ID: Descending</option>
+              <option value="ingredient_nameAsc">Ingredient: A-Z</option>
+              <option value="ingredient_nameDesc">Ingredient: Z-A</option>
+              <option value="ingredient_categoryAsc">Ingredient Category: A-Z</option>
+              <option value="ingredient_categoryDesc">Ingredient Category: Z-A</option>
+              <option value="ingredient_unitAsc">Ingredient Unit: A-Z</option>
+              <option value="ingredient_unitDesc">Ingredient Unit: Z-A</option>
+            </select>
+          </div>
+          <div class="right-section">
+            <button class="addButtons" type="button" onclick="addNewIngredient()">Add</button>
+            <button class="updateButtons" type="button" onclick="updateSelectedIngredient()">Update</button>
+            <button class="deleteButtons" type="button" onclick="deleteSelectedIngredient()">Delete</button>
+          </div>
+        </div>
+
+        <br>
+
+        <h1>INGREDIENT TABLE</h1>
+
+        <div class="table-container">
+          <table id="ingredient-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>INGREDIENT</th>
+                <th>ING. CATEGORY</th>
+                <th>ING. UNIT</th>
+              </tr>
+            </thead>
+            <tbody id="ingredient-table_body">
+            </tbody>
+          </table>
+        </div>
+
+        <!-- ============================== -->
+
       </div>
+
+      <!-- ============================================================ -->
+
+      <div class="container-right-side">
+
+        <!-- ============================== -->
+        
+        <h2>INGREDIENT FORM</h2>
+        
+        <div class="details-display-container">
+
+          <form id="ingredient-form">
+  
+            <label for="ingredient-id">Ingredient ID:</label>
+            <input type="text" id="ingredient-id" name="ingredient-id" placeholder="Enter ingredient ID" required>
+            
+            <br>
+  
+            <label for="ingredient-name">Ingredient:</label>
+            <input type="text" id="ingredient-name" name="ingredient-name" placeholder="Enter ingredient name" required>
+            
+            <br>
+  
+            <label for="ingredient-category-combobox">Ingredient Category:</label>
+            <select id="ingredient-category-combobox" name="ingredient-category-combobox">
+              <option>Select a category for this ingredient</option>
+            </select>
+            
+            <br>
+  
+            <label for="ingredient-unit-combobox">Ingredient Unit:</label>
+            <select id="ingredient-unit-combobox" name="ingredient-unit-combobox">
+              <option>Select a unit for this ingredient</option>
+            </select>
+  
+            <br>
+  
+            <label for="ingredient-low-stock-threshold">Low Stock Threshold:</label>
+            <input type="number" id="ingredient-low-stock-threshold" name="ingredient-low-stock-threshold" placeholder="Enter low stock threshold point" required step="0.01">
+  
+            <br>
+  
+            <label for="ingredient-medium-stock-threshold">Medium Stock Threshold:</label>
+            <input type="number" id="ingredient-medium-stock-threshold" name="ingredient-medium-stock-threshold" placeholder="Enter medium low stock threshold point" required step="0.01">
+  
+            <br>
+  
+            <span>====================================</span>
+            <br>
+  
+            <div id="ingredient-list-table-label">
+              <h2>STOCK DETAILS</h2>
+            </div>
+  
+            <div class="table-container" id="ingredient-list-table-container">  
+              <table id="ingredient-list-table">
+                <thead>
+                  <tr>
+                    <th>STOCK ID</th>
+                    <th>QTY</th>
+                    <th>EXPIRATION DATE</th>
+                  </tr>
+                </thead>
+                <tbody id="ingredient-list-table-body">
+                </tbody>
+              </table>
+            </div>
+  
+            <span>====================================</span>
+            
+            <br>
+  
+            <button type="button" onclick="">STOCK IN</button>
+            
+            <br>
+
+          </form>
+
+        </div>
+
+        <!-- ============================== -->
+        
+      </div>
+
+      <!-- ============================================================ -->
 
     </div>
       
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
     <!-- ============================================================ -->
 
 
@@ -464,54 +521,104 @@
 
 
 
-
+    
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
     <!-- ============================================================ -->
 
     <div class="container" id="ingredientCategory">
 
-      <div class="tool-bar">
-        <div class="left-section">
-            <input id="ingredientCategory_attributeInput" type="text" placeholder="Enter ingredient category attribute here">
-            <button id="ingredientCategory_searchButton" type="button">Search</button>
-        </div>
-        <div class="right-section">
-            <input id="ingredientCategory_nameInput" type="text" placeholder="Enter ingredient category here">
-            <button id="ingredientCategory_addButton" type="button" onclick="addIngredientCategoryOnTable()">Add New Ingredient Category</button>
-        </div>
-      </div>
-      
-      <div class="tool-bar">
-        <div class="left-section">
-          <select id="ingredientCategory_sortOptions">
-            <option>Select an attribute to sort by</option>
-            <option value="ingredientCategory_IDAsc">ID: Ascending</option>
-            <option value="ingredientCategory_IDDesc">ID: Descending</option>
-            <option value="ingredientCategory_nameAsc">Ingredient Category: A-Z</option>
-            <option value="ingredientCategory_nameDesc">Ingredient Category: Z-A</option>
-          </select>
-        </div>
-      </div>
-      
-      <br>
+      <!-- ============================================================ -->
 
-      <h1 id="table_label">INGREDIENT CATEGORY TABLE</h1>
+      <div class="container-left-side">
 
-      <div id="ingredientCategoryTable_DisplayContainer">
-        <table id="ingredientCategory-table">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Ingredient Category</th>
-              <th>Action Buttons</th>
-            </tr>
-          </thead>
-          <tbody>
-          </tbody>
-        </table>
+        <!-- ============================== -->
+
+        <div class="tool-bar">
+          <div class="left-section">
+              <input id="ingredientCategory_attributeInput" type="text" placeholder="Enter ID or Ingredient Category">
+              <button type="button" onclick="">Filter</button>
+          </div>
+          <div class="right-section">
+            <button class="formFeaturesButtons" type="button" onclick="fillIngredientCategoryForm()">Fill Form with ID</button>
+            <button class="formFeaturesButtons" type="button" onclick="clearFormFields('ingredient-category-table','ingredient-category-form','YES')">Clear Form</button>
+          </div>
+        </div>
+        
+        <div class="tool-bar">
+          <div class="left-section">
+            <select id="ingredientCategory_sortOptions">
+              <option>Select an attribute to sort by</option>
+              <option value="ingredientCategory_IDAsc">ID: Ascending</option>
+              <option value="ingredientCategory_IDDesc">ID: Descending</option>
+              <option value="ingredientCategory_nameAsc">Ingredient Category: A-Z</option>
+              <option value="ingredientCategory_nameDesc">Ingredient Category: Z-A</option>
+            </select>
+          </div>
+          <div class="right-section">
+            <button class="addButtons" type="button" onclick="addNewIngredientCategory()">Add</button>
+            <button class="updateButtons" type="button" onclick="updateSelectedIngredientCategory()">Update</button>
+            <button class="deleteButtons" type="button" onclick="deleteSelectedIngredientCategory()">Delete</button>
+          </div>
+        </div>
+
+        <br>
+
+        <h1>INGREDIENT CATEGORY TABLE</h1>
+
+        <div class="table-container">
+          <table id="ingredient-category-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>INGREDIENT CATEGORY</th>
+              </tr>
+            </thead>
+            <tbody id="ingredient-category-table-body">
+            </tbody>
+          </table>
+        </div>
+
+        <!-- ============================== -->
+
       </div>
+
+      <!-- ============================================================ -->
+
+      <div class="container-right-side">
+
+        <!-- ============================== -->
+        
+        <h2>INGREDIENT CATEGORY FORM</h2>
+        
+        <div class="details-display-container">
+
+          <form id="ingredient-category-form">
+  
+            <label for="ingredient-category-id">Ingredient Category ID:</label>
+            <input type="text" id="ingredient-category-id" name="ingredient-category-id" placeholder="Enter ingredient category ID" required>
+            
+            <br>
+  
+            <label for="ingredient-category-name">Ingredient Category Name:</label>
+            <input type="text" id="ingredient-category-name" name="ingredient-category-name" placeholder="Enter ingredient category name" required>
+            
+            <br>
+
+          </form>
+
+        </div>
+
+        <!-- ============================== -->
+        
+      </div>
+
+      <!-- ============================================================ -->
 
     </div>
-
+      
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
     <!-- ============================================================ -->
 
 
@@ -522,386 +629,548 @@
 
 
 
-
+    
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
     <!-- ============================================================ -->
 
     <div class="container" id="ingredientUnit">
 
-      <div class="tool-bar">
-        <div class="left-section">
-            <input id="ingredientUnit_attributeInput" type="text" placeholder="Enter ingredient unit attribute here">
-            <button id="ingredientUnit_searchButton" type="button">Search</button>
+      <!-- ============================================================ -->
+
+      <div class="container-left-side">
+
+        <!-- ============================== -->
+
+        <div class="tool-bar">
+          <div class="left-section">
+              <input id="ingredientUnit_attributeInput" type="text" placeholder="Enter ID or Ingredient Unit">
+              <button type="button" onclick="">Filter</button>
+          </div>
+          <div class="right-section">
+            <button class="formFeaturesButtons" type="button" onclick="fillIngredientUnitForm()">Fill Form with ID</button>
+            <button class="formFeaturesButtons" type="button" onclick="clearFormFields('ingredient-unit-table','ingredient-unit-form','YES')">Clear Form</button>
+          </div>
         </div>
-        <div class="right-section">
-            <input id="ingredientUnit_nameInput" type="text" placeholder="Enter ingredient unit here">
-            <button id="ingredientUnit_addButton" type="button">Add New Ingredient Unit</button>
-        </div>
-      </div>
-      
-      <div class="tool-bar">
-        <div class="left-section">
-          <select id="ingredientUnit_sortOptions">
-            <option>Select an attribute to sort by</option>
-            <option value="ingredientUnit_IDAsc">ID: Ascending</option>
-            <option value="ingredientUnit_IDDesc">ID: Descending</option>
-            <option value="ingredientUnit_nameAsc">Ingredient Unit: A-Z</option>
-            <option value="ingredientUnit_nameDesc">Ingredient Unit: Z-A</option>
-          </select>
-        </div>
-      </div>
-      
-      <br>
-
-      <h1 id="table_label">INGREDIENT UNIT TABLE</h1>
-
-      <div id="ingredientUnitTable_DisplayContainer">
-        <table id="ingredientUnit-table">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Ingredient Unit</th>
-              <th>Action Buttons</th>
-            </tr>
-          </thead>
-          <tbody>
-          </tbody>
-        </table>
-      </div>
-
-    </div>
-
-    <!-- ============================================================ -->
-
-
-
-
-
-
-
-
-
-
-    <!-- ============================================================ -->
-
-    <div class="modal" id="employee-modal">
-      <div class="modal-content">
-          <span class="close" onclick="closeEmployeeModal()">x</span>
-
-          <h2 id="employeeModal_header">FILLING UP <br> EMPLOYEE FORM</h2>
-
-          <form id="employee-form">
-
-            <label for="emp-id">Employee ID:</label>
-            <input type="text" id="emp-id" name="emp-id" placeholder="Enter employee ID" required>
-
-            <label for="first-name">First Name:</label>
-            <input type="text" id="first-name" name="first-name" placeholder="Enter first name" required>
-    
-            <label for="middle-name">Middle Name:</label>
-            <input type="text" id="middle-name" name="middle-name" placeholder="Enter middle name" required>
-    
-            <label for="last-name">Last Name:</label>
-            <input type="text" id="last-name" name="last-name" placeholder="Enter last name" required>
-    
-            <label for="designation">Designation:</label>
-            <input type="text" id="designation" name="designation" placeholder="Enter designation" required>
-
-            <label for="sex">Sex:</label>
-            <select id="sex" name="sex">
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
+        
+        <div class="tool-bar">
+          <div class="left-section">
+            <select id="ingredientUnit_sortOptions">
+              <option>Select an attribute to sort by</option>
+              <option value="ingredientUnit_IDAsc">ID: Ascending</option>
+              <option value="ingredientUnit_IDDesc">ID: Descending</option>
+              <option value="ingredientUnit_nameAsc">Ingredient Unit: A-Z</option>
+              <option value="ingredientUnit_nameDesc">Ingredient Unit: Z-A</option>
             </select>
+          </div>
+          <div class="right-section">
+            <button class="addButtons" type="button" onclick="addNewIngredientUnit()">Add</button>
+            <button class="updateButtons" type="button" onclick="updateSelectedIngredientUnit()">Update</button>
+            <button class="deleteButtons" type="button" onclick="deleteSelectedIngredientUnit()">Delete</button>
+          </div>
+        </div>
 
-            <br>
-            <br>
+        <br>
 
-            <label for="birthdate">Birth Date:</label>
-            <input type="date" id="birthdate" name="birthdate" placeholder="Enter birthdate" required/>
-    
-            <label for="phonenumber">Contact Number:</label>
-            <input type="text" id="phonenumber" name="phonenumber" placeholder="Enter phone number" required>
-    
-            <label for="address">Address Line:</label>
-            <textarea id="address" name="address" placeholder="Enter address" rows="4" required></textarea>
+        <h1>INGREDIENT UNIT TABLE</h1>
 
-            <label for="employee-email">Email:</label>
-            <input type="text" id="employee-email" name="employee-email" placeholder="Enter employee's email" required>
+        <div class="table-container">
+          <table id="ingredient-unit-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>INGREDIENT UNIT</th>
+              </tr>
+            </thead>
+            <tbody id="ingredient-unit-table-body">
+            </tbody>
+          </table>
+        </div>
+
+        <!-- ============================== -->
+
+      </div>
+
+      <!-- ============================================================ -->
+
+      <div class="container-right-side">
+
+        <!-- ============================== -->
+        
+        <h2>INGREDIENT UNIT FORM</h2>
+        
+        <div class="details-display-container">
+
+          <form id="ingredient-unit-form">
+  
+            <label for="ingredient-unit-id">Ingredient Unit ID:</label>
+            <input type="text" id="ingredient-unit-id" name="ingredient-unit-id" placeholder="Enter ingredient unit ID" required>
             
-            <button type="submit" class="modal_submitButton" onclick="addEmployeeOnTable()">Submit</button>
+            <br>
+  
+            <label for="ingredient-unit-name">Ingredient Unit Name:</label>
+            <input type="text" id="ingredient-unit-name" name="ingredient-unit-name" placeholder="Enter ingredient unit name" required>
+            
+            <br>
 
           </form>
 
-      </div>
-
-    </div>
-
-    <!-- ============================================================ -->
-
-    <div class="container" id="employee">
-
-      <div class="tool-bar">
-        <div class="left-section">
-            <input id="employee_attributeInput" type="text" placeholder="Enter employee attribute here">
-            <button id="employee_searchButton" type="button">Search</button>
         </div>
-        <div class="right-section">
-            <button id="employee_addButton" type="button" onclick="openEmployeeModal('fill')">Add New Employee</button>
-        </div>
+
+        <!-- ============================== -->
+        
       </div>
-      
-      <div class="tool-bar">
-        <div class="left-section">
-          <select id="employee_sortOptions">
-            <option>Select an attribute to sort by</option>
-            <option value="employee_IDAsc">ID: Ascending</option>
-            <option value="employee_IDDesc">ID: Descending</option>
-            <option value="employee_firstNameAsc">First Name: A-Z</option>
-            <option value="employee_firstNameDesc">First Name: Z-A</option>
-            <option value="employee_middleNameAsc">Middle Name: A-Z</option>
-            <option value="employee_middleNameDesc">Middle Name: Z-A</option>
-            <option value="employee_lastNameAsc">Last Name: A-Z</option>
-            <option value="employee_lastNameDesc">Last Name: Z-A</option>
-          </select>
-        </div>
-      </div>
-      
-      <br>
-      
-      <h1 id="table_label">EMPLOYEE TABLE</h1>
-      <div id="employeeTable_DisplayContainer">
-        <table id="employee-table">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Full Name</th>
-              <th>Contact Info</th>
-              <th>Designation</th>
-              <th>Action Buttons</th>
-            </tr>
-          </thead>
-          <tbody>
-          </tbody>
-        </table>
-      </div>
+
+      <!-- ============================================================ -->
 
     </div>
       
     <!-- ============================================================ -->
-
-
-
-
-
-
-
-
-
-
+    <!-- ============================================================ -->
     <!-- ============================================================ -->
 
-    <div class="modal" id="supplier-modal">
-      <div class="modal-content">
-          <span class="close" onclick="closeSupplierModal()">x</span>
 
-          <h2 id="supplierModal_header">FILLING UP <br> SUPPLIER FORM</h2>
 
-          <form id="supplier-form">
 
-            <label for="supplier-name">Supplier:</label>
-            <input type="text" id="supplier-name" name="supplier-name" placeholder="Enter supplier name" required>
 
-            <label for="contact-person-name">Contact Person:</label>
-            <input type="text" id="contact-person-name" name="contact-person-name" placeholder="Enter contact person name" required>
-            
-            <label for="supplier-address">Address:</label>
-            <textarea id="supplier-address" name="supplier-address" placeholder="Enter company's address" rows="4" required></textarea>
+
+
+
+
     
-            <label for="supplier-phonenumber">Contact Number:</label>
-            <input type="text" id="supplier-phonenumber" name="supplier-phonenumber" placeholder="Enter supplier's phone number" required>
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
 
-            <label for="supplier-email">Email:</label>
-            <input type="text" id="supplier-email" name="supplier-email" placeholder="Enter supplier's email" required>
-            
-            <button type="submit" class="modal_submitButton" onclick="addSupplierOnTable()">Submit</button>
+    <div class="container" id="staff">
+
+      <!-- ============================================================ -->
+
+      <div class="container-left-side">
+
+        <!-- ============================== -->
+
+        <div class="tool-bar">
+          <div class="left-section">
+              <input id="staff_attributeInput" type="text" placeholder="Enter ID or Staff Name">
+              <button type="button" onclick="">Filter</button>
+          </div>
+          <div class="right-section">
+            <button class="formFeaturesButtons" type="button" onclick="fillStaffForm()">Fill Form with ID</button>
+            <button class="formFeaturesButtons" type="button" onclick="clearFormFields('staff-table','staff-form','YES')">Clear Form</button>
+          </div>
+        </div>
+        
+        <div class="tool-bar">
+          <div class="left-section">
+            <select id="staff_sortOptions">
+              <option>Select an attribute to sort by</option>
+              <option value="staff_IDAsc">ID: Ascending</option>
+              <option value="staff_IDDesc">ID: Descending</option>
+              <option value="staff_firstNameAsc">First Name: A-Z</option>
+              <option value="staff_firstNameDesc">First Name: Z-A</option>
+              <option value="staff_middleNameAsc">Middle Name: A-Z</option>
+              <option value="staff_middleNameDesc">Middle Name: Z-A</option>
+              <option value="staff_lastNameAsc">Last Name: A-Z</option>
+              <option value="staff_lastNameDesc">Last Name: Z-A</option>
+            </select>
+          </div>
+          <div class="right-section">
+            <button class="addButtons" type="button" onclick="addNewStaff()">Add</button>
+            <button class="updateButtons" type="button" onclick="updateSelectedStaff()">Update</button>
+            <button class="deleteButtons" type="button" onclick="deleteSelectedStaff()">Delete</button>
+          </div>
+        </div>
+
+        <br>
+
+        <h1>STAFF TABLE</h1>
+
+        <div class="table-container">
+          <table id="staff-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>FULL NAME</th>
+              </tr>
+            </thead>
+            <tbody id="staff-table-body">
+            </tbody>
+          </table>
+        </div>
+
+        <!-- ============================== -->
+
+      </div>
+
+      <!-- ============================================================ -->
+
+      <div class="container-right-side">
+
+        <!-- ============================== -->
+        
+        <h2>STAFF FORM</h2>
+        
+        <div class="details-display-container">
+
+          <form id="staff-form">
+  
+            <label for="staff-id">Staff ID:</label>
+            <input type="text" id="staff-id" name="staff-id" placeholder="Enter staff ID" required>
+  
+            <br>
+  
+            <label for="staff-first-name">First Name:</label>
+            <input type="text" id="staff-first-name" name="staff-first-name" placeholder="Enter first name" required>
+  
+            <br>
+    
+            <label for="staff-middle-name">Middle Name:</label>
+            <input type="text" id="staff-middle-name" name="staff-middle-name" placeholder="Enter middle name" required>
+  
+            <br>
+    
+            <label for="staff-last-name">Last Name:</label>
+            <input type="text" id="staff-last-name" name="staff-last-name" placeholder="Enter last name" required>
+  
+            <br>
+    
+            <label for="staff-designation">Designation:</label>
+            <input type="text" id="staff-designation" name="staff-designation" placeholder="Enter designation" required>
+  
+            <br>
+  
+            <label for="staff-gender">Gender:</label>
+            <select id="staff-gender" name="staff-gender" required>
+              <option>Select the gender of this staff</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+            </select>
+  
+            <br>
+  
+            <label for="staff-birthdate">Birth Date:</label>
+            <input type="date" id="staff-birthdate" name="staff-birthdate" placeholder="Enter birthdate" required/>
+  
+            <br>
+    
+            <label for="staff-phonenumber">Contact Number:</label>
+            <input type="text" id="staff-phonenumber" name="staff-phonenumber" placeholder="Enter phone number" required>
+  
+            <br>
+    
+            <label for="staff-address">Address Line:</label>
+            <textarea id="staff-address" name="staff-address" placeholder="Enter address" rows="4" required></textarea>
+  
+            <br>
+  
+            <label for="staff-email">Email:</label>
+            <input type="text" id="staff-email" name="staff-email" placeholder="Enter email" required>
+  
+            <br>
 
           </form>
 
+        </div>
+
+        <!-- ============================== -->
+        
       </div>
 
-    </div>
+      <!-- ============================================================ -->
 
+    </div>
+      
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+
+
+
+
+
+
+
+
+
+    
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
     <!-- ============================================================ -->
 
     <div class="container" id="supplier">
 
-      <div class="tool-bar">
-        <div class="left-section">
-            <input id="supplier_attributeInput" type="text" placeholder="Enter supplier attribute here">
-            <button id="supplier_searchButton" type="button">Search</button>
+      <!-- ============================================================ -->
+
+      <div class="container-left-side">
+
+        <!-- ============================== -->
+
+        <div class="tool-bar">
+          <div class="left-section">
+              <input id="supplier_attributeInput" type="text" placeholder="Enter ID or Supplier Name">
+              <button type="button" onclick="">Filter</button>
+          </div>
+          <div class="right-section">
+            <button class="formFeaturesButtons" type="button" onclick="fillSupplierForm()">Fill Form with ID</button>
+            <button class="formFeaturesButtons" type="button" onclick="clearFormFields('supplier-table','supplier-form','YES')">Clear Form</button>
+          </div>
         </div>
-        <div class="right-section">
-            <button id="supplier_addButton" type="button" onclick="openSupplierModal('fill')">Add New Supplier</button>
-        </div>
-      </div>
-      
-      <div class="tool-bar">
-        <div class="left-section">
-          <select id="supplier_sortOptions">
-            <option>Select an attribute to sort by</option>
-            <option value="supplier_IDAsc">ID: Ascending</option>
-            <option value="supplier_IDDesc">ID: Descending</option>
-            <option value="supplier_nameAsc">Supplier: A-Z</option>
-            <option value="supplier_nameDesc">Supplier: Z-A</option>
-            <option value="supplier_contactPersonNameAsc">Contact Person: A-Z</option>
-            <option value="supplier_contactPersonNameDesc">Contact Person: Z-A</option>
-          </select>
-        </div>
-      </div>
-
-      <br>  
-
-      <h1 id="table_label">SUPPLIER TABLE</h1>
-      <div id="supplierTable_DisplayContainer">
-        <table id="supplier-table">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Supplier</th>
-              <th>Contact Person</th>
-              <th>Contact Info</th>
-              <th>Company Address</th>
-              <th>Action Buttons</th>
-            </tr>
-          </thead>
-          <tbody>
-          </tbody>
-        </table>
-      </div>
-
-    </div>
-      
-    <!-- ============================================================ -->
-
-
-
-
-
-
-
-
-
-
-    <!-- ============================================================ -->
-
-    <div class="modal" id="customer-modal">
-      <div class="modal-content">
-          <span class="close" onclick="closeCustomerModal()">x</span>
-
-          <h2 id="customerModal_header">FILLING UP <br> CUSTOMER FORM</h2>
-
-          <form id="customer-form">
-
-            <label for="customer-id">Customer ID:</label>
-            <input type="text" id="customer-id" name="customer-id" placeholder="Enter customer ID" required>  
-
-            <label for="customer-type">Customer Type:</label>
-            <select id="customer-type" name="customer-type">
-                <option value="GUEST">GUEST</option>
-                <option value="REGISTERED">REGISTERED</option>
+        
+        <div class="tool-bar">
+          <div class="left-section">
+            <select id="supplier_sortOptions">
+              <option>Select an attribute to sort by</option>
+              <option value="supplier_IDAsc">ID: Ascending</option>
+              <option value="supplier_IDDesc">ID: Descending</option>
+              <option value="supplier_nameAsc">Supplier Name: A-Z</option>
+              <option value="supplier_nameDesc">Supplier Name: Z-A</option>
             </select>
+          </div>
+          <div class="right-section">
+            <button class="addButtons" type="button" onclick="addNewSupplier()">Add</button>
+            <button class="updateButtons" type="button" onclick="updateSelectedSupplier()">Update</button>
+            <button class="deleteButtons" type="button" onclick="deleteSelectedSupplier()">Delete</button>
+          </div>
+        </div>
 
+        <br>
+
+        <h1>SUPPLIER TABLE</h1>
+
+        <div class="table-container">
+          <table id="supplier-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>SUPPLIER NAME</th>
+              </tr>
+            </thead>
+            <tbody id="supplier-table-body">
+            </tbody>
+          </table>
+        </div>
+
+        <!-- ============================== -->
+
+      </div>
+
+      <!-- ============================================================ -->
+
+      <div class="container-right-side">
+
+        <!-- ============================== -->
+        
+        <h2>SUPPLIER FORM</h2>
+        
+        <div class="details-display-container">
+
+          <form id="supplier-form">
+  
+            <label for="supplier-id">Supplier ID:</label>
+            <input type="text" id="supplier-id" name="supplier-id" placeholder="Enter supplier ID" required>
+  
             <br>
+
+            <label for="supplier-name">Supplier:</label>
+            <input type="text" id="supplier-name" name="supplier-name" placeholder="Enter supplier name" required>
+  
             <br>
-
-            <label for="customer-first-name">First Name:</label>
-            <input type="text" id="customer-first-name" name="customer-first-name" placeholder="Enter customer's first name" required>
-    
-            <label for="customer-middle-name">Middle Name:</label>
-            <input type="text" id="customer-middle-name" name="customer-middle-name" placeholder="Enter customer's middle name" required>
-    
-            <label for="customer-last-name">Last Name:</label>
-            <input type="text" id="customer-last-name" name="customer-last-name" placeholder="Enter customer's last name" required>
-
-            <label for="sex">Sex:</label>
-            <select id="sex" name="sex">
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-            </select>
-
+  
+            <label for="supplier-contact-person">Contact Person:</label>
+            <input type="text" id="supplier-contact-person" name="supplier-contact-person" placeholder="Enter contact person name" required>
+  
             <br>
-            <br>
-
-            <label for="customer-birthdate">Birth Date:</label>
-            <input type="date" id="customer-birthdate" name="customer-birthdate" placeholder="Enter customer's birthdate" required/>
-    
-            <label for="customer-phonenumber">Contact Number:</label>
-            <input type="text" id="customer-phonenumber" name="customer-phonenumber" placeholder="Enter customer's phone number" required>
-    
-            <label for="customer-address">Address Line:</label>
-            <textarea id="customer-address" name="customer-address" placeholder="Enter customer's address" rows="4" required></textarea>
-
-            <label for="customer-email">Email:</label>
-            <input type="text" id="customer-email" name="customer-email" placeholder="Enter customer's email" required>
             
-            <button type="submit" class="modal_submitButton" onclick="addCustomerOnTable()">Submit</button>
+            <label for="supplier-address">Address:</label>
+            <textarea id="supplier-address" name="supplier-address" placeholder="Enter company's address" rows="4" required></textarea>
+  
+            <br>
+    
+            <label for="supplier-phonenumber">Contact Number:</label>
+            <input type="text" id="supplier-phonenumber" name="supplier-phonenumber" placeholder="Enter supplier's phone number" required>
+  
+            <br>
+  
+            <label for="supplier-email">Email:</label>
+            <input type="text" id="supplier-email" name="supplier-email" placeholder="Enter supplier's email" required>
+  
+            <br>
 
           </form>
 
+        </div>
+
+        <!-- ============================== -->
+        
       </div>
 
-    </div>
+      <!-- ============================================================ -->
 
+    </div>
+      
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+
+
+
+
+
+
+
+
+
+    
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
     <!-- ============================================================ -->
 
     <div class="container" id="customer">
 
-      <div class="tool-bar">
-        <div class="left-section">
-            <input id="customer_attributeInput" type="text" placeholder="Enter customer attribute here">
-            <button id="customer_searchButton" type="button">Search</button>
+      <!-- ============================================================ -->
+
+      <div class="container-left-side">
+
+        <!-- ============================== -->
+
+        <div class="tool-bar">
+          <div class="left-section">
+              <input id="customer_attributeInput" type="text" placeholder="Enter ID or Customer Name">
+              <button type="button" onclick="">Filter</button>
+          </div>
+          <div class="right-section">
+            <button class="formFeaturesButtons" type="button" onclick="fillCustomerForm()">Fill Form with ID</button>
+            <button class="formFeaturesButtons" type="button" onclick="clearFormFields('customer-table','customer-form','YES')">Clear Form</button>
+          </div>
         </div>
-        <div class="right-section">
-            <button id="customer_addButton" type="button" onclick="openCustomerModal('fill')">Add New Customer</button>
+        
+        <div class="tool-bar">
+          <div class="left-section">
+            <select id="customer_sortOptions">
+              <option>Select an attribute to sort by</option>
+              <option value="customer_IDAsc">ID: Ascending</option>
+              <option value="customer_IDDesc">ID: Descending</option>
+              <option value="customer_firstNameAsc">First Name: A-Z</option>
+              <option value="customer_firstNameDesc">First Name: Z-A</option>
+              <option value="customer_middleNameAsc">Middle Name: A-Z</option>
+              <option value="customer_middleNameDesc">Middle Name: Z-A</option>
+              <option value="customer_lastNameAsc">Last Name: A-Z</option>
+              <option value="customer_lastNameDesc">Last Name: Z-A</option>
+            </select>
+          </div>
+          <div class="right-section">
+            <button class="addButtons" type="button" onclick="addNewCustomer()">Add</button>
+            <button class="updateButtons" type="button" onclick="updateSelectedCustomer()">Update</button>
+            <button class="deleteButtons" type="button" onclick="deleteSelectedCustomer()">Delete</button>
+          </div>
         </div>
-      </div>
-      
-      <div class="tool-bar">
-        <div class="left-section">
-          <select id="customer_sortOptions">
-            <option>Select an attribute to sort by</option>
-            <option value="customer_IDAsc">ID: Ascending</option>
-            <option value="customer_IDDesc">ID: Descending</option>
-            <option value="customer_firstNameAsc">First Name: A-Z</option>
-            <option value="customer_firstNameDesc">First Name: Z-A</option>
-            <option value="customer_middleNameAsc">Middle Name: A-Z</option>
-            <option value="customer_middleNameDesc">Middle Name: Z-A</option>
-            <option value="customer_lastNameAsc">Last Name: A-Z</option>
-            <option value="customer_lastNameDesc">Last Name: Z-A</option>
-          </select>
+
+        <br>
+
+        <h1>CUSTOMER TABLE</h1>
+
+        <div class="table-container">
+          <table id="customer-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>FULL NAME</th>
+              </tr>
+            </thead>
+            <tbody id="customer-table-body">
+            </tbody>
+          </table>
         </div>
+
+        <!-- ============================== -->
+
       </div>
-      
-      <br>
-      
-      <h1 id="table_label">CUSTOMER TABLE</h1>
-      <div id="customerTable_DisplayContainer">
-        <table id="customer-table">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Full Name</th>
-              <th>Contact Info</th>
-              <th>Designation</th>
-              <th>Action Buttons</th>
-            </tr>
-          </thead>
-          <tbody>
-          </tbody>
-        </table>
+
+      <!-- ============================================================ -->
+
+      <div class="container-right-side">
+
+        <!-- ============================== -->
+        
+        <h2>CUSTOMER FORM</h2>
+        
+        <div class="details-display-container">
+
+          <form id="customer-form">
+
+            <label for="customer-id">Customer ID:</label>
+            <input type="text" id="customer-id" name="customer-id" placeholder="Enter customer ID" required> 
+  
+            <br> 
+  
+            <label for="customer-type">Customer Type:</label>
+            <select id="customer-type" name="customer-type">
+              <option>Select the type of this customer</option>
+              <option value="GUEST">GUEST</option>
+              <option value="REGISTERED">REGISTERED</option>
+            </select>
+  
+            <br>
+  
+            <label for="customer-first-name">First Name:</label>
+            <input type="text" id="customer-first-name" name="customer-first-name" placeholder="Enter customer's first name" required>
+  
+            <br>
+    
+            <label for="customer-middle-name">Middle Name:</label>
+            <input type="text" id="customer-middle-name" name="customer-middle-name" placeholder="Enter customer's middle name" required>
+  
+            <br>
+    
+            <label for="customer-last-name">Last Name:</label>
+            <input type="text" id="customer-last-name" name="customer-last-name" placeholder="Enter customer's last name" required>
+  
+            <br>
+  
+            <label for="customer-gender">Gender:</label>
+            <select id="customer-gender" name="customer-gender">
+              <option>Select the gender of this customer</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+            </select>
+  
+            <br>
+  
+            <label for="customer-birthdate">Birth Date:</label>
+            <input type="date" id="customer-birthdate" name="customer-birthdate" placeholder="Enter customer's birthdate" required/>
+  
+            <br>
+    
+            <label for="customer-phonenumber">Contact Number:</label>
+            <input type="text" id="customer-phonenumber" name="customer-phonenumber" placeholder="Enter customer's phone number" required>
+  
+            <br>
+    
+            <label for="customer-address">Address:</label>
+            <textarea id="customer-address" name="customer-address" placeholder="Enter customer's address" rows="4" required></textarea>
+  
+            <br>
+  
+            <label for="customer-email">Email:</label>
+            <input type="text" id="customer-email" name="customer-email" placeholder="Enter customer's email" required>
+  
+            <br>
+
+          </form>
+
+        </div>
+
+        <!-- ============================== -->
+        
       </div>
+
+      <!-- ============================================================ -->
 
     </div>
       
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
     <!-- ============================================================ -->
 
 
@@ -910,9 +1179,8 @@
 
 
 
-
-
-
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
     <!-- ============================================================ -->
 
     <script>
@@ -953,101 +1221,78 @@
         });
 
         // Set the "menuItemPage" container as active by default
-        const defaultContainerId = "menuItem";
+        const defaultContainerId = "menuCategory";
         const defaultButton = document.getElementById(defaultContainerId + "Page");
 
         showContainer(defaultContainerId);
         defaultButton.classList.add("active");
+      
+        /*==============================*/
+
+        addHoverEffectToTableRows("menu-item-table");
+        addHoverEffectToTableRows("menu-category-table");
+        addHoverEffectToTableRows("ingredient-table");
+        addHoverEffectToTableRows("ingredient-category-table");
+        addHoverEffectToTableRows("ingredient-unit-table");
+        addHoverEffectToTableRows("staff-table");
+        addHoverEffectToTableRows("supplier-table");
+        addHoverEffectToTableRows("customer-table");
+
       });
       
       /*============================================================*/
 
-      const measurementTypeSelect = document.getElementById('measurement-type-ingredientModal');
-      const unitMeasurementSelect = document.getElementById('unit-measurement-ingredientModal');
+      function addHoverEffectToTableRows(tableId) {
+        // Get the table by its ID
+        const table = document.getElementById(tableId);
 
-      function updateUnitValueOptions() {
-        const selectedCategory = measurementTypeSelect.value;
-        unitMeasurementSelect.innerHTML = ""; // Clear existing options
-
-        if (selectedCategory === "VOLUME") {
-          unitMeasurementSelect.add(new Option("LITERS (L)", "LITERS (L)"));
-          unitMeasurementSelect.add(new Option("MILLILITERS (mL)", "MILLILITERS (mL)"));
-          unitMeasurementSelect.add(new Option("GALLONS (gal)", "GALLONS (gal)"));
-          unitMeasurementSelect.add(new Option("CUPS (c)", "CUPS (c)"));
-          unitMeasurementSelect.add(new Option("TABLESPOONS (tbsp)", "TABLESPOONS (tbsp)"));
-          unitMeasurementSelect.add(new Option("TEASPOONS (tsp)", "TEASPOONS (tsp)"));
-        } else if (selectedCategory === "WEIGHT") {
-          unitMeasurementSelect.add(new Option("GRAMS (g)", "GRAMS (g)"));
-          unitMeasurementSelect.add(new Option("KILOGRAMS (kg)", "KILOGRAMS (kg)"));
-          unitMeasurementSelect.add(new Option("OUNCES (oz)", "OUNCES (oz)"));
-          unitMeasurementSelect.add(new Option("POUNDS (lb)", "POUNDS (lb)"));
-        } else if (selectedCategory === "COUNT") {
-          unitMeasurementSelect.add(new Option("EACH (each)", "EACH (each)"));
-          unitMeasurementSelect.add(new Option("PIECES (pcs)", "PIECES (pcs)"));
-          unitMeasurementSelect.add(new Option("DOZEN (doz)", "DOZEN (doz)"));
-          unitMeasurementSelect.add(new Option("BAGS (bags)", "BAGS (bags)"));
-          unitMeasurementSelect.add(new Option("BOXES (boxes)", "BOXES (boxes)"));
-          unitMeasurementSelect.add(new Option("BUNCHES (bunches)", "BUNCHES (bunches)"));
-          unitMeasurementSelect.add(new Option("CARTONS (cartons)", "CARTONS (cartons)"));
-          unitMeasurementSelect.add(new Option("CASES (cases)", "CASES (cases)"));
-          unitMeasurementSelect.add(new Option("PACKS (packs)", "PACKS (packs)"));
-          unitMeasurementSelect.add(new Option("ROLLS (rolls)", "ROLLS (rolls)"));
-        }
-      }
-
-      // Update options on initial page load
-      updateUnitValueOptions();
-
-      // Update options whenever the category selection changes
-      measurementTypeSelect.addEventListener('change', updateUnitValueOptions);
-      
-      /*============================================================*/
-
-      function updateUnitSelection() {
-        const selectedIngredient = document.getElementById("ingredient-name-comboBox").value;
-        const ingredientTable = document.getElementById("ingredient-table");
-        const measurementTypeSelect = document.getElementById("measurement-type-menuItemModal");
-        const unitMeasurementSelect = document.getElementById("unit-measurement-menuItemModal");
-
-        // Clear previous options from the unit selection menus
-        measurementTypeSelect.innerHTML = "";
-        unitMeasurementSelect.innerHTML = "";
-
-        if (!selectedIngredient) {
-          return; // Do nothing if no ingredient is selected
+        // Check if the table exists
+        if (!table) {
+          console.error(`Table with ID '${tableId}' not found.`);
+          return;
         }
 
-        // Loop through each row of the ingredient table
-        for (let i = 1; i < ingredientTable.rows.length; i++) {
-          const row = ingredientTable.rows[i];
-          const ingredientNameCell = row.cells[1];
+        // Get the table body
+        const tableBody = table.querySelector("tbody");
 
-          if (ingredientNameCell.textContent === selectedIngredient) {
-            const measurementType = row.cells[4].textContent;
-            const unitMeasurement = row.cells[5].textContent;
+        // Add event listeners using event delegation
+        tableBody.addEventListener("mouseover", function (event) {
+          // Check if the hovered element is a table row
+          const row = event.target.closest("tr");
+          if (row) {
+            row.style.backgroundColor = "#d7d7d7"; 
+            row.style.cursor = "pointer";
 
-            // Create and append new options to the unit selection menus
-            measurementTypeSelect.appendChild(new Option(measurementType, measurementType));
-            unitMeasurementSelect.appendChild(new Option(unitMeasurement, unitMeasurement));
-
-            break; // Stop looping after finding a match
+            // Change the text color to black for all cells within the row
+            row.querySelectorAll("td").forEach((cell) => {
+              cell.style.color = "black";
+            });
           }
-        }
-      }
+        });
 
-      // Attach the updateUnitSelection function to the change event of the ingredient-name-comboBox
-      document.getElementById("ingredient-name-comboBox").addEventListener("change", updateUnitSelection);
+        tableBody.addEventListener("mouseout", function (event) {
+          // Check if the mouse left a table row
+          const row = event.target.closest("tr");
+          if (row) {
+            row.style.backgroundColor = ""; 
+            row.style.cursor = "";
+
+            // Reset the text color for all cells within the row
+            row.querySelectorAll("td").forEach((cell) => {
+              cell.style.color = ""; 
+            });
+          }
+        });
+      }
       
       /*============================================================*/
 
     </script>
       
     <!-- ============================================================ -->
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
     
-
-
-
-
   </body>
 
 </html>
