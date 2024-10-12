@@ -32,7 +32,12 @@
 
     <div class="verticalmenu_container">
       <div id="verticalmenu"></div>
+      <label class="verticalmenu-label">RESTAURANT MGMT.</label>
       <button class="verticalmenu-btn" id="orderManagementPage">Order Management</button>
+      <button class="verticalmenu-btn" id="stockPage">Stock</button>
+      <button class="verticalmenu-btn" id="stockTransactionPage">Stock Transaction</button>
+      <button class="verticalmenu-btn" id="staffPage">Staff</button>
+      <button class="verticalmenu-btn" id="customerPage">Customer</button>
       <br>
       <label class="verticalmenu-label">MENU ITEM</label>
       <button class="verticalmenu-btn" id="menuItemPage">Menu Item List</button>
@@ -42,14 +47,9 @@
       <button class="verticalmenu-btn" id="ingredientPage">Ingredient List</button>
       <button class="verticalmenu-btn" id="ingredientCategoryPage">Ingredient Category</button>
       <button class="verticalmenu-btn" id="ingredientUnitPage">Ingredient Unit</button>
-      <button class="verticalmenu-btn" id="ingredientStocksPage">Ingredient Stocks</button>
-      <br>
-      <label class="verticalmenu-label">RESTAURANT MGMT.</label>
-      <button class="verticalmenu-btn" id="staffPage">Staff</button>
-      <button class="verticalmenu-btn" id="supplierPage">Supplier</button>
-      <button class="verticalmenu-btn" id="customerPage">Customer</button>
-      <!-- <button class="verticalmenu-btn" id="reportsPage">Reports</button>
-      <button class="verticalmenu-btn" id="chartsPage">Charts</button> -->
+      <!-- <button class="verticalmenu-btn" id="supplierPage">Supplier</button> -->
+      <!-- <button class="verticalmenu-btn" id="reportsPage">Reports</button> -->
+      <!-- <button class="verticalmenu-btn" id="chartsPage">Charts</button> -->
       <!-- <button class="verticalmenu-btn" id="invRestockRequestsPage">Inventory Restock Requests</button> -->
       <!-- <button class="verticalmenu-btn" id=""></button> -->
       <!-- <span>=====================</span> -->
@@ -83,33 +83,32 @@
 
         <div class="tool-bar">
           <div class="left-section">
-              <input id="menuItem_attributeInput" type="text" placeholder="Enter ID, Menu Item, or Price">
-              <button type="button" onclick="">Filter</button>
+            <select id="menu-item-attribute-input">
+              <option>--- Select an Attribute to Filter ---</option>
+              <option value=""></option>
+            </select>
+            <button type="button" onclick="">Reset</button>
           </div>
           <div class="right-section">
-            <button class="formFeaturesButtons" type="button" onclick="">Fill Form with ID</button>
-            <button class="formFeaturesButtons" type="button" onclick="clearFormFields('menu-item-form')">Clear Form</button>
+            <button class="formFeaturesButtons" type="button" onclick="fillForm('menu-item-id', 'menu-item-table', 'menu-item', 'menu-item-form')">Fill Form with ID</button>
+            <button class="formFeaturesButtons" type="button" onclick="clearFormFields('menu-item-table','menu-item-form','YES')">Clear Form</button>
           </div>
         </div>
         
         <div class="tool-bar">
           <div class="left-section">
-            <select id="menuItem_sortOptions">
-              <option>Select an attribute to sort by</option>
-              <option value="menuItem_IDAsc">ID: Ascending</option>
-              <option value="menuItem_IDDesc">ID: Descending</option>
-              <option value="menuItem_nameAsc">Menu Item: A-Z</option>
-              <option value="menuItem_nameDesc">Menu Item: Z-A</option>
-              <option value="menuItem_nameAsc">Menu Category: A-Z</option>
-              <option value="menuItem_nameDesc">Menu Category: Z-A</option>
-              <option value="menuItem_priceAsc">Price: Low to High</option>
-              <option value="menuItem_priceDesc">Price: High to Low</option>
+            <select id="menu-item-sort-options">
+              <option>--- Select an Attribute to Sort By ---</option>
+              <option value="0">ID</option>
+              <option value="1">Menu Item</option>
+              <option value="2">Price</option>
             </select>
+            <button id="menu-item-sort-btn" type="button" onclick="sortTableByColumn('menu-item-table', 'menu-item-sort-options', this, 'YES')">🡹</button>
           </div>
           <div class="right-section">
-            <button class="addButtons" type="button">Add</button>
-            <button class="updateButtons" type="button">Update</button>
-            <button class="deleteButtons" type="button">Delete</button>
+            <button class="addButtons" type="button" onclick="addNewMenuItem()">Add</button>
+            <button class="updateButtons" type="button" onclick="updateSelectedMenuItem()">Update</button>
+            <button class="deleteButtons" type="button" onclick="deleteSelectedTableRow('menu-item-table')">Delete</button>
           </div>
         </div>
 
@@ -121,8 +120,8 @@
           <table id="menu-item-table">
             <thead>
               <tr>
-                <th>ID</th>
-                <th>MENU ITEM</th>
+                <th>IMAGE</th>
+                <th>[ID] MENU ITEM</th>
                 <th>MENU CATEGORY</th>
                 <th>PRICE</th>
               </tr>
@@ -149,18 +148,18 @@
           <form id="menu-item-form">
 
             <div id="imgBox_Display">
-              <img src="../img_placeholder.png">
+              <img src="../img_placeholder.png" id="preview-image" alt="Menu Item Preview">
             </div>
   
             <br>
   
             <label for="menu-item-img">Menu Item Image:</label>
-            <input type="file" id="menu-item-img" name="menu-item-img">
+            <input type="file" id="menu-item-img" name="menu-item-img" accept="image/*" onchange="previewImage(event)" required>
   
             <br>
   
             <label for="menu-item-id">Menu Item ID:</label>
-            <input type="text" id="menu-item-id" name="menu-item-id" placeholder="Enter menu item ID" required>
+            <input type="number" id="menu-item-id" name="menu-item-id" placeholder="Enter menu item ID" required min="1">
             
             <br>
   
@@ -171,18 +170,18 @@
   
             <label for="menu-category-combobox">Menu Item Category:</label>
             <select id="menu-category-combobox" name="menu-category-combobox">
-              <option>Select a menu category for this item</option>
+              <option>--- Select a Menu Category for this Menu Item ---</option>
             </select>
   
             <br>
   
             <label for="menu-item-price">Menu Item Price (Php):</label>
-            <input type="number" id="menu-item-price" name="menu-item-price" placeholder="Enter menu item price (Php)" required step="0.01">
+            <input type="number" id="menu-item-price" name="menu-item-price" placeholder="Enter menu item price (Php)" required step="1" min="1">
             
             <br>
     
             <label for="menu-item-description">Menu Item Description:</label>
-            <textarea id="menu-item-description" name="menu-item-description" placeholder="Enter menu item description" rows="4"></textarea>
+            <textarea id="menu-item-description" name="menu-item-description" placeholder="Enter menu item description" rows="8"></textarea>
   
             <br>
   
@@ -190,16 +189,16 @@
             <br>
   
             <div id="ingredient-list-table-label">
-              <h2>INGREDIENT LIST</h2>
+              <h2>RECIPE INGREDIENTS</h2>
             </div>
   
             <div class="table-container" id="ingredient-list-table-container">  
               <table id="ingredient-list-table">
                 <thead>
                   <tr>
-                    <th>QTY</th>
-                    <th>INGREDIENT & UNIT</th>
-                    <th>ACTION</th>
+                    <th>KEY<br>ING.</th>
+                    <th>QTY<br>USED</th>
+                    <th>INGREDIENT NAME<br>& ING. UNIT</th>
                   </tr>
                 </thead>
                 <tbody id="ingredient-list-table-body">
@@ -213,12 +212,12 @@
   
             <label for="ingredient-name-combobox">Ingredient to Add:</label>
             <select id="ingredient-name-combobox" name="ingredient-name-combobox">
-              <option>Select an Ingredient to Add</option>
+              <option>--- Select an Ingredient to Add ---</option>
             </select>
             
             <br>
   
-            <button type="button" onclick="">Add to the List</button>
+            <button type="button" onclick="addIngredientToList()">Add to the Recipe Ingredients</button>
             
             <br>
             
@@ -261,29 +260,31 @@
 
         <div class="tool-bar">
           <div class="left-section">
-              <input id="menuCategory_attributeInput" type="text" placeholder="Enter ID or Menu Category">
-              <button type="button" onclick="">Filter</button>
+            <select id="menu-category-attribute-input">
+              <option>--- Select an Attribute to Filter ---</option>
+              <option value=""></option>
+            </select>
+            <button type="button" onclick="">Reset</button>
           </div>
           <div class="right-section">
-            <button class="formFeaturesButtons" type="button" onclick="fillMenuCategoryForm()">Fill Form with ID</button>
+            <button class="formFeaturesButtons" type="button" onclick="fillForm('menu-category-id', 'menu-category-table', 'menu-category', 'menu-category-form')">Fill Form with ID</button>
             <button class="formFeaturesButtons" type="button" onclick="clearFormFields('menu-category-table','menu-category-form','YES')">Clear Form</button>
           </div>
         </div>
         
         <div class="tool-bar">
           <div class="left-section">
-            <select id="menuCategory_sortOptions">
-              <option>Select an attribute to sort by</option>
-              <option value="menuCategory_IDAsc">ID: Ascending</option>
-              <option value="menuCategory_IDDesc">ID: Descending</option>
-              <option value="menuCategory_nameAsc">Menu Category: A-Z</option>
-              <option value="menuCategory_nameDesc">Menu Category: Z-A</option>
+            <select id="menu-category-sort-options">
+              <option>--- Select an Attribute to Sort By ---</option>
+              <option value="0">ID</option>
+              <option value="1">Menu Category</option>
             </select>
+            <button id="menu-category-sort-btn" type="button" onclick="sortTableByColumn('menu-category-table', 'menu-category-sort-options', this, 'YES')">🡹</button>
           </div>
           <div class="right-section">
             <button class="addButtons" type="button" onclick="addNewMenuCategory()">Add</button>
             <button class="updateButtons" type="button" onclick="updateSelectedMenuCategory()">Update</button>
-            <button class="deleteButtons" type="button" onclick="deleteSelectedMenuCategory()">Delete</button>
+            <button class="deleteButtons" type="button" onclick="deleteSelectedTableRow('menu-category-table')">Delete</button>
           </div>
         </div>
 
@@ -321,13 +322,312 @@
           <form id="menu-category-form">
 
             <label for="menu-category-id">Menu Category ID:</label>
-            <input type="text" id="menu-category-id" name="menu-category-id" placeholder="Enter menu category ID" required>
+            <input type="number" id="menu-category-id" name="menu-category-id" placeholder="Enter menu category ID" required min="1">
             
             <br>
 
             <label for="menu-category-name">Menu Category Name:</label>
             <input type="text" id="menu-category-name" name="menu-category-name" placeholder="Enter menu category name" required>
             
+            <br>
+
+          </form>
+
+        </div>
+
+        <!-- ============================== -->
+        
+      </div>
+
+      <!-- ============================================================ -->
+
+    </div>
+      
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+
+
+
+
+
+
+
+
+
+    
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+
+    <div class="container" id="stock">
+
+      <!-- ============================================================ -->
+
+      <div class="container-left-side">
+
+        <!-- ============================== -->
+
+        <div class="tool-bar">
+          <div class="left-section">
+            <select id="stock-attribute-input">
+              <option>--- Select an Attribute to Filter ---</option>
+              <option value=""></option>
+            </select>
+            <button type="button" onclick="">Reset</button>
+          </div>
+          <div class="right-section">
+            <button class="formFeaturesButtons" type="button" onclick="fillForm('-id', '-table', '?', '-form')">Fill Form with ID</button>
+            <button class="formFeaturesButtons" type="button" onclick="clearFormFields('-table','-form','YES')">Clear Form</button>
+          </div>
+        </div>
+        
+        <div class="tool-bar">
+          <div class="left-section">
+            <select id="stock-sort-options">
+              <option>--- Select an Attribute to Sort By ---</option>
+              <option value="0">Stock ID</option>
+              <option value="1">Ingredient ID</option>
+              <option value="2">Quantity Left</option>
+              <option value="3">Expiration Date</option>
+            </select>
+            <button id="stock-sort-btn" type="button" onclick="sortTableByColumn('-table', 'stock-sort-options', this, 'YES')">🡹</button>
+          </div>
+          <div class="right-section">
+            <button type="button" onclick="">Stock In</button>
+            <button type="button" onclick="">Stock Out</button>
+          </div>
+        </div>
+
+        <br>
+
+        <h1>STOCK TABLE</h1>
+
+        <div class="table-container">
+          <table id="stock-table">
+            <thead>
+              <tr>
+                <!-- <th><button type="button" onclick="">Stock</button></th> -->
+                <th></th>
+                <th>ID</th>
+                <th>[ID] INGREDIENT</th>
+                <th>QTY LEFT</th>
+                <th>STATUS</th>
+              </tr>
+            </thead>
+            <tbody id="stock-transaction-table_body">
+            </tbody>
+          </table>
+        </div>
+
+        <!-- ============================== -->
+
+      </div>
+
+      <!-- ============================================================ -->
+
+      <div class="container-right-side">
+
+        <!-- ============================== -->
+        
+        <h2>STOCK FORM<br>(VIEW ONLY)</h2>
+        
+        <div class="details-display-container">
+
+          <form id="stock-form">
+  
+            <label for="stock-id">Stock ID:</label>
+            <input type="number" id="stock-id" name="stock-id" placeholder="Enter ID" required min="1">
+            
+            <br>
+  
+            <label for="stock-ingredient-id">Ingredient ID:</label>
+            <input type="number" id="stock-ingredient-id" name="stock-ingredient-id" placeholder="Enter ingredient ID" required min="1">
+            
+            <br>
+  
+            <label for="stock-status">Stock Status:</label>
+            <select id="stock-status">
+              <option value="AVAILABLE">AVAILABLE</option>
+              <option value="EXPIRED">EXPIRED</option>
+              <option value="SPOILED">SPOILED</option>
+              <option value="RESERVED">RESERVED</option>
+            </select>
+  
+            <br>
+  
+            <label for="stock-original-qty">Original Quantity:</label>
+            <input type="number" id="stock-original-qty" name="stock-original-qty" placeholder="Enter quantity added" step="0.01">
+  
+            <br>
+  
+            <label for="stock-qty-left">Quantity Remaining:</label>
+            <input type="number" id="stock-qty-left" name="stock-qty-left" placeholder="Enter quantity added" step="0.01">
+  
+            <br>
+  
+            <label for="stock-in-date">Stock In Date:</label>
+            <input type="date" id="stock-in-date" name="stock-in-date" placeholder="Enter stock in date" required>
+  
+            <br>
+  
+            <label for="stock-expiration-date">Expiration Date:</label>
+            <input type="date" id="stock-expiration-date" name="stock-expiration-date" placeholder="Enter expiration date" required>
+  
+            <br>
+
+          </form>
+
+        </div>
+
+        <!-- ============================== -->
+        
+      </div>
+
+      <!-- ============================================================ -->
+
+    </div>
+      
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+
+
+
+
+
+
+
+
+
+    
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+
+    <div class="container" id="stockTransaction">
+
+      <!-- ============================================================ -->
+
+      <div class="container-left-side">
+
+        <!-- ============================== -->
+
+        <div class="tool-bar">
+          <div class="left-section">
+            <select id="stock-transaction-attribute-input">
+              <option>--- Select an Attribute to Filter ---</option>
+              <option value=""></option>
+            </select>
+            <button type="button" onclick="">Reset</button>
+          </div>
+          <div class="right-section">
+            <button class="formFeaturesButtons" type="button" onclick="fillForm('-id', '-table', '?', '-form')">Fill Form with ID</button>
+            <button class="formFeaturesButtons" type="button" onclick="clearFormFields('-table','-form','YES')">Clear Form</button>
+          </div>
+        </div>
+        
+        <div class="tool-bar">
+          <div class="left-section">
+            <select id="stock-transaction-sort-options">
+              <option>--- Select an Attribute to Sort By ---</option>
+              <option value="0">Transaction ID</option>
+              <option value="1">Stock ID</option>
+              <option value="2">Ingredient ID</option>
+              <option value="3">Transaction ID</option>
+              <option value="4">Expiration Date</option>
+            </select>
+            <button id="stock-transaction-sort-btn" type="button" onclick="sortTableByColumn('-table', 'stock-transaction-sort-options', this, 'YES')">🡹</button>
+          </div>
+        </div>
+
+        <br>
+
+        <h1>STOCK TRANSACTION TABLE</h1>
+
+        <div class="table-container">
+          <table id="stock-transaction-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>STOCK ID</th>
+                <th>[ID] INGREDIENT</th>
+                <th>QTY CHANGES</th>
+                <th>TXN TYPE</th>
+              </tr>
+            </thead>
+            <tbody id="stock-transaction-table_body">
+            </tbody>
+          </table>
+        </div>
+
+        <!-- ============================== -->
+
+      </div>
+
+      <!-- ============================================================ -->
+
+      <div class="container-right-side">
+
+        <!-- ============================== -->
+        
+        <h2>STOCK TRANSACTION FORM<br>(VIEW ONLY)</h2>
+        
+        <div class="details-display-container">
+
+          <form id="stock-transaction-form">
+  
+            <label for="stock-transaction-id">Stock Transaction ID:</label>
+            <input type="number" id="stock-transaction-id" name="stock-transaction-id" placeholder="Enter ID" required min="1">
+            
+            <br>
+  
+            <label for="stock-transaction-stock-id">Stock ID:</label>
+            <input type="number" id="stock-transaction-stock-id" name="stock-transaction-stock-id" placeholder="Enter stock ID" required min="1">
+            
+            <br>
+  
+            <label for="stock-transaction-ingredient-id">Ingredient ID:</label>
+            <input type="number" id="stock-transaction-ingredient-id" name="stock-transaction-ingredient-id" placeholder="Enter ingredient ID" required min="1">
+            
+            <br>
+  
+            <label for="stock-ingredient-qty-added">Quantity Added:</label>
+            <input type="number" id="stock-ingredient-qty-added" name="stock-ingredient-qty-added" placeholder="Enter quantity added" step="0.01">
+  
+            <br>
+  
+            <label for="stock-ingredient-qty-added">Quantity Removed:</label>
+            <input type="number" id="stock-ingredient-qty-added" name="stock-ingredient-qty-added" placeholder="Enter quantity added" step="0.01">
+  
+            <br>
+            
+            <label for="stock-ingredient-transaction-type">Transaction Type:</label>
+            <select id="stock-transaction-transaction-type">
+              <option value="STOCK OUT">STOCK OUT</option>
+              <option value="STOCK ADJUSTMENT">STOCK ADJUSTMENT</option>
+            </select>
+
+            <br>
+    
+            <label for="stock-ingredient-remarks">Remarks:</label>
+            <textarea id="stock-ingredient-remarks" name="stock-ingredient-remarks" placeholder="Enter remarks" rows="8" required></textarea>
+  
+            <br>
+  
+            <label for="stock-transaction-staff-id">Staff ID:</label>
+            <input type="number" id="stock-transaction-staff-id" name="stock-transaction-staff-id" placeholder="Enter stock ID" required min="1">
+            
+            <br>
+  
+            <label for="stock-transaction-order-id">Order ID:</label>
+            <input type="number" id="stock-transaction-order-id" name="stock-transaction-order-id" placeholder="Enter order ID" required min="1">
+            
+            <br>
+  
+            <label for="stock-ingredient-transaction-date">Transaction Date:</label>
+            <input type="datetime" id="stock-ingredient-transaction-date" name="stock-ingredient-transaction-date" placeholder="Enter transaction date" required>
+  
             <br>
 
           </form>
@@ -369,33 +669,32 @@
 
         <div class="tool-bar">
           <div class="left-section">
-              <input id="ingredient_attributeInput" type="text" placeholder="Enter ID or Ingredient">
-              <button type="button" onclick="">Filter</button>
+            <select id="ingredient-stock-attribute-input">
+              <option>--- Select an Attribute to Filter ---</option>
+              <option value=""></option>
+            </select>
+            <button type="button" onclick="">Reset</button>
           </div>
           <div class="right-section">
-            <button class="formFeaturesButtons" type="button" onclick="fillIngredientForm()">Fill Form with ID</button>
+            <button class="formFeaturesButtons" type="button" onclick="fillForm('ingredient-id', 'ingredient-table', 'ingredient', 'ingredient-form')">Fill Form with ID</button>
             <button class="formFeaturesButtons" type="button" onclick="clearFormFields('ingredient-table','ingredient-form','YES')">Clear Form</button>
           </div>
         </div>
         
         <div class="tool-bar">
           <div class="left-section">
-            <select id="ingredient_sortOptions">
-              <option>Select an attribute to sort by</option>
-              <option value="ingredient_IDAsc">ID: Ascending</option>
-              <option value="ingredient_IDDesc">ID: Descending</option>
-              <option value="ingredient_nameAsc">Ingredient: A-Z</option>
-              <option value="ingredient_nameDesc">Ingredient: Z-A</option>
-              <option value="ingredient_categoryAsc">Ingredient Category: A-Z</option>
-              <option value="ingredient_categoryDesc">Ingredient Category: Z-A</option>
-              <option value="ingredient_unitAsc">Ingredient Unit: A-Z</option>
-              <option value="ingredient_unitDesc">Ingredient Unit: Z-A</option>
+            <select id="ingredient-sort-options">
+              <option>--- Select an Attribute to Sort By ---</option>
+              <option value="0">ID</option>
+              <option value="1">Ingredient Name</option>
+              <option value="2">Total Quantity</option>
             </select>
+            <button id="ingredient-sort-btn" type="button" onclick="sortTableByColumn('ingredient-table', 'ingredient-sort-options', this, 'YES')">🡹</button>
           </div>
           <div class="right-section">
             <button class="addButtons" type="button" onclick="addNewIngredient()">Add</button>
             <button class="updateButtons" type="button" onclick="updateSelectedIngredient()">Update</button>
-            <button class="deleteButtons" type="button" onclick="deleteSelectedIngredient()">Delete</button>
+            <button class="deleteButtons" type="button" onclick="deleteSelectedTableRow('ingredient-table')">Delete</button>
           </div>
         </div>
 
@@ -407,10 +706,10 @@
           <table id="ingredient-table">
             <thead>
               <tr>
-                <th>ID</th>
-                <th>INGREDIENT</th>
+                <th><button type="button" onclick="">Stock</button></th>
+                <th>[ID] INGREDIENT</th>
                 <th>ING. CATEGORY</th>
-                <th>ING. UNIT</th>
+                <th>TOTAL QUANTITY</th>
               </tr>
             </thead>
             <tbody id="ingredient-table_body">
@@ -435,7 +734,7 @@
           <form id="ingredient-form">
   
             <label for="ingredient-id">Ingredient ID:</label>
-            <input type="text" id="ingredient-id" name="ingredient-id" placeholder="Enter ingredient ID" required>
+            <input type="number" id="ingredient-id" name="ingredient-id" placeholder="Enter ingredient ID" required min="1">
             
             <br>
   
@@ -446,55 +745,31 @@
   
             <label for="ingredient-category-combobox">Ingredient Category:</label>
             <select id="ingredient-category-combobox" name="ingredient-category-combobox">
-              <option>Select a category for this ingredient</option>
+              <option>--- Select a Ing. Category for this Ingredient ---</option>
             </select>
             
             <br>
   
             <label for="ingredient-unit-combobox">Ingredient Unit:</label>
             <select id="ingredient-unit-combobox" name="ingredient-unit-combobox">
-              <option>Select a unit for this ingredient</option>
+              <option>--- Select a Ing. Unit for this Ingredient ---</option>
             </select>
   
             <br>
   
             <label for="ingredient-low-stock-threshold">Low Stock Threshold:</label>
-            <input type="number" id="ingredient-low-stock-threshold" name="ingredient-low-stock-threshold" placeholder="Enter low stock threshold point" required step="0.01">
+            <input type="number" id="ingredient-low-stock-threshold" name="ingredient-low-stock-threshold" placeholder="Enter low stock threshold point" required min="1">
   
             <br>
   
             <label for="ingredient-medium-stock-threshold">Medium Stock Threshold:</label>
-            <input type="number" id="ingredient-medium-stock-threshold" name="ingredient-medium-stock-threshold" placeholder="Enter medium low stock threshold point" required step="0.01">
+            <input type="number" id="ingredient-medium-stock-threshold" name="ingredient-medium-stock-threshold" placeholder="Enter medium low stock threshold point" required min="1">
   
             <br>
   
-            <span>====================================</span>
-            <br>
+            <label for="ingredient-reorder-point">Reorder Point:</label>
+            <input type="number" id="ingredient-reorder-point" name="ingredient-reorder-point" placeholder="Enter reorder point" required min="1">
   
-            <div id="ingredient-list-table-label">
-              <h2>STOCK DETAILS</h2>
-            </div>
-  
-            <div class="table-container" id="ingredient-list-table-container">  
-              <table id="ingredient-list-table">
-                <thead>
-                  <tr>
-                    <th>STOCK ID</th>
-                    <th>QTY</th>
-                    <th>EXPIRATION DATE</th>
-                  </tr>
-                </thead>
-                <tbody id="ingredient-list-table-body">
-                </tbody>
-              </table>
-            </div>
-  
-            <span>====================================</span>
-            
-            <br>
-  
-            <button type="button" onclick="">STOCK IN</button>
-            
             <br>
 
           </form>
@@ -536,29 +811,31 @@
 
         <div class="tool-bar">
           <div class="left-section">
-              <input id="ingredientCategory_attributeInput" type="text" placeholder="Enter ID or Ingredient Category">
-              <button type="button" onclick="">Filter</button>
+            <select id="ingredient-category-attribute-input">
+              <option>--- Select an Attribute to Filter ---</option>
+              <option value=""></option>
+            </select>
+            <button type="button" onclick="">Reset</button>
           </div>
           <div class="right-section">
-            <button class="formFeaturesButtons" type="button" onclick="fillIngredientCategoryForm()">Fill Form with ID</button>
+            <button class="formFeaturesButtons" type="button" onclick="fillForm('ingredient-category-id', 'ingredient-category-table', 'ingredient-category', 'ingredient-category-form')">Fill Form with ID</button>
             <button class="formFeaturesButtons" type="button" onclick="clearFormFields('ingredient-category-table','ingredient-category-form','YES')">Clear Form</button>
           </div>
         </div>
         
         <div class="tool-bar">
           <div class="left-section">
-            <select id="ingredientCategory_sortOptions">
-              <option>Select an attribute to sort by</option>
-              <option value="ingredientCategory_IDAsc">ID: Ascending</option>
-              <option value="ingredientCategory_IDDesc">ID: Descending</option>
-              <option value="ingredientCategory_nameAsc">Ingredient Category: A-Z</option>
-              <option value="ingredientCategory_nameDesc">Ingredient Category: Z-A</option>
+            <select id="ingredient-category-sort-options">
+              <option>--- Select an Attribute to Sort By ---</option>
+              <option value="0">ID</option>
+              <option value="1">Ingredient Category</option>
             </select>
+            <button id="ingredient-category-sort-btn" type="button" onclick="sortTableByColumn('ingredient-category-table', 'ingredient-category-sort-options', this, 'YES')">🡹</button>
           </div>
           <div class="right-section">
             <button class="addButtons" type="button" onclick="addNewIngredientCategory()">Add</button>
             <button class="updateButtons" type="button" onclick="updateSelectedIngredientCategory()">Update</button>
-            <button class="deleteButtons" type="button" onclick="deleteSelectedIngredientCategory()">Delete</button>
+            <button class="deleteButtons" type="button" onclick="deleteSelectedTableRow('ingredient-category-table')">Delete</button>
           </div>
         </div>
 
@@ -589,14 +866,14 @@
 
         <!-- ============================== -->
         
-        <h2>INGREDIENT CATEGORY FORM</h2>
+        <h2>INGREDIENT CATEGORY<br>FORM</h2>
         
         <div class="details-display-container">
 
           <form id="ingredient-category-form">
   
             <label for="ingredient-category-id">Ingredient Category ID:</label>
-            <input type="text" id="ingredient-category-id" name="ingredient-category-id" placeholder="Enter ingredient category ID" required>
+            <input type="number" id="ingredient-category-id" name="ingredient-category-id" placeholder="Enter ingredient category ID" required min="1">
             
             <br>
   
@@ -644,29 +921,31 @@
 
         <div class="tool-bar">
           <div class="left-section">
-              <input id="ingredientUnit_attributeInput" type="text" placeholder="Enter ID or Ingredient Unit">
-              <button type="button" onclick="">Filter</button>
+            <select id="ingredient-unit-attribute-input">
+              <option>--- Select an Attribute to Filter ---</option>
+              <option value=""></option>
+            </select>
+            <button type="button" onclick="">Reset</button>
           </div>
           <div class="right-section">
-            <button class="formFeaturesButtons" type="button" onclick="fillIngredientUnitForm()">Fill Form with ID</button>
+            <button class="formFeaturesButtons" type="button" onclick="fillForm('ingredient-unit-id', 'ingredient-unit-table', 'ingredient-unit', 'ingredient-unit-form')">Fill Form with ID</button>
             <button class="formFeaturesButtons" type="button" onclick="clearFormFields('ingredient-unit-table','ingredient-unit-form','YES')">Clear Form</button>
           </div>
         </div>
         
         <div class="tool-bar">
           <div class="left-section">
-            <select id="ingredientUnit_sortOptions">
-              <option>Select an attribute to sort by</option>
-              <option value="ingredientUnit_IDAsc">ID: Ascending</option>
-              <option value="ingredientUnit_IDDesc">ID: Descending</option>
-              <option value="ingredientUnit_nameAsc">Ingredient Unit: A-Z</option>
-              <option value="ingredientUnit_nameDesc">Ingredient Unit: Z-A</option>
+            <select id="ingredient-unit-sort-options">
+              <option>--- Select an Attribute to Sort By ---</option>
+              <option value="0">ID</option>
+              <option value="1">Ingredient Unit</option>
             </select>
+            <button id="ingredient-unit-sort-btn" type="button" onclick="sortTableByColumn('ingredient-unit-table', 'ingredient-unit-sort-options', this, 'YES')">🡹</button>
           </div>
           <div class="right-section">
             <button class="addButtons" type="button" onclick="addNewIngredientUnit()">Add</button>
             <button class="updateButtons" type="button" onclick="updateSelectedIngredientUnit()">Update</button>
-            <button class="deleteButtons" type="button" onclick="deleteSelectedIngredientUnit()">Delete</button>
+            <button class="deleteButtons" type="button" onclick="deleteSelectedTableRow('ingredient-unit-table')">Delete</button>
           </div>
         </div>
 
@@ -704,7 +983,7 @@
           <form id="ingredient-unit-form">
   
             <label for="ingredient-unit-id">Ingredient Unit ID:</label>
-            <input type="text" id="ingredient-unit-id" name="ingredient-unit-id" placeholder="Enter ingredient unit ID" required>
+            <input type="number" id="ingredient-unit-id" name="ingredient-unit-id" placeholder="Enter ingredient unit ID" required min="1">
             
             <br>
   
@@ -752,33 +1031,33 @@
 
         <div class="tool-bar">
           <div class="left-section">
-              <input id="staff_attributeInput" type="text" placeholder="Enter ID or Staff Name">
-              <button type="button" onclick="">Filter</button>
+            <select id="staff-attribute-input">
+              <option>--- Select an Attribute to Filter ---</option>
+              <option value=""></option>
+            </select>
+            <button type="button" onclick="">Reset</button>
           </div>
           <div class="right-section">
-            <button class="formFeaturesButtons" type="button" onclick="fillStaffForm()">Fill Form with ID</button>
+            <button class="formFeaturesButtons" type="button" onclick="fillForm('staff-id', 'staff-table', 'staff', 'staff-form')">Fill Form with ID</button>
             <button class="formFeaturesButtons" type="button" onclick="clearFormFields('staff-table','staff-form','YES')">Clear Form</button>
           </div>
         </div>
         
         <div class="tool-bar">
           <div class="left-section">
-            <select id="staff_sortOptions">
-              <option>Select an attribute to sort by</option>
-              <option value="staff_IDAsc">ID: Ascending</option>
-              <option value="staff_IDDesc">ID: Descending</option>
-              <option value="staff_firstNameAsc">First Name: A-Z</option>
-              <option value="staff_firstNameDesc">First Name: Z-A</option>
-              <option value="staff_middleNameAsc">Middle Name: A-Z</option>
-              <option value="staff_middleNameDesc">Middle Name: Z-A</option>
-              <option value="staff_lastNameAsc">Last Name: A-Z</option>
-              <option value="staff_lastNameDesc">Last Name: Z-A</option>
+            <select id="staff-sort-options">
+              <option>--- Select an Attribute to Sort By ---</option>
+              <option value="0">ID</option>
+              <option value="1">First Name</option>
+              <option value="2">Middle Name</option>
+              <option value="3">Last Name</option>
             </select>
+            <button id="staff-sort-btn" type="button" onclick="sortTableByColumn('staff-table', 'staff-sort-options', this, 'YES')">🡹</button>
           </div>
           <div class="right-section">
             <button class="addButtons" type="button" onclick="addNewStaff()">Add</button>
             <button class="updateButtons" type="button" onclick="updateSelectedStaff()">Update</button>
-            <button class="deleteButtons" type="button" onclick="deleteSelectedStaff()">Delete</button>
+            <!-- <button class="deleteButtons" type="button" onclick="deleteSelectedStaff()">Delete</button> -->
           </div>
         </div>
 
@@ -792,6 +1071,8 @@
               <tr>
                 <th>ID</th>
                 <th>FULL NAME</th>
+                <th>CONTACT INFO</th>
+                <th>STATUS</th>
               </tr>
             </thead>
             <tbody id="staff-table-body">
@@ -816,7 +1097,16 @@
           <form id="staff-form">
   
             <label for="staff-id">Staff ID:</label>
-            <input type="text" id="staff-id" name="staff-id" placeholder="Enter staff ID" required>
+            <input type="number" id="staff-id" name="staff-id" placeholder="Enter staff ID" required min="1">
+  
+            <br>
+  
+            <label for="staff-status">Status:</label>
+            <select id="staff-status" name="staff-status" required>
+              <option value="ACTIVE">ACTIVE</option>
+              <option value="RETIRED">RETIRED</option>
+              <option value="VOIDED">VOIDED</option>
+            </select>
   
             <br>
   
@@ -842,7 +1132,7 @@
   
             <label for="staff-gender">Gender:</label>
             <select id="staff-gender" name="staff-gender" required>
-              <option>Select the gender of this staff</option>
+              <option>--- Select the Gender of this Staff ---</option>
               <option value="Male">Male</option>
               <option value="Female">Female</option>
             </select>
@@ -850,22 +1140,27 @@
             <br>
   
             <label for="staff-birthdate">Birth Date:</label>
-            <input type="date" id="staff-birthdate" name="staff-birthdate" placeholder="Enter birthdate" required/>
+            <input type="date" id="staff-birthdate" name="staff-birthdate" placeholder="Enter birthdate" required max="">
   
             <br>
     
             <label for="staff-phonenumber">Contact Number:</label>
-            <input type="text" id="staff-phonenumber" name="staff-phonenumber" placeholder="Enter phone number" required>
+            <input type="number" id="staff-phonenumber" name="staff-phonenumber" placeholder="Enter phone number (09XXXXXXXXX)" required minlength="11" maxlength="11" pattern="\d{11}">
   
             <br>
     
             <label for="staff-address">Address Line:</label>
-            <textarea id="staff-address" name="staff-address" placeholder="Enter address" rows="4" required></textarea>
+            <textarea id="staff-address" name="staff-address" placeholder="Enter address" rows="8" required></textarea>
   
             <br>
   
             <label for="staff-email">Email:</label>
-            <input type="text" id="staff-email" name="staff-email" placeholder="Enter email" required>
+            <input type="email" id="staff-email" name="staff-email" placeholder="Enter email" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" title="Please enter a valid email address." autocomplete="off" maxlength="254">
+            
+            <br>
+
+            <label for="staff-email-confirm">Confirm Email:</label>
+            <input type="email" id="staff-email-confirm" name="staff-email-confirm" placeholder="Re-enter email" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" title="Please enter a valid email address." autocomplete="off" maxlength="254">
   
             <br>
 
@@ -908,24 +1203,26 @@
 
         <div class="tool-bar">
           <div class="left-section">
-              <input id="supplier_attributeInput" type="text" placeholder="Enter ID or Supplier Name">
-              <button type="button" onclick="">Filter</button>
+            <select id="supplier-attribute-input">
+              <option>--- Select an Attribute to Filter ---</option>
+              <option value=""></option>
+            </select>
+            <button type="button" onclick="">Reset</button>
           </div>
           <div class="right-section">
-            <button class="formFeaturesButtons" type="button" onclick="fillSupplierForm()">Fill Form with ID</button>
+            <button class="formFeaturesButtons" type="button" onclick="fillForm('supplier-id', 'supplier-table', 'supplier', 'supplier-form')">Fill Form with ID</button>
             <button class="formFeaturesButtons" type="button" onclick="clearFormFields('supplier-table','supplier-form','YES')">Clear Form</button>
           </div>
         </div>
         
         <div class="tool-bar">
           <div class="left-section">
-            <select id="supplier_sortOptions">
-              <option>Select an attribute to sort by</option>
-              <option value="supplier_IDAsc">ID: Ascending</option>
-              <option value="supplier_IDDesc">ID: Descending</option>
-              <option value="supplier_nameAsc">Supplier Name: A-Z</option>
-              <option value="supplier_nameDesc">Supplier Name: Z-A</option>
+            <select id="supplier-sort-options">
+              <option>--- Select an Attribute to Sort By ---</option>
+              <option value="0">ID</option>
+              <option value="1">Supplier Name</option>
             </select>
+            <button id="supplier-sort-btn" type="button" onclick="sortTableByColumn('supplier-table', 'supplier-sort-options', this, 'YES')">🡹</button>
           </div>
           <div class="right-section">
             <button class="addButtons" type="button" onclick="addNewSupplier()">Add</button>
@@ -968,7 +1265,7 @@
           <form id="supplier-form">
   
             <label for="supplier-id">Supplier ID:</label>
-            <input type="text" id="supplier-id" name="supplier-id" placeholder="Enter supplier ID" required>
+            <input type="number" id="supplier-id" name="supplier-id" placeholder="Enter supplier ID" required min="1">
   
             <br>
 
@@ -983,17 +1280,22 @@
             <br>
             
             <label for="supplier-address">Address:</label>
-            <textarea id="supplier-address" name="supplier-address" placeholder="Enter company's address" rows="4" required></textarea>
+            <textarea id="supplier-address" name="supplier-address" placeholder="Enter company's address" rows="8" required></textarea>
   
             <br>
     
             <label for="supplier-phonenumber">Contact Number:</label>
-            <input type="text" id="supplier-phonenumber" name="supplier-phonenumber" placeholder="Enter supplier's phone number" required>
+            <input type="text" id="supplier-phonenumber" name="supplier-phonenumber" placeholder="Enter supplier's phone number (09XXXXXXXXX)" required  minlength="11" maxlength="11" pattern="\d{11}">
   
             <br>
   
             <label for="supplier-email">Email:</label>
-            <input type="text" id="supplier-email" name="supplier-email" placeholder="Enter supplier's email" required>
+            <input type="email" id="supplier-email" name="supplier-email" placeholder="Enter supplier's email" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" title="Please enter a valid email address." autocomplete="off" maxlength="254">
+            
+            <br>
+
+            <label for="supplier-email-confirm">Confirm Email:</label>
+            <input type="email" id="supplier-email-confirm" name="supplier-email-confirm" placeholder="Re-enter supplier's email" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" title="Please enter a valid email address." autocomplete="off" maxlength="254">
   
             <br>
 
@@ -1036,33 +1338,33 @@
 
         <div class="tool-bar">
           <div class="left-section">
-              <input id="customer_attributeInput" type="text" placeholder="Enter ID or Customer Name">
-              <button type="button" onclick="">Filter</button>
+            <select id="customer-attribute-input">
+              <option>--- Select an Attribute to Filter ---</option>
+              <option value=""></option>
+            </select>
+            <button type="button" onclick="">Reset</button>
           </div>
           <div class="right-section">
-            <button class="formFeaturesButtons" type="button" onclick="fillCustomerForm()">Fill Form with ID</button>
+            <button class="formFeaturesButtons" type="button" onclick="fillForm('customer-id', 'customer-table', 'customer', 'customer-form')">Fill Form with ID</button>
             <button class="formFeaturesButtons" type="button" onclick="clearFormFields('customer-table','customer-form','YES')">Clear Form</button>
           </div>
         </div>
         
         <div class="tool-bar">
           <div class="left-section">
-            <select id="customer_sortOptions">
-              <option>Select an attribute to sort by</option>
-              <option value="customer_IDAsc">ID: Ascending</option>
-              <option value="customer_IDDesc">ID: Descending</option>
-              <option value="customer_firstNameAsc">First Name: A-Z</option>
-              <option value="customer_firstNameDesc">First Name: Z-A</option>
-              <option value="customer_middleNameAsc">Middle Name: A-Z</option>
-              <option value="customer_middleNameDesc">Middle Name: Z-A</option>
-              <option value="customer_lastNameAsc">Last Name: A-Z</option>
-              <option value="customer_lastNameDesc">Last Name: Z-A</option>
+            <select id="customer-sort-options">
+              <option>--- Select an Attribute to Sort By ---</option>
+              <option value="ID">ID</option>
+              <option value="FIRST_NAME">First Name</option>
+              <option value="MIDDLE_NAME">Middle Name</option>
+              <option value="LAST_NAME">Last Name</option>
             </select>
+            <button id="customer-sort-btn" type="button" onclick="sortTableByColumn('customer-table', 'customer-sort-options', this, 'YES')">🡹</button>
           </div>
           <div class="right-section">
             <button class="addButtons" type="button" onclick="addNewCustomer()">Add</button>
             <button class="updateButtons" type="button" onclick="updateSelectedCustomer()">Update</button>
-            <button class="deleteButtons" type="button" onclick="deleteSelectedCustomer()">Delete</button>
+            <!-- <button class="deleteButtons" type="button" onclick="deleteSelectedCustomer()">Delete</button> -->
           </div>
         </div>
 
@@ -1076,6 +1378,8 @@
               <tr>
                 <th>ID</th>
                 <th>FULL NAME</th>
+                <th>CONTACT INFO</th>
+                <th>STATUS</th>
               </tr>
             </thead>
             <tbody id="customer-table-body">
@@ -1100,15 +1404,19 @@
           <form id="customer-form">
 
             <label for="customer-id">Customer ID:</label>
-            <input type="text" id="customer-id" name="customer-id" placeholder="Enter customer ID" required> 
+            <input type="number" id="customer-id" name="customer-id" placeholder="Enter customer ID" required min="1"> 
   
             <br> 
   
-            <label for="customer-type">Customer Type:</label>
-            <select id="customer-type" name="customer-type">
-              <option>Select the type of this customer</option>
+            <label for="customer-status">Status:</label>
+            <select id="customer-status" name="customer-status" required>
+              <option value="ACTIVE">ACTIVE</option>
+              <option value="INACTIVE">INACTIVE</option>
+              <option value="SUSPENDED">SUSPENDED</option>
+              <option value="BANNED">BANNED</option>
+              <option value="LOST">LOST</option>
+              <option value="VIP">VIP</option>
               <option value="GUEST">GUEST</option>
-              <option value="REGISTERED">REGISTERED</option>
             </select>
   
             <br>
@@ -1130,7 +1438,7 @@
   
             <label for="customer-gender">Gender:</label>
             <select id="customer-gender" name="customer-gender">
-              <option>Select the gender of this customer</option>
+              <option>--- Select the Gender of this Customer ---</option>
               <option value="Male">Male</option>
               <option value="Female">Female</option>
             </select>
@@ -1138,22 +1446,27 @@
             <br>
   
             <label for="customer-birthdate">Birth Date:</label>
-            <input type="date" id="customer-birthdate" name="customer-birthdate" placeholder="Enter customer's birthdate" required/>
+            <input type="date" id="customer-birthdate" name="customer-birthdate" placeholder="Enter customer's birthdate" required max="">
   
             <br>
     
             <label for="customer-phonenumber">Contact Number:</label>
-            <input type="text" id="customer-phonenumber" name="customer-phonenumber" placeholder="Enter customer's phone number" required>
+            <input type="text" id="customer-phonenumber" name="customer-phonenumber" placeholder="Enter customer's phone number (09XXXXXXXXX)" required minlength="11" maxlength="11" pattern="\d{11}">
   
             <br>
     
             <label for="customer-address">Address:</label>
-            <textarea id="customer-address" name="customer-address" placeholder="Enter customer's address" rows="4" required></textarea>
+            <textarea id="customer-address" name="customer-address" placeholder="Enter customer's address" rows="8" required></textarea>
   
             <br>
   
             <label for="customer-email">Email:</label>
-            <input type="text" id="customer-email" name="customer-email" placeholder="Enter customer's email" required>
+            <input type="email" id="customer-email" name="customer-email" placeholder="Enter customer's email" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" title="Please enter a valid email address." autocomplete="off" maxlength="254">
+            
+            <br>
+
+            <label for="customer-email-confirm">Confirm Email:</label>
+            <input type="email" id="customer-email-confirm" name="customer-email-confirm" placeholder="Re-enter email" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" title="Please enter a valid email address." autocomplete="off" maxlength="254">
   
             <br>
 
@@ -1195,16 +1508,26 @@
             container.style.display = "none";
         });
 
+        /*==============================*/
+
         // Function to show the selected div container and hide others
         function showContainer(containerId) {
-            divContainers.forEach(container => {
-                if (container.id === containerId) {
-                    container.style.display = "block";
-                } else {
-                    container.style.display = "none";
-                }
-            });
+
+          // Select and remove all existing notifications in the document
+          const allNotifications = document.querySelectorAll('.notification');
+          allNotifications.forEach(notification => notification.remove());
+
+          divContainers.forEach(container => {
+              if (container.id === containerId) {
+                  container.style.display = "block";
+              } else {
+                  container.style.display = "none";
+              }
+          });
+
         }
+
+        /*==============================*/
 
         // Add event listeners to vertical menu buttons
         const verticalMenuButtons = document.querySelectorAll(".verticalmenu-btn");
@@ -1220,8 +1543,10 @@
             });
         });
 
-        // Set the "menuItemPage" container as active by default
-        const defaultContainerId = "menuCategory";
+        /*==============================*/
+
+        // Set the "?Page" container as active by default
+        const defaultContainerId = "stock";
         const defaultButton = document.getElementById(defaultContainerId + "Page");
 
         showContainer(defaultContainerId);
@@ -1229,14 +1554,10 @@
       
         /*==============================*/
 
-        addHoverEffectToTableRows("menu-item-table");
-        addHoverEffectToTableRows("menu-category-table");
-        addHoverEffectToTableRows("ingredient-table");
-        addHoverEffectToTableRows("ingredient-category-table");
-        addHoverEffectToTableRows("ingredient-unit-table");
-        addHoverEffectToTableRows("staff-table");
-        addHoverEffectToTableRows("supplier-table");
-        addHoverEffectToTableRows("customer-table");
+        document.getElementById('staff-birthdate').max = new Date().toISOString().split("T")[0];
+        document.getElementById('customer-birthdate').max = new Date().toISOString().split("T")[0];
+      
+        /*==============================*/
 
       });
       
@@ -1284,6 +1605,64 @@
           }
         });
       }
+      
+      /*==============================*/
+
+      addHoverEffectToTableRows("stock-table");
+      addHoverEffectToTableRows("stock-transaction-table");
+      addHoverEffectToTableRows("staff-table");
+      addHoverEffectToTableRows("customer-table");
+      addHoverEffectToTableRows("menu-item-table");
+      addHoverEffectToTableRows("menu-category-table");
+      addHoverEffectToTableRows("ingredient-table");
+      addHoverEffectToTableRows("ingredient-category-table");
+      addHoverEffectToTableRows("ingredient-unit-table");
+      
+      /*============================================================*/
+
+      function previewImage(event) {
+          const file = event.target.files[0]; // Get the selected file
+          const previewImage = document.getElementById('preview-image'); // Get the image element
+
+          if (file) {
+              const reader = new FileReader(); // Create a new FileReader instance
+
+              // Define what happens when the file is read
+              reader.onload = function(e) {
+                  previewImage.src = e.target.result; // Set the image src to the file's data URL
+              }
+
+              // Read the file as a data URL
+              reader.readAsDataURL(file);
+          } else {
+              previewImage.src = '../img_placeholder.png'; // Reset to placeholder if no file is selected
+          }
+      }
+      
+      /*============================================================*/
+
+      // Add event listener to the select dropdown
+      function addSortEventListener(tableId, selectId, buttonId) {
+          const selectElement = document.getElementById(selectId);
+          const sortButton = document.getElementById(buttonId);
+
+          // Listen for changes in the dropdown selection
+          selectElement.addEventListener('change', function() {
+              sortTableByColumn(tableId, selectId, sortButton);
+          });
+      }
+      
+      /*==============================*/
+
+      addSortEventListener('menu-item-table', 'menu-item-sort-options', 'menu-item-sort-btn', 'NO');
+      addSortEventListener('menu-category-table', 'menu-category-sort-options', 'menu-category-sort-btn', 'NO');  
+      addSortEventListener('ingredient-stock-table', 'ingredient-stock-sort-options', 'ingredient-stock-sort-btn', 'NO');  
+      addSortEventListener('ingredient-table', 'ingredient-sort-options', 'ingredient-sort-btn', 'NO');  
+      addSortEventListener('ingredient-category-table', 'ingredient-category-sort-options', 'ingredient-category-sort-btn', 'NO'); 
+      addSortEventListener('ingredient-unit-table', 'ingredient-unit-sort-options', 'ingredient-unit-sort-btn', 'NO');   
+      addSortEventListener('staff-table', 'staff-sort-options', 'staff-sort-btn', 'NO');  
+      addSortEventListener('supplier-table', 'supplier-sort-options', 'supplier-sort-btn', 'NO');  
+      addSortEventListener('customer-table', 'customer-sort-options', 'customer-sort-btn', 'NO');  
       
       /*============================================================*/
 

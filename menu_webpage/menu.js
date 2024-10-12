@@ -102,23 +102,31 @@
     function incrementQuantity(button) {
         var quantityElement = button.parentElement.querySelector('.quantity');
         var quantity = parseInt(quantityElement.textContent);
-        quantity++;
-        quantityElement.textContent = quantity;
-
-        updateSubtotal(button);
-        updateTotal();
+        
+        if (quantity < 10) {
+            quantity++;
+            quantityElement.textContent = quantity;
+    
+            updateSubtotal(button);
+            updateTotal();
+        } else {
+            alert("Quantity cannot exceed 10.");
+        }
     }
-
+    
     // Function to decrement quantity
     function decrementQuantity(button) {
         var quantityElement = button.parentElement.querySelector('.quantity');
         var quantity = parseInt(quantityElement.textContent);
+        
         if (quantity > 1) {
             quantity--;
             quantityElement.textContent = quantity;
-
+    
             updateSubtotal(button);
             updateTotal();
+        } else {
+            alert("Quantity cannot be less than 1.");
         }
     }
     
