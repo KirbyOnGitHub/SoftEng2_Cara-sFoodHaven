@@ -361,6 +361,41 @@ function closeModal(modalID) {
 
 /*============================================================*/
 
+function formattedIngredientIDWithExtra(ingredientID) {
+    const table = document.getElementById("ingredient-table");
+    const rows = table.querySelectorAll("tbody tr");
+
+    for (const row of rows) {
+        const ingredientData = JSON.parse(row.getAttribute("data-ingredient"));
+
+        if (ingredientData.id === ingredientID) {
+            const { id, name, unit } = ingredientData;
+            return `[${id}] ${name}<br><small>(${unit})</small>`;
+        }
+    }
+}
+
+/*============================================================*/
+
+function grabSpecificDataFromID(pageID, ID, dataAttributeName) {
+    const table = document.getElementById(`${pageID}-table`);
+    const rows = table.querySelectorAll("tbody tr");
+
+    for (const row of rows) {
+        const rowData = JSON.parse(row.getAttribute(`data-${pageID}`));
+
+        if (rowData.id === ID) {
+            // Use bracket notation to access the dynamic property
+            return rowData[dataAttributeName];
+        }
+    }
+
+    // Return null if no matching ID is found
+    return null;
+}
+
+/*============================================================*/
+
 
 
 
@@ -418,22 +453,16 @@ function addSelectedIngredientsToStockInTable(tableBodyID, ifStockIN) {
         let stockID = "?";
 
         if (checkbox && checkbox.checked) {
-            let rowData, ingredientIDandNameWithUnit;
+            let rowData, ingredientID;
 
             // Check the source table and extract the appropriate data
             if (tableBodyID === "stock-table_body") {
                 rowData = JSON.parse(row.getAttribute("data-stock"));
                 stockID = rowData.id;
-                ingredientIDandNameWithUnit = rowData.ingredientIDandNameWithUnit;
+                ingredientID = rowData.ingredientID;
             } else if (tableBodyID === "ingredient-table_body") {
                 rowData = JSON.parse(row.getAttribute("data-ingredient"));
-                const ingredientIDandName = `[${rowData.id}] ${rowData.name}`;
-                const ingredientUnit = rowData.unit;
-
-                // Format ingredientIDandName with unit
-                ingredientIDandNameWithUnit = `
-                    ${ingredientIDandName}<br><small>(${ingredientUnit})</small>
-                `;
+                ingredientID = rowData.id;
             }
 
             // Create a new row for the stock-in/out table
@@ -446,7 +475,7 @@ function addSelectedIngredientsToStockInTable(tableBodyID, ifStockIN) {
 
             // Add the ingredient ID and name with unit as the second column
             const ingredientNameCell = document.createElement('td');
-            ingredientNameCell.innerHTML = ingredientIDandNameWithUnit; // Set innerHTML for formatting
+            ingredientNameCell.innerHTML = formattedIngredientIDWithExtra(ingredientID); // Set innerHTML for formatting
             newRow.appendChild(ingredientNameCell);
 
             // Add input for Quantity Added/Removed
@@ -513,8 +542,8 @@ function confirmedIngsToStock(button) {
     const generatedStockID = stockTableBody.rows.length + 1; // Auto-generate Stock ID
 
     Array.from(stockInNOutTableBody.rows).forEach((row) => {
-        const stockID = row.cells[0].innerText.trim(); // Ingredient name with unit
-        const ingredientName = row.cells[1].innerText.trim(); // Ingredient name with unit
+        const stockID = row.cells[0].innerText.trim();
+        const ingredientID = row.cells[1].innerHTML.match(/\[(.*?)\]/)[1]; // Ingredient ID extracted from format
         const quantityAdded = parseInt(row.cells[2].querySelector('input').value || 0);
         const expirationDate = row.cells[3].querySelector('input').value || '';
         const expirationAlertTH = row.cells[4].querySelector('input').value || 0;
@@ -537,12 +566,12 @@ function confirmedIngsToStock(button) {
 
             // Prevent negative quantity for stock out
             if (isStockOut && updatedQtyRemaining < 0) {
-                alert(`Insufficient quantity available for ${ingredientName}.`);
+                alert(`Insufficient quantity available for ${ingredientID}.`);
                 return; // Stop processing if not enough stock is available
             }
 
             // Update the quantity and data attribute
-            existingRow.cells[3].textContent = updatedQtyRemaining;
+            existingRow.cells[3].textContent = updatedQtyRemaining + ' ' + grabSpecificDataFromID('ingredient', ingredientID, 'unit');
 
             const stockData = JSON.parse(existingRow.getAttribute('data-stock'));
             stockData.quantityRemaining = updatedQtyRemaining;
@@ -557,14 +586,14 @@ function confirmedIngsToStock(button) {
             newRow.innerHTML = `
                 <td><input type="checkbox"></td>
                 <td>${generatedStockID}</td>
-                <td>${ingredientName}</td>
-                <td>${quantityAdded}</td>
+                <td>${formattedIngredientIDWithExtra(ingredientID)}</td>
+                <td>${quantityAdded + ' ' + grabSpecificDataFromID('ingredient', ingredientID, 'unit')}</td>
                 <td>AVAILABLE</td>
             `;
 
             newRow.setAttribute('data-stock', JSON.stringify({
                 id: generatedStockID,
-                ingredientIDandNameWithUnit: ingredientName,
+                ingredientID: ingredientID,
                 originalQuantity: quantityAdded,
                 quantityRemaining: quantityAdded,
                 stockInDate: today,
@@ -599,15 +628,15 @@ function confirmedIngsToStock(button) {
         txnRow.innerHTML = `
             <td>${transactionID}</td>
             <td>${existingRow ? existingRow.cells[1].textContent : generatedStockID}</td>
-            <td>${ingredientName}</td>
-            <td>${qtyChange}</td>
+            <td>${formattedIngredientIDWithExtra(ingredientID)}</td>
+            <td>${qtyChange + ' ' + grabSpecificDataFromID('ingredient', ingredientID, 'unit')}</td>
             <td>${transactionType}</td>
         `;
 
         txnRow.setAttribute('data-stock-transaction', JSON.stringify({
             id: transactionID,
             stock_ID: existingRow ? existingRow.cells[1].textContent : generatedStockID,
-            ingredientIDandNameWithUnit: ingredientName,
+            ingredientID: ingredientID,
             quantity_added: isStockOut ? 0 : quantityAdded,
             quantity_removed: isStockOut ? quantityAdded : 0,
             transaction_type: transactionType,
@@ -644,7 +673,7 @@ function stock_tableRowClicked(dataRow, row) {
 
     // Populate the form fields with the data from the clicked row
     document.getElementById('stock-id').value = rowData.id;
-    document.getElementById('stock-ingredient-id').value = rowData.ingredientIDandNameWithUnit;
+    document.getElementById('stock-ingredient-id').value = rowData.ingredientID;
     document.getElementById('stock-status').value = rowData.stockStatus;
     document.getElementById('stock-original-qty').value = rowData.originalQuantity;
     document.getElementById('stock-qty-left').value = rowData.quantityRemaining;
@@ -662,7 +691,7 @@ function stockTransaction_tableRowClicked(dataRow, row) {
     // Fill form inputs with transaction data
     document.getElementById('stock-transaction-id').value = rowData.id;
     document.getElementById('stock-transaction-stock-id').value = rowData.stock_ID;
-    document.getElementById('stock-transaction-ingredient-id').value = rowData.ingredientIDandNameWithUnit;
+    document.getElementById('stock-transaction-ingredient-id').value = rowData.ingredientID;
     document.getElementById('stock-ingredient-qty-added').value = rowData.quantity_added;
     document.getElementById('stock-ingredient-qty-removed').value = rowData.quantity_removed;
     document.getElementById('stock-transaction-transaction-type').value = rowData.transaction_type;
@@ -1321,23 +1350,19 @@ function addIngredientToList() {
         return; // Exit if no ingredient is selected
     }
 
-    // Get the selected ingredient text
-    const selectedIngredient = ingredientComboBox.options[selectedIndex].textContent.trim();
+    // Get the selected ingredient ID from the value of the selected option
+    const selectedIngredientID = ingredientComboBox.options[selectedIndex].value.trim();
 
-    // Get the table and search for the row where the data-ingredient matches the selected ingredient
+    // Get the table and search for the row where the ingredient ID matches
     const table = document.getElementById('ingredient-table');
     const rows = table.querySelectorAll("tbody tr");
     let selectedRow = null;
-    let ingID = "";
-    let unitText = "";
 
-    // Find the matching row by checking the data-ingredient attribute
+    // Find the matching row by comparing the ingredient ID
     rows.forEach(row => {
         const ingredientData = JSON.parse(row.getAttribute('data-ingredient')); // Parse the data-ingredient attribute
-        if (ingredientData.name.trim() === selectedIngredient) {
+        if (ingredientData.id.trim() === selectedIngredientID) {
             selectedRow = row;
-            ingID = ingredientData.id.trim();
-            unitText = ingredientData.unit.trim();  
         }
     });
 
@@ -1351,8 +1376,8 @@ function addIngredientToList() {
     const ingredientListRows = ingredientListTableBody.querySelectorAll("tr");
 
     for (const row of ingredientListRows) {
-        const existingIngredient = row.getAttribute('data-ingredient'); // Grab the data-ingredient for comparison
-        if (existingIngredient === selectedIngredient) {
+        const existingIngredientID = row.getAttribute('data-ingredient-id'); // Compare by ID
+        if (existingIngredientID === selectedIngredientID) {
             alert("This ingredient has already been added to the list.");
             return;  // Exit if the ingredient is already in the table
         }
@@ -1379,14 +1404,10 @@ function addIngredientToList() {
     qtyInput.min = "0";  // Ensure no negative values
     qtyCell.appendChild(qtyInput);
 
-    // Set the 3rd column with the ingredient name, unit, and the delete button below the unit
-    const ingredientNameElement = document.createElement("span");
-    ingredientNameElement.classList.add("ingredient-name");
-    ingredientNameElement.textContent = `[${ingID}] ${selectedIngredient}`;
-
-    const ingredientUnitElement = document.createElement("small");
-    ingredientUnitElement.classList.add("ingredient-unit");
-    ingredientUnitElement.textContent = `(${unitText})`;
+    // Set the 3rd column with the formatted ingredient name, unit, and the delete button below
+    const formattedIngredient = document.createElement("span");
+    formattedIngredient.classList.add("formatted-ingredient");
+    formattedIngredient.innerHTML = formattedIngredientIDWithExtra(selectedIngredientID);
 
     // Create the delete button
     const deleteButton = document.createElement("button");
@@ -1396,10 +1417,8 @@ function addIngredientToList() {
         ingredientListTableBody.removeChild(newRow);  // Remove the row when "delete" is clicked
     };
 
-    // Append the name, unit, and delete button to the ingredient cell
-    ingredientCell.appendChild(ingredientNameElement);
-    ingredientCell.appendChild(ingredientUnitElement);
-    ingredientCell.appendChild(document.createElement("br"));  // Line break before delete button
+    // Append the formatted ingredient and delete button to the ingredient cell
+    ingredientCell.appendChild(formattedIngredient);
     ingredientCell.appendChild(deleteButton);
 
     // Append the cells to the new row
@@ -1407,17 +1426,12 @@ function addIngredientToList() {
     newRow.appendChild(qtyCell);
     newRow.appendChild(ingredientCell);
 
-    // Set data attributes for the new row (if needed)
-    newRow.setAttribute('data-ingredient', selectedIngredient);
-    newRow.setAttribute('data-ingredient-assigned-unit', unitText);
-
     // Append the new row to the ingredient list table body
     ingredientListTableBody.appendChild(newRow);
 
     // Reset the combobox to its default state
     ingredientComboBox.selectedIndex = 0;
 }
-
 
 /*============================================================*/
 
@@ -1466,12 +1480,10 @@ function addNewMenuItem() {
     for (let row of ingredientsTable.rows) {
         const mainIngredientCheckbox = row.cells[0].querySelector('input[type="checkbox"]');
         const quantityConsumed = row.cells[1].querySelector('input').value;
-        const ingredientName = row.cells[2].querySelector('.ingredient-name').textContent.trim();
-        const ingredientUnit = row.cells[2].querySelector('.ingredient-unit').textContent.trim();
-        const formattedIngredientUnit = ingredientUnit.slice(1, -1).trim();
+        const ingredientID = row.cells[2].innerHTML.match(/\[(.*?)\]/)[1];
 
         if (!quantityConsumed || isNaN(parseFloat(quantityConsumed)) || parseFloat(quantityConsumed) <= 0) {
-            showNotification(`Invalid quantity for ingredient: ${ingredientName}. Please enter a valid quantity.`, "menu-item-form");
+            showNotification(`Invalid quantity for ingredient ID: ${ingredientID}. Please enter a valid quantity.`, "menu-item-form");
             return;
         }
 
@@ -1480,8 +1492,7 @@ function addNewMenuItem() {
         }
 
         ingredientsData.push({
-            ingredientName,
-            ingredientUnit: formattedIngredientUnit,
+            ingredientID,
             quantityConsumed: parseFloat(quantityConsumed),
             isMainIngredient: mainIngredientCheckbox.checked
         });
@@ -1549,8 +1560,6 @@ function menuItem_tableRowClicked(dataRow, row) {
 
     // Remove "Php " from the price to get the numeric value
     const rawPrice = rowData.price.replace("Php ", "");
-
-    // Populate the price field with the numeric value
     document.getElementById('menu-item-price').value = rawPrice;
     document.getElementById('menu-item-description').value = rowData.description;
 
@@ -1564,50 +1573,45 @@ function menuItem_tableRowClicked(dataRow, row) {
 
     // Repopulate the ingredient list table with the data
     rowData.ingredients.forEach(ingredient => {
+        // Add a new row for the ingredient
         const newRow = document.createElement('tr');
 
-        // Create the checkbox for marking the main ingredient (1st column)
+        // Create cells for the new row
         const mainIngredientCell = document.createElement('td');
+        const qtyCell = document.createElement('td');
+        const ingredientCell = document.createElement('td');
+
+        // Create the checkbox for marking the main ingredient (1st column)
         const mainIngredientCheckbox = document.createElement('input');
         mainIngredientCheckbox.type = 'checkbox';
         mainIngredientCheckbox.name = 'main-ingredient-checkbox';
         mainIngredientCheckbox.checked = ingredient.isMainIngredient; // Check if it's the main ingredient
         mainIngredientCell.appendChild(mainIngredientCheckbox);
 
-        // Create the quantity input field (2nd column)
-        const qtyCell = document.createElement('td');
+        // Create the input for the quantity (2nd column)
         const qtyInput = document.createElement('input');
         qtyInput.type = 'number';
         qtyInput.value = ingredient.quantityConsumed;
+        qtyInput.min = '0';  // Ensure no negative values
         qtyInput.required = true;
         qtyCell.appendChild(qtyInput);
 
-        // Create the ingredient name, unit, and delete button (3rd column)
-        const ingredientCell = document.createElement('td');
-
-        // Create the ingredient name element
-        const ingredientNameElement = document.createElement("span");
-        ingredientNameElement.classList.add("ingredient-name");
-        ingredientNameElement.textContent = ingredient.ingredientName;
-
-        // Create the ingredient unit element
-        const ingredientUnitElement = document.createElement("small");
-        ingredientUnitElement.classList.add("ingredient-unit");
-        ingredientUnitElement.textContent = `(${ingredient.ingredientUnit})`;
+        // Create the ingredient name and unit (formatted span)
+        const formattedIngredient = document.createElement('span');
+        formattedIngredient.classList.add('formatted-ingredient');
+        formattedIngredient.innerHTML = formattedIngredientIDWithExtra(ingredient.ingredientID);
 
         // Create the delete button
-        const deleteButton = document.createElement("button");
-        deleteButton.textContent = "Remove";
-        deleteButton.classList.add("deleteButtons");
-        deleteButton.onclick = function() {
+        const deleteButton = document.createElement('button');
+        deleteButton.textContent = 'Remove';
+        deleteButton.classList.add('deleteButtons');
+        deleteButton.onclick = function () {
             ingredientListTableBody.removeChild(newRow);  // Remove the row when "delete" is clicked
         };
 
-        // Append the name, unit, and delete button to the ingredient cell
-        ingredientCell.appendChild(ingredientNameElement);
-        ingredientCell.appendChild(ingredientUnitElement);
-        ingredientCell.appendChild(document.createElement("br"));  // Line break before delete button
-        ingredientCell.appendChild(deleteButton);  // Append delete button below unit text
+        // Append the formatted ingredient and delete button to the ingredient cell
+        ingredientCell.appendChild(formattedIngredient);
+        ingredientCell.appendChild(deleteButton);
 
         // Append the cells to the new row
         newRow.appendChild(mainIngredientCell);
@@ -1671,20 +1675,12 @@ function updateSelectedMenuItem() {
     for (let row of ingredientsTable.rows) {
         const mainIngredientCheckbox = row.cells[0].querySelector('input[type="checkbox"]');
         const quantityConsumed = row.cells[1].querySelector('input').value;
-        const ingredientName = row.cells[2].querySelector('.ingredient-name').textContent.trim();
-        const ingredientUnit = row.cells[2].querySelector('.ingredient-unit').textContent.trim(); 
-
-        // Remove parentheses from ingredient unit
-        const formattedIngredientUnit = ingredientUnit.slice(1, -1).trim(); // Remove first and last character
+        const ingredientID = row.cells[2].innerHTML.match(/\[(.*?)\]/)[1];
 
         // Check for empty or invalid inputs
         if (!quantityConsumed || isNaN(parseFloat(quantityConsumed)) || parseFloat(quantityConsumed) <= 0) {
-            showNotification(`Invalid quantity for ingredient: ${ingredientName}. Please enter a valid quantity.`, "menu-item-form");
+            showNotification(`Invalid quantity for ingredient ID: ${ingredientID}. Please enter a valid quantity.`, "menu-item-form");
             return; // Exit the function if the quantity is invalid
-        }
-        if (!ingredientName) {
-            showNotification(`Ingredient name cannot be empty. Please enter a valid ingredient name.`, "menu-item-form");
-            return; // Exit the function if the ingredient name is invalid
         }
 
         // Check if the main ingredient checkbox is checked
@@ -1694,8 +1690,7 @@ function updateSelectedMenuItem() {
 
         // Store the updated ingredient data (including unit)
         updatedIngredientsData.push({
-            ingredientName,  // Store the name of the ingredient
-            ingredientUnit: formattedIngredientUnit, // Store the formatted unit
+            ingredientID,
             quantityConsumed: parseFloat(quantityConsumed),  // Ensure it's a number
             isMainIngredient: mainIngredientCheckbox.checked  // Track if it's the main ingredient
         });
@@ -1968,7 +1963,7 @@ function addNewIngredient() {
     checkBoxCell.appendChild(checkbox);
 
     // Set cell values
-    ingredientCell.textContent = `[${ingredientID}] ${ingredientName}`;
+    ingredientCell.innerHTML = `[${ingredientID}] ${ingredientName}<br><small>(${assignedUnit})</small>`;
     categoryCell.textContent = assignedCategory;
 
     // Create the status badge (span) for quantity

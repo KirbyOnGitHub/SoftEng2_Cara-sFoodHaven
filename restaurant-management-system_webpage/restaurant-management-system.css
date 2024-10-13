@@ -476,11 +476,6 @@ tr.clickedTableRow td:last-child {
     font-size: 14px;
 }
 
-#ingredient-table tbody tr td:nth-child(2) {
-    text-indent: 20%; /* Adjust the indentation value as needed */
-    text-align: left;
-}
-
 /* Style the "Delete" buttons inside the table */
 table td input[type="checkbox"] {
     margin-top: 6px;
