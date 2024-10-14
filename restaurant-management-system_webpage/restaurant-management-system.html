@@ -95,6 +95,13 @@
     <!-- ============================================================ -->
     <!-- ============================================================ -->
 
+    <!-- Notification Container -->
+    <div id="notification-container"></div>
+
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+
 
 
 
@@ -119,8 +126,7 @@
         <div class="tool-bar">
           <div class="left-section">
             <select id="stock-attribute-input">
-              <option>--- Select an Attribute to Filter ---</option>
-              <option value=""></option>
+              <option value="" disabled selected>--- Select an Attribute to Filter ---</option>
             </select>
             <button type="button" onclick="">Reset</button>
           </div>
@@ -133,11 +139,12 @@
         <div class="tool-bar">
           <div class="left-section">
             <select id="stock-sort-options">
-              <option>--- Select an Attribute to Sort By ---</option>
-              <option value="0">Stock ID</option>
-              <option value="1">Ingredient ID</option>
-              <option value="2">Quantity Left</option>
-              <option value="3">Expiration Date</option>
+              <option value="" disabled selected>--- Select an Attribute to Sort By ---</option>
+              <option value="">Stock ID</option>
+              <option value="">Ingredient ID</option>
+              <option value="">Quantity Left</option>
+              <option value="">Stock In Date</option>
+              <option value="">Expiration Date</option>
             </select>
             <button id="stock-sort-btn" type="button" onclick="sortTableByColumn('-table', 'stock-sort-options', this, 'YES')">🡹</button>
           </div>
@@ -184,12 +191,12 @@
           <form id="stock-form">
   
             <label for="stock-id">Stock ID:</label>
-            <input type="number" id="stock-id" name="stock-id">
+            <input type="number" id="stock-id" name="stock-id" min="1" disabled>
             
             <br>
   
             <label for="stock-ingredient-id">Ingredient ID, Name, and Unit:</label>
-            <input type="text" id="stock-ingredient-id" name="stock-ingredient-id" disabled>
+            <input type="text" id="stock-ingredient-id" name="stock-ingredient-id" min="1" disabled>
             
             <br>
   
@@ -269,8 +276,7 @@
         <div class="tool-bar">
           <div class="left-section">
             <select id="stock-transaction-attribute-input">
-              <option>--- Select an Attribute to Filter ---</option>
-              <option value=""></option>
+              <option value="" disabled selected>--- Select an Attribute to Filter ---</option>
             </select>
             <button type="button" onclick="">Reset</button>
           </div>
@@ -284,11 +290,10 @@
           <div class="left-section">
             <select id="stock-transaction-sort-options">
               <option>--- Select an Attribute to Sort By ---</option>
-              <option value="0">Transaction ID</option>
-              <option value="1">Stock ID</option>
-              <option value="2">Ingredient ID</option>
-              <option value="3">Transaction ID</option>
-              <option value="4">Expiration Date</option>
+              <option value="">Transaction ID</option>
+              <option value="">Stock ID</option>
+              <option value="">Ingredient ID</option>
+              <option value="">Transaction Date</option>
             </select>
             <button id="stock-transaction-sort-btn" type="button" onclick="sortTableByColumn('-table', 'stock-transaction-sort-options', this, 'YES')">🡹</button>
           </div>
@@ -331,7 +336,7 @@
           <form id="stock-transaction-form">
   
             <label for="stock-transaction-id">Stock Transaction ID:</label>
-            <input type="number" id="stock-transaction-id" name="stock-transaction-id">
+            <input type="number" id="stock-transaction-id" name="stock-transaction-id" min="1" disabled>
             
             <br>
   
@@ -340,7 +345,7 @@
             
             <br>
   
-            <label for="stock-transaction-ingredient-id">Ingredient ID and Name:</label>
+            <label for="stock-transaction-ingredient-id">[ID] Ingredient (Unit):</label>
             <input type="text" id="stock-transaction-ingredient-id" name="stock-transaction-ingredient-id" disabled>
             
             <br>
@@ -426,8 +431,7 @@
         <div class="tool-bar">
           <div class="left-section">
             <select id="staff-attribute-input">
-              <option>--- Select an Attribute to Filter ---</option>
-              <option value=""></option>
+              <option value="" disabled selected>--- Select an Attribute to Filter ---</option>
             </select>
             <button type="button" onclick="">Reset</button>
           </div>
@@ -440,11 +444,11 @@
         <div class="tool-bar">
           <div class="left-section">
             <select id="staff-sort-options">
-              <option>--- Select an Attribute to Sort By ---</option>
-              <option value="0">ID</option>
-              <option value="1">First Name</option>
-              <option value="2">Middle Name</option>
-              <option value="3">Last Name</option>
+              <option value="" disabled selected>--- Select an Attribute to Sort By ---</option>
+              <option value="">Staff ID</option>
+              <option value="">First Name</option>
+              <option value="">Middle Name</option>
+              <option value="">Last Name</option>
             </select>
             <button id="staff-sort-btn" type="button" onclick="sortTableByColumn('staff-table', 'staff-sort-options', this, 'YES')">🡹</button>
           </div>
@@ -491,7 +495,7 @@
           <form id="staff-form">
   
             <label for="staff-id">Staff ID:</label>
-            <input type="number" id="staff-id" name="staff-id" placeholder="Enter staff ID" required min="1">
+            <input type="number" id="staff-id" name="staff-id" placeholder="Enter the Staff's ID" min="1" tabindex="-1">
   
             <br>
   
@@ -510,7 +514,7 @@
             <br>
     
             <label for="staff-middle-name">Middle Name:</label>
-            <input type="text" id="staff-middle-name" name="staff-middle-name" placeholder="Enter the Staff's Middle Name" required>
+            <input type="text" id="staff-middle-name" name="staff-middle-name" placeholder="Enter the Staff's Middle Name (Optional)">
   
             <br>
     
@@ -526,7 +530,7 @@
   
             <label for="staff-gender">Gender:</label>
             <select id="staff-gender" name="staff-gender" required>
-              <option>--- Select the Gender of this Staff ---</option>
+              <option value="" disabled selected>--- Select the Gender of this Staff ---</option>
               <option value="Male">Male</option>
               <option value="Female">Female</option>
             </select>
@@ -556,6 +560,16 @@
             <label for="staff-email-confirm">Confirm Email:</label>
             <input type="email" id="staff-email-confirm" name="staff-email-confirm" placeholder="Re-enter Email for Confirmation" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" title="Please enter a valid email address." autocomplete="off" maxlength="254">
   
+            <br>
+            <br>  
+            <span>====================================</span>
+            <br>
+
+            <div class="form-buttons-container">
+              <button class="addButtons" type="button" onclick="addNewStaff()">Add</button>
+              <button class="updateButtons" type="button" onclick="updateSelectedStaff()">Update</button>
+            </div>
+
             <br>
 
           </form>
@@ -598,8 +612,7 @@
         <div class="tool-bar">
           <div class="left-section">
             <select id="supplier-attribute-input">
-              <option>--- Select an Attribute to Filter ---</option>
-              <option value=""></option>
+              <option value="" disabled selected>--- Select an Attribute to Filter ---</option>
             </select>
             <button type="button" onclick="">Reset</button>
           </div>
@@ -612,9 +625,9 @@
         <div class="tool-bar">
           <div class="left-section">
             <select id="supplier-sort-options">
-              <option>--- Select an Attribute to Sort By ---</option>
-              <option value="0">ID</option>
-              <option value="1">Supplier Name</option>
+              <option value="" disabled selected>--- Select an Attribute to Sort By ---</option>
+              <option value="">Supplier ID</option>
+              <option value="">Supplier Name</option>
             </select>
             <button id="supplier-sort-btn" type="button" onclick="sortTableByColumn('supplier-table', 'supplier-sort-options', this, 'YES')">🡹</button>
           </div>
@@ -659,7 +672,7 @@
           <form id="supplier-form">
   
             <label for="supplier-id">Supplier ID:</label>
-            <input type="number" id="supplier-id" name="supplier-id" placeholder="Enter supplier ID" required min="1">
+            <input type="number" id="supplier-id" name="supplier-id" placeholder="Enter supplier ID" min="1" tabindex="-1">
   
             <br>
 
@@ -691,6 +704,17 @@
             <label for="supplier-email-confirm">Confirm Email:</label>
             <input type="email" id="supplier-email-confirm" name="supplier-email-confirm" placeholder="Re-enter supplier's email" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" title="Please enter a valid email address." autocomplete="off" maxlength="254">
   
+            <br>
+            <br>  
+            <span>====================================</span>
+            <br>
+
+            <div class="form-buttons-container">
+              <button class="addButtons" type="button" onclick="addNewSupplier()">Add</button>
+              <button class="updateButtons" type="button" onclick="updateSelectedSupplier()">Update</button>
+              <button class="deleteButtons" type="button" onclick="deleteSelectedSupplier()">Delete</button>
+            </div>
+            
             <br>
 
           </form>
@@ -733,8 +757,7 @@
         <div class="tool-bar">
           <div class="left-section">
             <select id="customer-attribute-input">
-              <option>--- Select an Attribute to Filter ---</option>
-              <option value=""></option>
+              <option value="" disabled selected>--- Select an Attribute to Filter ---</option>
             </select>
             <button type="button" onclick="">Reset</button>
           </div>
@@ -747,11 +770,11 @@
         <div class="tool-bar">
           <div class="left-section">
             <select id="customer-sort-options">
-              <option>--- Select an Attribute to Sort By ---</option>
-              <option value="ID">ID</option>
-              <option value="FIRST_NAME">First Name</option>
-              <option value="MIDDLE_NAME">Middle Name</option>
-              <option value="LAST_NAME">Last Name</option>
+              <option value="" disabled selected>--- Select an Attribute to Sort By ---</option>
+              <option value="">Customer ID</option>
+              <option value="">First Name</option>
+              <option value="">Middle Name</option>
+              <option value="">Last Name</option>
             </select>
             <button id="customer-sort-btn" type="button" onclick="sortTableByColumn('customer-table', 'customer-sort-options', this, 'YES')">🡹</button>
           </div>
@@ -798,7 +821,7 @@
           <form id="customer-form">
 
             <label for="customer-id">Customer ID:</label>
-            <input type="number" id="customer-id" name="customer-id" placeholder="Enter the Customer's ID" required min="1"> 
+            <input type="number" id="customer-id" name="customer-id" placeholder="Enter the Customer's ID" min="1" tabindex="-1"> 
   
             <br> 
   
@@ -821,7 +844,7 @@
             <br>
     
             <label for="customer-middle-name">Middle Name:</label>
-            <input type="text" id="customer-middle-name" name="customer-middle-name" placeholder="Enter the Customer's Middle Name" required>
+            <input type="text" id="customer-middle-name" name="customer-middle-name" placeholder="Enter the Customer's Middle Name (Optional)">
   
             <br>
     
@@ -831,8 +854,8 @@
             <br>
   
             <label for="customer-gender">Gender:</label>
-            <select id="customer-gender" name="customer-gender">
-              <option>--- Select the Gender of this Customer ---</option>
+            <select id="customer-gender" name="customer-gender" required>
+              <option value="" disabled selected>--- Select the Gender of this Customer ---</option>
               <option value="Male">Male</option>
               <option value="Female">Female</option>
             </select>
@@ -862,6 +885,16 @@
             <label for="customer-email-confirm">Confirm Email:</label>
             <input type="email" id="customer-email-confirm" name="customer-email-confirm" placeholder="Re-enter Customer's Email for Confirmation" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" title="Please enter a valid email address." autocomplete="off" maxlength="254">
   
+            <br>
+            <br>  
+            <span>====================================</span>
+            <br>
+
+            <div class="form-buttons-container">
+              <button class="addButtons" type="button" onclick="addNewCustomer()">Add</button>
+              <button class="updateButtons" type="button" onclick="updateSelectedCustomer()">Update</button>
+            </div>
+            
             <br>
 
           </form>
@@ -904,7 +937,7 @@
         <div class="tool-bar">
           <div class="left-section">
             <select id="menu-item-attribute-input">
-              <option>--- Select an Attribute to Filter ---</option>
+              <option value="" disabled selected>--- Select an Attribute to Filter ---</option>
               <option value=""></option>
             </select>
             <button type="button" onclick="">Reset</button>
@@ -918,17 +951,17 @@
         <div class="tool-bar">
           <div class="left-section">
             <select id="menu-item-sort-options">
-              <option>--- Select an Attribute to Sort By ---</option>
-              <option value="0">ID</option>
-              <option value="1">Menu Item</option>
-              <option value="2">Price</option>
+              <option value="" disabled selected>--- Select an Attribute to Sort By ---</option>
+              <option value="">Menu Item ID</option>
+              <option value="">Menu Item Name</option>
+              <option value="">Menu Item Price</option>
             </select>
             <button id="menu-item-sort-btn" type="button" onclick="sortTableByColumn('menu-item-table', 'menu-item-sort-options', this, 'YES')">🡹</button>
           </div>
           <div class="right-section">
             <button class="addButtons" type="button" onclick="addNewMenuItem()">Add</button>
             <button class="updateButtons" type="button" onclick="updateSelectedMenuItem()">Update</button>
-            <button class="deleteButtons" type="button" onclick="deleteSelectedTableRow('menu-item-table')">Delete</button>
+            <button class="deleteButtons" type="button" onclick="deleteSelectedTableRow('menu-item-table','menu-item')">Delete</button>
           </div>
         </div>
 
@@ -973,14 +1006,14 @@
   
             <br>
   
+            <label for="menu-item-id">Menu Item ID:</label>
+            <input type="number" id="menu-item-id" name="menu-item-id" placeholder="Enter the Menu Item's ID" min="1" tabindex="-1">
+            
+            <br>
+  
             <label for="menu-item-img">Menu Item Image:</label>
             <input type="file" id="menu-item-img" name="menu-item-img" accept="image/*" onchange="previewImage(event)" required>
   
-            <br>
-  
-            <label for="menu-item-id">Menu Item ID:</label>
-            <input type="number" id="menu-item-id" name="menu-item-id" placeholder="Enter the Menu Item's ID" min="1">
-            
             <br>
   
             <label for="menu-item-name">Menu Item Name:</label>
@@ -989,8 +1022,8 @@
             <br>
   
             <label for="menu-category-combobox">Menu Item Category:</label>
-            <select id="menu-category-combobox" name="menu-category-combobox">
-              <option>--- Select a Menu Category for this Menu Item ---</option>
+            <select id="menu-category-combobox" name="menu-category-combobox" required>
+              <option value="" disabled selected>--- Select a Menu Category for this Menu Item ---</option>
             </select>
   
             <br>
@@ -1004,8 +1037,9 @@
             <textarea id="menu-item-description" name="menu-item-description" placeholder="Enter the Menu Item's Description" rows="8"></textarea>
   
             <br>
-  
+            <br>  
             <span>====================================</span>
+            <br>
             <br>
   
             <div id="ingredient-list-table-label">
@@ -1026,19 +1060,26 @@
               </table>
             </div>
   
-            <span>====================================</span>
-            
-            <br>
-  
             <label for="ingredient-name-combobox">Ingredient to Add:</label>
-            <select id="ingredient-name-combobox" name="ingredient-name-combobox">
-              <option>--- Select an Ingredient to Add ---</option>
+            <select id="ingredient-name-combobox" name="ingredient-name-combobox" required>
+              <option value="" disabled selected>--- Select an Ingredient to Add ---</option>
             </select>
             
             <br>
   
             <button type="button" onclick="addIngredientToList()">Add to the Recipe Ingredients</button>
             
+            <br>
+            <br>  
+            <span>====================================</span>
+            <br>
+
+            <div class="form-buttons-container">
+              <button class="addButtons" type="button" onclick="addNewMenuItem()">Add</button>
+              <button class="updateButtons" type="button" onclick="updateSelectedMenuItem()">Update</button>
+              <button class="deleteButtons" type="button" onclick="deleteSelectedTableRow('menu-item-table','menu-item')">Delete</button>
+            </div>
+
             <br>
             
           </form>
@@ -1081,8 +1122,7 @@
         <div class="tool-bar">
           <div class="left-section">
             <select id="menu-category-attribute-input">
-              <option>--- Select an Attribute to Filter ---</option>
-              <option value=""></option>
+              <option value="" disabled selected>--- Select an Attribute to Filter ---</option>
             </select>
             <button type="button" onclick="">Reset</button>
           </div>
@@ -1095,16 +1135,16 @@
         <div class="tool-bar">
           <div class="left-section">
             <select id="menu-category-sort-options">
-              <option>--- Select an Attribute to Sort By ---</option>
-              <option value="0">ID</option>
-              <option value="1">Menu Category</option>
+              <option value="" disabled selected>--- Select an Attribute to Sort By ---</option>
+              <option value="">Menu Category ID</option>
+              <option value="">Menu Category</option>
             </select>
             <button id="menu-category-sort-btn" type="button" onclick="sortTableByColumn('menu-category-table', 'menu-category-sort-options', this, 'YES')">🡹</button>
           </div>
           <div class="right-section">
             <button class="addButtons" type="button" onclick="addNewMenuCategory()">Add</button>
             <button class="updateButtons" type="button" onclick="updateSelectedMenuCategory()">Update</button>
-            <button class="deleteButtons" type="button" onclick="deleteSelectedTableRow('menu-category-table')">Delete</button>
+            <button class="deleteButtons" type="button" onclick="deleteSelectedTableRow('menu-category-table','menu-category')">Delete</button>
           </div>
         </div>
 
@@ -1142,13 +1182,24 @@
           <form id="menu-category-form">
 
             <label for="menu-category-id">Menu Category ID:</label>
-            <input type="number" id="menu-category-id" name="menu-category-id" placeholder="Enter the Menu Category's ID" required min="1">
+            <input type="number" id="menu-category-id" name="menu-category-id" placeholder="Enter the Menu Category's ID" min="1" tabindex="-1">
             
             <br>
 
             <label for="menu-category-name">Menu Category Name:</label>
             <input type="text" id="menu-category-name" name="menu-category-name" placeholder="Enter the Menu Category's Name" required>
             
+            <br>
+            <br>  
+            <span>====================================</span>
+            <br>
+            
+            <div class="form-buttons-container">
+              <button class="addButtons" type="button" onclick="addNewMenuCategory()">Add</button>
+              <button class="updateButtons" type="button" onclick="updateSelectedMenuCategory()">Update</button>
+              <button class="deleteButtons" type="button" onclick="deleteSelectedTableRow('menu-category-table','menu-category')">Delete</button>
+            </div>
+
             <br>
 
           </form>
@@ -1191,8 +1242,7 @@
         <div class="tool-bar">
           <div class="left-section">
             <select id="ingredient-stock-attribute-input">
-              <option>--- Select an Attribute to Filter ---</option>
-              <option value=""></option>
+              <option value="" disabled selected>--- Select an Attribute to Filter ---</option>
             </select>
             <button type="button" onclick="">Reset</button>
           </div>
@@ -1205,17 +1255,17 @@
         <div class="tool-bar">
           <div class="left-section">
             <select id="ingredient-sort-options">
-              <option>--- Select an Attribute to Sort By ---</option>
-              <option value="0">ID</option>
-              <option value="1">Ingredient Name</option>
-              <option value="2">Total Quantity</option>
+              <option value="" disabled selected>--- Select an Attribute to Sort By ---</option>
+              <option value="">Ingredient ID</option>
+              <option value="">Ingredient Name</option>
+              <option value="">Total Quantity</option>
             </select>
             <button id="ingredient-sort-btn" type="button" onclick="sortTableByColumn('ingredient-table', 'ingredient-sort-options', this, 'YES')">🡹</button>
           </div>
           <div class="right-section">
             <button class="addButtons" type="button" onclick="addNewIngredient()">Add</button>
             <button class="updateButtons" type="button" onclick="updateSelectedIngredient()">Update</button>
-            <button class="deleteButtons" type="button" onclick="deleteSelectedTableRow('ingredient-table')">Delete</button>
+            <button class="deleteButtons" type="button" onclick="deleteSelectedTableRow('ingredient-table','ingredient')">Delete</button>
           </div>
         </div>
 
@@ -1255,7 +1305,7 @@
           <form id="ingredient-form">
   
             <label for="ingredient-id">Ingredient ID:</label>
-            <input type="number" id="ingredient-id" name="ingredient-id" placeholder="Enter the Ingredient's ID" required min="1">
+            <input type="number" id="ingredient-id" name="ingredient-id" placeholder="Enter the Ingredient's ID" min="1" tabindex="-1">
             
             <br>
   
@@ -1265,15 +1315,15 @@
             <br>
   
             <label for="ingredient-category-combobox">Ingredient Category:</label>
-            <select id="ingredient-category-combobox" name="ingredient-category-combobox">
-              <option>--- Select a Ing. Category for this Ingredient ---</option>
+            <select id="ingredient-category-combobox" name="ingredient-category-combobox" required>
+              <option value="" disabled selected>--- Select a Ing. Category for this Ingredient ---</option>
             </select>
             
             <br>
   
             <label for="ingredient-unit-combobox">Ingredient Unit:</label>
-            <select id="ingredient-unit-combobox" name="ingredient-unit-combobox">
-              <option>--- Select a Ing. Unit for this Ingredient ---</option>
+            <select id="ingredient-unit-combobox" name="ingredient-unit-combobox" required>
+              <option value="" disabled selected>--- Select a Ing. Unit for this Ingredient ---</option>
             </select>
   
             <br>
@@ -1291,6 +1341,17 @@
             <label for="ingredient-reorder-point">Reorder Point:</label>
             <input type="number" id="ingredient-reorder-point" name="ingredient-reorder-point" placeholder="Enter a Number" required min="1">
   
+            <br>
+            <br>  
+            <span>====================================</span>
+            <br>
+
+            <div class="form-buttons-container">
+              <button class="addButtons" type="button" onclick="addNewIngredient()">Add</button>
+              <button class="updateButtons" type="button" onclick="updateSelectedIngredient()">Update</button>
+              <button class="deleteButtons" type="button" onclick="deleteSelectedTableRow('ingredient-table','ingredient')">Delete</button>
+            </div>
+
             <br>
 
           </form>
@@ -1333,8 +1394,7 @@
         <div class="tool-bar">
           <div class="left-section">
             <select id="ingredient-category-attribute-input">
-              <option>--- Select an Attribute to Filter ---</option>
-              <option value=""></option>
+              <option value="" disabled selected>--- Select an Attribute to Filter ---</option>
             </select>
             <button type="button" onclick="">Reset</button>
           </div>
@@ -1347,16 +1407,16 @@
         <div class="tool-bar">
           <div class="left-section">
             <select id="ingredient-category-sort-options">
-              <option>--- Select an Attribute to Sort By ---</option>
-              <option value="0">ID</option>
-              <option value="1">Ingredient Category</option>
+              <option value="" disabled selected>--- Select an Attribute to Sort By ---</option>
+              <option value="">Ingredient Category ID</option>
+              <option value="">Ingredient Category</option>
             </select>
             <button id="ingredient-category-sort-btn" type="button" onclick="sortTableByColumn('ingredient-category-table', 'ingredient-category-sort-options', this, 'YES')">🡹</button>
           </div>
           <div class="right-section">
             <button class="addButtons" type="button" onclick="addNewIngredientCategory()">Add</button>
             <button class="updateButtons" type="button" onclick="updateSelectedIngredientCategory()">Update</button>
-            <button class="deleteButtons" type="button" onclick="deleteSelectedTableRow('ingredient-category-table')">Delete</button>
+            <button class="deleteButtons" type="button" onclick="deleteSelectedTableRow('ingredient-category-table','ingredient-category')">Delete</button>
           </div>
         </div>
 
@@ -1394,13 +1454,24 @@
           <form id="ingredient-category-form">
   
             <label for="ingredient-category-id">Ingredient Category ID:</label>
-            <input type="number" id="ingredient-category-id" name="ingredient-category-id" placeholder="Enter the Ingredient Category's ID" required min="1">
+            <input type="number" id="ingredient-category-id" name="ingredient-category-id" placeholder="Enter the Ingredient Category's ID" min="1" tabindex="-1">
             
             <br>
   
             <label for="ingredient-category-name">Ingredient Category Name:</label>
             <input type="text" id="ingredient-category-name" name="ingredient-category-name" placeholder="Enter the Ingredient Category's Name" required>
             
+            <br>
+            <br>  
+            <span>====================================</span>
+            <br>
+
+            <div class="form-buttons-container">
+              <button class="addButtons" type="button" onclick="addNewIngredientCategory()">Add</button>
+              <button class="updateButtons" type="button" onclick="updateSelectedIngredientCategory()">Update</button>
+              <button class="deleteButtons" type="button" onclick="deleteSelectedTableRow('ingredient-category-table','ingredient-category')">Delete</button>
+            </div>
+
             <br>
 
           </form>
@@ -1443,8 +1514,7 @@
         <div class="tool-bar">
           <div class="left-section">
             <select id="ingredient-unit-attribute-input">
-              <option>--- Select an Attribute to Filter ---</option>
-              <option value=""></option>
+              <option value="" disabled selected>--- Select an Attribute to Filter ---</option>
             </select>
             <button type="button" onclick="">Reset</button>
           </div>
@@ -1457,16 +1527,16 @@
         <div class="tool-bar">
           <div class="left-section">
             <select id="ingredient-unit-sort-options">
-              <option>--- Select an Attribute to Sort By ---</option>
-              <option value="0">ID</option>
-              <option value="1">Ingredient Unit</option>
+              <option value="" disabled selected>--- Select an Attribute to Sort By ---</option>
+              <option value="">Ingredient Unit ID</option>
+              <option value="">Ingredient Unit</option>
             </select>
             <button id="ingredient-unit-sort-btn" type="button" onclick="sortTableByColumn('ingredient-unit-table', 'ingredient-unit-sort-options', this, 'YES')">🡹</button>
           </div>
           <div class="right-section">
             <button class="addButtons" type="button" onclick="addNewIngredientUnit()">Add</button>
             <button class="updateButtons" type="button" onclick="updateSelectedIngredientUnit()">Update</button>
-            <button class="deleteButtons" type="button" onclick="deleteSelectedTableRow('ingredient-unit-table')">Delete</button>
+            <button class="deleteButtons" type="button" onclick="deleteSelectedTableRow('ingredient-unit-table','ingredient-unit')">Delete</button>
           </div>
         </div>
 
@@ -1504,12 +1574,23 @@
           <form id="ingredient-unit-form">
   
             <label for="ingredient-unit-id">Ingredient Unit ID:</label>
-            <input type="number" id="ingredient-unit-id" name="ingredient-unit-id" placeholder="Enter the Ingredient Unit's ID" required min="1">
+            <input type="number" id="ingredient-unit-id" name="ingredient-unit-id" placeholder="Enter the Ingredient Unit's ID" min="1" tabindex="-1">
             
             <br>
   
             <label for="ingredient-unit-name">Ingredient Unit Name:</label>
             <input type="text" id="ingredient-unit-name" name="ingredient-unit-name" placeholder="Enter the Ingredient Unit's Name" required>
+            
+            <br>
+            <br>  
+            <span>====================================</span>
+            <br>
+
+            <div class="form-buttons-container">
+              <button class="addButtons" type="button" onclick="addNewIngredientUnit()">Add</button>
+              <button class="updateButtons" type="button" onclick="updateSelectedIngredientUnit()">Update</button>
+              <button class="deleteButtons" type="button" onclick="deleteSelectedTableRow('ingredient-unit-table','ingredient-unit')">Delete</button>
+            </div>
             
             <br>
 
@@ -1681,31 +1762,6 @@
               previewImage.src = '../img_placeholder.png'; // Reset to placeholder if no file is selected
           }
       }
-      
-      /*============================================================*/
-
-      // Add event listener to the select dropdown
-      function addSortEventListener(tableId, selectId, buttonId) {
-          const selectElement = document.getElementById(selectId);
-          const sortButton = document.getElementById(buttonId);
-
-          // Listen for changes in the dropdown selection
-          selectElement.addEventListener('change', function() {
-              sortTableByColumn(tableId, selectId, sortButton);
-          });
-      }
-      
-      /*==============================*/
-
-      addSortEventListener('menu-item-table', 'menu-item-sort-options', 'menu-item-sort-btn', 'NO');
-      addSortEventListener('menu-category-table', 'menu-category-sort-options', 'menu-category-sort-btn', 'NO');  
-      addSortEventListener('ingredient-stock-table', 'ingredient-stock-sort-options', 'ingredient-stock-sort-btn', 'NO');  
-      addSortEventListener('ingredient-table', 'ingredient-sort-options', 'ingredient-sort-btn', 'NO');  
-      addSortEventListener('ingredient-category-table', 'ingredient-category-sort-options', 'ingredient-category-sort-btn', 'NO'); 
-      addSortEventListener('ingredient-unit-table', 'ingredient-unit-sort-options', 'ingredient-unit-sort-btn', 'NO');   
-      addSortEventListener('staff-table', 'staff-sort-options', 'staff-sort-btn', 'NO');  
-      addSortEventListener('supplier-table', 'supplier-sort-options', 'supplier-sort-btn', 'NO');  
-      addSortEventListener('customer-table', 'customer-sort-options', 'customer-sort-btn', 'NO');  
       
       /*============================================================*/
 

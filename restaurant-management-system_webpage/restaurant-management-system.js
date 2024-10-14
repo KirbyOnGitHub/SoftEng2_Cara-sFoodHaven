@@ -60,31 +60,30 @@ function clearFormFields(tableId,formId,ifAlert) {
             checkboxes.forEach(checkbox => {
                 checkbox.checked = false; // Uncheck the checkbox
             });
-        } else {
-            showNotification(`Table with ID "${tableId}" not found.`,formId);
         }
-    } else {
-        showNotification(`Form with ID "${formId}" not found.`,formId);
     }
 
     if(ifAlert == "YES") {
-        showNotification("Form successfully cleared!\nSelected row has been deselected!\nCheckboxes has been unchecked!",formId)
+        showNotification(`Form cleared, row deselected, and checkboxes unchecked!`);
     }
 }
 
 /*============================================================*/
 
-function formValidity(formId) {
+function formValidity(formId, excludeIds = []) {
     // Get form element
     const selectedForm = document.getElementById(formId);
+    const formElements = selectedForm.elements; // Get all form elements
 
-    // Check if form is valid before continuing
-    if (!selectedForm.checkValidity()) {
-        selectedForm.reportValidity(); // Show browser validation message
-        return false; // Prevent further execution if form is invalid
-    } else {
-        return true;
+    // Check validity for all form elements except those in the excludeIds
+    for (const element of formElements) {
+        if (!excludeIds.includes(element.id) && !element.checkValidity()) {
+            element.reportValidity(); // Show browser validation message
+            return false; // Prevent further execution if any field is invalid
+        }
     }
+
+    return true; // All fields are valid
 }
 
 /*============================================================*/
@@ -115,41 +114,33 @@ function highlightClickedTableRow(tableId, row) {
 
 /*============================================================*/
 
-// Function to show the notification inside a specified form
-function showNotification(message, formId) {
+function showNotification(message) {
+    const container = document.getElementById('notification-container');
 
-    // Find the form by its ID
-    const form = document.getElementById(formId);
+    // Check if there is an existing notification
+    const existingNotification = container.querySelector('.notification');
+    if (existingNotification) {
+        existingNotification.remove(); // Remove it if found
+    }
 
-    // Select and remove all existing notifications in the document
-    const allNotifications = document.querySelectorAll('.notification');
-    allNotifications.forEach(notification => notification.remove());
-    
-    // Scroll the grandparent to the top with smooth behavior
-    const grandparentElement = form.parentElement.parentElement;
-    grandparentElement.scrollTo({ top: 0, behavior: 'smooth' });
-
-    // Create a div element for the notification
+    // Create the new notification element
     const notification = document.createElement('div');
     notification.className = 'notification';
-    notification.innerText = message;
+    notification.textContent = message;
 
-    // Insert the notification as the first child of the form
-    form.insertBefore(notification, form.firstChild);
+    // Append the notification to the container
+    container.appendChild(notification);
 
-    // Add the show class to start the fade-in effect
-    setTimeout(() => {
+    // Start the slide-in animation
+    requestAnimationFrame(() => {
         notification.classList.add('show');
-    }, 10);
+    });
 
-    // Remove the notification after 3 seconds with a fade-out effect
+    // Automatically remove the notification after 3.5 seconds
     setTimeout(() => {
-        notification.classList.add('hide');
-        // Remove the element from the DOM after the transition ends
-        notification.addEventListener('transitionend', () => {
-            notification.remove();
-        });
-    }, 3000);
+        notification.classList.remove('show'); // Trigger slide-out
+        setTimeout(() => notification.remove(), 600); // Wait for slide-out to complete
+    }, 3500);
 }
 
 /*============================================================*/
@@ -178,14 +169,6 @@ function repopulateComboBoxFromTable(tableID, dataName, comboBoxID) {
         comboBox.add(new Option(valueToAdd, IDForValue));
     });
 }
-
-/*============================================================*/
-
-// // Sample calls
-// repopulateComboBoxFromTable("menu-category-table", "data-category", "menu-category-combobox");
-// repopulateComboBoxFromTable("ingredient-table", "data-ingredient", "ingredient-name-combobox");
-// repopulateComboBoxFromTable("ingredient-category-table", "data-category", "ingredient-category-combobox");
-// repopulateComboBoxFromTable("ingredient-unit-table", "data-unit", "ingredient-unit-combobox");
 
 /*============================================================*/
 
@@ -243,7 +226,7 @@ function fillForm(inputID, tableID, dataName, formID) {
     const inputValue = document.getElementById(inputID).value.trim(); // Trim any extra spaces
 
     if (!inputValue) {
-        showNotification(`Please enter the ID of a '${dataName}' to auto-fill the form.`, formID);
+        showNotification(`Enter an ID to auto-fill the form.`);
         return;
     }
 
@@ -251,7 +234,7 @@ function fillForm(inputID, tableID, dataName, formID) {
     const rows = table.querySelectorAll("tbody tr");
 
     if (rows.length === 0) {
-        showNotification(`The '${dataName} Table' is empty. There are no rows to search.`, formID);
+        showNotification(`There are no rows to search in the table.`);
         return;
     }
 
@@ -263,22 +246,21 @@ function fillForm(inputID, tableID, dataName, formID) {
             // Ensure both values are of the same type
             if (String(rowData.id) === inputValue) {
                 if (row.classList.contains("clickedTableRow")) {
-                    showNotification(`The form is already filled with ID: ${inputValue}.`, formID);
+                    showNotification(`Form is already filled with ID: '${inputValue}'`);
                     found = true;
                     return;
                 }
 
                 row.click(); // Programmatically click the row
-                showNotification(`'${dataName} Form' filled successfully with ID: ${inputValue}!`, formID);
+                showNotification(`Form filled with ID: '${inputValue}'`);
                 found = true;
             }
         } catch (error) {
-            console.error(`Error parsing data-${dataName} on row:`, error);
         }
     });
 
     if (!found) {
-        showNotification(`No '${dataName}' with the ID: ${inputValue} found.`, formID);
+        showNotification(`No existing record with the ID: '${inputValue}'`);
     }
 }
 
@@ -313,7 +295,7 @@ function animateRowHighlight(row) {
 
 /*============================================================*/
 
-function deleteSelectedTableRow(tableID) {
+function deleteSelectedTableRow(tableID, dataName) {
     // Get the table by ID
     const table = document.getElementById(tableID);
 
@@ -322,26 +304,58 @@ function deleteSelectedTableRow(tableID) {
 
     // Check if a row is selected
     if (!selectedRow) {
-        showNotification(`Please select a row in the ${tableID.replace('-table', '')} table to be deleted.`, `${tableID.replace('-table', '-form')}`);
+        showNotification(`Select a row to delete from the table.`);
         return;
     }
 
-    // If a selected row is found, remove it
+    // Grab the selected row's data attribute and its ID
+    const selectedRowData = JSON.parse(selectedRow.getAttribute(`data-${dataName}`));
+    const selectedRowID = parseInt(selectedRowData.id); // Ensure ID is a number
+
+    // Remove the selected row
     selectedRow.remove();
     clearFormFields(tableID, `${tableID.replace('-table', '-form')}`);
 
     // Show notification for deletion
-    showNotification(`Item Deleted Successfully!`, `${tableID.replace('-table', '-form')}`);
+    showNotification(`Record ID: '${selectedRowID}' deleted successfully!`);
+
+    // Update IDs for rows with higher IDs than the deleted one
+    const remainingRows = Array.from(table.querySelectorAll("tbody tr"));
+    remainingRows.forEach(row => {
+        const rowData = JSON.parse(row.getAttribute(`data-${dataName}`));
+        const rowID = parseInt(rowData.id);
+
+        if (rowID > selectedRowID) {
+            const newID = rowID - 1;
+
+            // Update the data attribute with the new ID
+            rowData.id = newID;
+            row.setAttribute(`data-${dataName}`, JSON.stringify(rowData));
+
+            // Find the first cell with textContent matching the current ID
+            for (const cell of row.cells) {
+                if (parseInt(cell.textContent) === rowID) {
+                    cell.textContent = newID; // Update the cell's content
+                    break; // Stop searching after the first match
+                }
+            }
+        }
+    });
 
     // Call repopulateComboBoxFromTable based on tableID
-    if (tableID === "menu-category-table") {
-        repopulateComboBoxFromTable("menu-category-table", "data-menu-category", "menu-category-combobox");
-    } else if (tableID === "ingredient-table") {
-        repopulateComboBoxFromTable("ingredient-table", "data-ingredient", "ingredient-name-combobox");
-    } else if (tableID === "ingredient-category-table") {
-        repopulateComboBoxFromTable("ingredient-category-table", "data-ingredient-category", "ingredient-category-combobox");
-    } else if (tableID === "ingredient-unit-table") {
-        repopulateComboBoxFromTable("ingredient-unit-table", "data-ingredient-unit", "ingredient-unit-combobox");
+    switch (tableID) {
+        case "menu-category-table":
+            repopulateComboBoxFromTable("menu-category-table", "data-menu-category", "menu-category-combobox");
+            break;
+        case "ingredient-table":
+            repopulateComboBoxFromTable("ingredient-table", "data-ingredient", "ingredient-name-combobox");
+            break;
+        case "ingredient-category-table":
+            repopulateComboBoxFromTable("ingredient-category-table", "data-ingredient-category", "ingredient-category-combobox");
+            break;
+        case "ingredient-unit-table":
+            repopulateComboBoxFromTable("ingredient-unit-table", "data-ingredient-unit", "ingredient-unit-combobox");
+            break;
     }
 }
 
@@ -361,7 +375,7 @@ function closeModal(modalID) {
 
 /*============================================================*/
 
-function formattedIngredientIDWithExtra(ingredientID) {
+function formattedIngredientIDWithExtra(ingredientID,notInnerHTML) {
     const table = document.getElementById("ingredient-table");
     const rows = table.querySelectorAll("tbody tr");
 
@@ -370,7 +384,11 @@ function formattedIngredientIDWithExtra(ingredientID) {
 
         if (ingredientData.id === ingredientID) {
             const { id, name, unit } = ingredientData;
-            return `[${id}] ${name}<br><small>(${unit})</small>`;
+            if(notInnerHTML) {
+                return `[${id}] ${name} <br><small>(${unit})</small>`;
+            } else {
+                return `[${id}] ${name} (${unit})`;
+            }
         }
     }
 }
@@ -393,6 +411,31 @@ function grabSpecificDataFromID(pageID, ID, dataAttributeName) {
     // Return null if no matching ID is found
     return null;
 }
+
+/*============================================================*/
+
+// function toggleFillFormFeature(pageName, inputIDField, formID) {
+//     const idInput = document.getElementById(inputIDField);
+//     const form = document.getElementById(formID);
+//     const togglableFields = form.querySelectorAll('.togglable-input-fields');
+  
+//     // Toggle the ID input field's enabled/disabled state
+//     const isEnabled = !idInput.disabled;
+//     idInput.disabled = isEnabled;
+  
+//     // Update the placeholder for the ID field
+//     idInput.value = "";
+  
+//     // Update the placeholder for the ID field
+//     idInput.placeholder = isEnabled 
+//       ? `For 'Fill Form with ID'` 
+//       : `Enter ${pageName}'s ID`;
+  
+//     // Toggle the other form fields based on the ID field's state
+//     togglableFields.forEach(field => {
+//       field.disabled = !isEnabled;
+//     });
+// }
 
 /*============================================================*/
 
@@ -423,7 +466,7 @@ function addSelectedIngredientsToStockInTable(tableBodyID, ifStockIN) {
     });
 
     if (!hasChecked) {
-        alert('Please select at least one ingredient to stock in/out.');
+        showNotification(`Select at least one ingredient to stock in/out.`);
         return; // Stop further execution if no ingredients are selected
     }
 
@@ -475,7 +518,7 @@ function addSelectedIngredientsToStockInTable(tableBodyID, ifStockIN) {
 
             // Add the ingredient ID and name with unit as the second column
             const ingredientNameCell = document.createElement('td');
-            ingredientNameCell.innerHTML = formattedIngredientIDWithExtra(ingredientID); // Set innerHTML for formatting
+            ingredientNameCell.innerHTML = formattedIngredientIDWithExtra(ingredientID,true); // Set innerHTML for formatting
             newRow.appendChild(ingredientNameCell);
 
             // Add input for Quantity Added/Removed
@@ -488,6 +531,11 @@ function addSelectedIngredientsToStockInTable(tableBodyID, ifStockIN) {
             const expirationInput = document.createElement('input');
             expirationInput.type = 'date';
             expirationInput.required = true;
+
+            // Set the minimum date to today
+            const today = new Date();
+            const todayString = today.toISOString().split('T')[0]; // Format to YYYY-MM-DD
+            expirationInput.min = todayString;
 
             // Auto-fill expiration date and disable the input if not stocking in
             if (ifStockIN) {
@@ -540,15 +588,41 @@ function confirmedIngsToStock(button) {
     const isStockOut = button.textContent.trim() === "Confirm Stock Out"; // Check if it's stock-out action
 
     const generatedStockID = stockTableBody.rows.length + 1; // Auto-generate Stock ID
+    let hasInvalidInput = false; // Flag for invalid input
+    let firstInvalidInput; // To store the first invalid input element for focusing
 
     Array.from(stockInNOutTableBody.rows).forEach((row) => {
         const stockID = row.cells[0].innerText.trim();
-        const ingredientID = row.cells[1].innerHTML.match(/\[(.*?)\]/)[1]; // Ingredient ID extracted from format
-        const quantityAdded = parseInt(row.cells[2].querySelector('input').value || 0);
-        const expirationDate = row.cells[3].querySelector('input').value || '';
-        const expirationAlertTH = row.cells[4].querySelector('input').value || 0;
-        const remarks = row.cells[5].querySelector('input').value || '';
+        const ingredientID = parseInt(row.cells[1].innerHTML.match(/\[(.*?)\]/)[1]); // Ingredient ID extracted from format
+        const quantityAddedInput = row.cells[2].querySelector('input');
+        const expirationInput = row.cells[3].querySelector('input');
+        const expirationAlertInput = row.cells[4].querySelector('input');
+        const remarksInput = row.cells[5].querySelector('input');
 
+        const quantityAdded = parseInt(quantityAddedInput.value) || 0;
+        const expirationDate = expirationInput.value || '';
+        const expirationAlertTH = parseInt(expirationAlertInput.value) || 0;
+        const remarks = remarksInput.value || '';
+
+        // Validate quantity added
+        if (!quantityAddedInput.checkValidity()) {
+            hasInvalidInput = true;
+            firstInvalidInput = firstInvalidInput || quantityAddedInput; // Focus on the first invalid input
+            quantityAddedInput.reportValidity(); // Focus on the invalid quantity input
+            showNotification(`Invalid quantity for Ingredient ID: '${ingredientID}'`);
+            return; // Stop further processing for this row
+        }
+
+        // Validate expiration date
+        if (!expirationInput.checkValidity() || new Date(expirationInput.value) < new Date()) {
+            hasInvalidInput = true;
+            firstInvalidInput = firstInvalidInput || expirationInput; // Focus on the first invalid input
+            expirationInput.reportValidity(); // Focus on the invalid expiration date input
+            showNotification(`Invalid expiration date for Ingredient ID: '${ingredientID}'`);
+            return; // Stop further processing for this row
+        }
+
+        // If no invalid input, continue with the existing logic
         let currentQtyRemaining = 0;
         let updatedQtyRemaining = quantityAdded;
 
@@ -566,7 +640,7 @@ function confirmedIngsToStock(button) {
 
             // Prevent negative quantity for stock out
             if (isStockOut && updatedQtyRemaining < 0) {
-                alert(`Insufficient quantity available for ${ingredientID}.`);
+                showNotification(`Insufficient quantity available for Ingredient ID: '${ingredientID}'`);
                 return; // Stop processing if not enough stock is available
             }
 
@@ -586,7 +660,7 @@ function confirmedIngsToStock(button) {
             newRow.innerHTML = `
                 <td><input type="checkbox"></td>
                 <td>${generatedStockID}</td>
-                <td>${formattedIngredientIDWithExtra(ingredientID)}</td>
+                <td>${formattedIngredientIDWithExtra(ingredientID,true)}</td>
                 <td>${quantityAdded + ' ' + grabSpecificDataFromID('ingredient', ingredientID, 'unit')}</td>
                 <td>AVAILABLE</td>
             `;
@@ -628,7 +702,7 @@ function confirmedIngsToStock(button) {
         txnRow.innerHTML = `
             <td>${transactionID}</td>
             <td>${existingRow ? existingRow.cells[1].textContent : generatedStockID}</td>
-            <td>${formattedIngredientIDWithExtra(ingredientID)}</td>
+            <td>${formattedIngredientIDWithExtra(ingredientID,true)}</td>
             <td>${qtyChange + ' ' + grabSpecificDataFromID('ingredient', ingredientID, 'unit')}</td>
             <td>${transactionType}</td>
         `;
@@ -653,16 +727,73 @@ function confirmedIngsToStock(button) {
         });
 
         stockTransactionTableBody.appendChild(txnRow);
+
+        updateIngredientQuantity(ingredientID, quantityAdded, isStockOut ? 'STOCK OUT' : 'STOCK IN');
     });
 
     // Clear the stock-in table and uncheck all checkboxes
-    stockInNOutTableBody.innerHTML = '';
     document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
         checkbox.checked = false;
     });
 
-    // Close the modal after confirmation
-    closeModal('stock-in-n-out-modal');
+    // Close the modal after confirmation if there was no invalid input
+    if (!hasInvalidInput) {
+        stockInNOutTableBody.innerHTML = '';
+        closeModal('stock-in-n-out-modal');
+    }
+}
+
+/*============================================================*/
+
+function updateIngredientQuantity(ingredientID, quantityChange, transactionType) {
+    const ingredientTable = document.getElementById("ingredient-table");
+    const rows = Array.from(ingredientTable.querySelectorAll("tbody tr"));
+
+    // Find the row with matching ingredient ID
+    const matchingRow = rows.find(row => {
+        const ingredientData = JSON.parse(row.getAttribute("data-ingredient"));
+        return ingredientData.id === ingredientID;
+    });
+
+    if (!matchingRow) {
+        console.warn(`Ingredient with ID ${ingredientID} not found in the table.`);
+        return;
+    }
+
+    // Parse the current quantity from the row's data attribute
+    const ingredientData = JSON.parse(matchingRow.getAttribute("data-ingredient"));
+    let currentQuantity = ingredientData.quantity;
+
+    // Adjust the quantity based on the transaction type
+    const newQuantity = transactionType === 'STOCK IN' 
+        ? currentQuantity + quantityChange 
+        : currentQuantity - quantityChange;
+
+    if (newQuantity < 0) {
+        showNotification(`Insufficient quantity for Ingredient ID: '${ingredientID}' to stock out.`);
+        return; // Stop if the quantity becomes negative
+    }
+
+    // Update the data attribute with the new quantity
+    ingredientData.quantity = newQuantity;
+    matchingRow.setAttribute("data-ingredient", JSON.stringify(ingredientData));
+
+    // Update the displayed quantity in the table
+    const quantityCell = matchingRow.querySelector("td:last-child span");
+    const unit = ingredientData.unit;
+    quantityCell.textContent = `${newQuantity} ${unit}`;
+
+    const lowStockThreshold = ingredientData.lowStockTH;
+    const mediumStockThreshold = ingredientData.mediumStockTH;
+    if (newQuantity <= lowStockThreshold) {
+        quantityCell.className = 'status-lowstockth';
+    }
+    else if (newQuantity <= mediumStockThreshold) {
+        quantityCell.className = 'status-mediumstockth';
+    }
+    else {
+        quantityCell.className = 'status-highstockth';
+    }
 }
 
 /*============================================================*/
@@ -673,7 +804,7 @@ function stock_tableRowClicked(dataRow, row) {
 
     // Populate the form fields with the data from the clicked row
     document.getElementById('stock-id').value = rowData.id;
-    document.getElementById('stock-ingredient-id').value = rowData.ingredientID;
+    document.getElementById('stock-ingredient-id').value = formattedIngredientIDWithExtra(rowData.ingredientID,false);
     document.getElementById('stock-status').value = rowData.stockStatus;
     document.getElementById('stock-original-qty').value = rowData.originalQuantity;
     document.getElementById('stock-qty-left').value = rowData.quantityRemaining;
@@ -691,7 +822,7 @@ function stockTransaction_tableRowClicked(dataRow, row) {
     // Fill form inputs with transaction data
     document.getElementById('stock-transaction-id').value = rowData.id;
     document.getElementById('stock-transaction-stock-id').value = rowData.stock_ID;
-    document.getElementById('stock-transaction-ingredient-id').value = rowData.ingredientID;
+    document.getElementById('stock-transaction-ingredient-id').value = formattedIngredientIDWithExtra(rowData.ingredientID,false);
     document.getElementById('stock-ingredient-qty-added').value = rowData.quantity_added;
     document.getElementById('stock-ingredient-qty-removed').value = rowData.quantity_removed;
     document.getElementById('stock-transaction-transaction-type').value = rowData.transaction_type;
@@ -719,14 +850,14 @@ function stockTransaction_tableRowClicked(dataRow, row) {
 function addNewStaff() {
     // Validate form fields
     if (!formValidity('staff-form')) {
-        showNotification("Please fill all the required fields of the 'Staff Form' with valid input.", "staff-form");
+        showNotification(`Fill all required fields with valid input.`);
         return;
     }
 
     // Get the values of the input fields
-    const staffID = document.getElementById("staff-id").value;
+    const staffID = document.querySelector('#staff-table tbody').rows.length + 1;
     const staffFirstName = document.getElementById("staff-first-name").value;
-    const staffMiddleName = document.getElementById("staff-middle-name").value;
+    const staffMiddleName = document.getElementById("staff-middle-name").value || "";
     const staffLastName = document.getElementById("staff-last-name").value;
     const staffDesignation = document.getElementById("staff-designation").value;
     const staffGender = document.getElementById("staff-gender").value;
@@ -739,7 +870,7 @@ function addNewStaff() {
 
     // Check if email and confirm email are the same
     if (staffEmail !== staffEmailConfirm) {
-        showNotification("The emails do not match. Please ensure that 'Email' and 'Confirm Email' fields are the same.", "staff-form");
+        showNotification(`Emails do not match. Ensure 'Email' and 'Confirm Email' fields are identical.`);
         return;
     }
 
@@ -756,7 +887,7 @@ function addNewStaff() {
         const existingStaffFullName = cells[1].textContent.trim();
 
         if (existingStaffFullName.toLowerCase() === staffFullName.toLowerCase()) {
-            showNotification("This 'Staff' member already exists!", "staff-form");
+            showNotification(`Staff Member: '${existingStaffFullName}' already exists!`);
             return; // Exit if the staff already exists
         }
     }
@@ -816,12 +947,12 @@ function addNewStaff() {
     });
 
     // Append the new row to the table body
-    document.getElementById("staff-table").querySelector("tbody").appendChild(newRow);
+    table.querySelector("tbody").appendChild(newRow);
 
     // Clear the input fields of the form
     clearFormFields('staff-table', 'staff-form');
 
-    showNotification(`Staff Added Successfully!`, "staff-form");
+    showNotification(`Staff Member: '${staffFullName}' added successfully!`);
 }
   
 /*============================================================*/
@@ -852,18 +983,20 @@ function updateSelectedStaff() {
 
     // Check if a row is selected
     if (!selectedRow) {
-        showNotification("Please select a row in the staff table to be updated with what you inputted.", "staff-form");
+        showNotification(`Select a row to update from the table.`);
         return;
     }
 
     // Validate form fields
     if (!formValidity('staff-form')) {
-        showNotification("Please fill all the required fields of the 'Staff Form' with valid input to proceed with the update.", "staff-form");
+        showNotification(`Fill all required fields with valid input.`);
         return;
     }
 
     // Get the values of the input fields
-    const staffID = document.getElementById("staff-id").value;
+    const selectedRowData = JSON.parse(selectedRow.getAttribute('data-staff'));
+    const staffID = selectedRowData.id;
+    
     const staffStatus = document.getElementById("staff-status").value;
     const staffFirstName = document.getElementById("staff-first-name").value;
     const staffMiddleName = document.getElementById("staff-middle-name").value;
@@ -878,7 +1011,7 @@ function updateSelectedStaff() {
 
     // Check if email and confirm email are the same
     if (staffEmail !== staffEmailConfirm) {
-        showNotification("The emails do not match. Please ensure that 'Email' and 'Confirm Email' fields are the same.", "staff-form");
+        showNotification(`Emails do not match. Ensure 'Email' and 'Confirm Email' fields are identical.`);
         return;
     }
 
@@ -921,7 +1054,7 @@ function updateSelectedStaff() {
         statusBadge.className = `status-${staffStatus.toLowerCase()}`; // Change class based on new status
         cells[3].className = 'status-cell'; // Ensure correct cell styling
 
-        showNotification(`Staff Updated Successfully!`, "staff-form");
+        showNotification(`Staff Member: '${staffFullName}' updated successfully!`);
     }
 
     // Clear the input fields of the form
@@ -957,177 +1090,18 @@ function updateSelectedStaff() {
 
 // /*============================================================*/
 
-// function addNewSupplier() {
-//     // Validate form fields
-//     if (!formValidity('supplier-form')) {
-//         showNotification("Please fill all the required fields of the 'Supplier Form' with valid input.", "supplier-form");
-//         return;
-//     }
-
-//     // Get the values of the input fields
-//     const supplierID = document.getElementById("supplier-id").value;
-//     const supplierName = document.getElementById("supplier-name").value;
-//     const supplierContactPerson = document.getElementById("supplier-contact-person").value;
-//     const supplierAddress = document.getElementById("supplier-address").value;
-//     const supplierPhoneNumber = document.getElementById("supplier-phonenumber").value;
-//     const supplierEmail = document.getElementById("supplier-email").value;
-
-//     // Get the table and search for the row where the 2nd column matches the supplier name
-//     const table = document.getElementById("supplier-table");
-//     const rows = table.querySelectorAll("tbody tr");
-
-//     // Check if the supplier already exists in the 2nd column
-//     for (const row of rows) {
-//         const cells = row.getElementsByTagName("td");
-//         const existingSupplierName = cells[1].textContent.trim();
-
-//         if (existingSupplierName.toLowerCase() === supplierName.toLowerCase()) {
-//             showNotification("This 'Supplier' already exists!", "supplier-form");
-//             return; // Exit if the supplier already exists
-//         }
-//     }
-
-//     // Create a new table row element
-//     const newRow = document.createElement("tr");
-
-//     // Creating supplierData object
-//     const supplierData = {
-//         id: supplierID,
-//         name: supplierName,
-//         contactPerson: supplierContactPerson,
-//         address: supplierAddress,
-//         phoneNumber: supplierPhoneNumber,
-//         email: supplierEmail
-//     };
-
-//     // Setting supplierData as a custom attribute on the row
-//     newRow.setAttribute("data-supplier", JSON.stringify(supplierData));
-
-//     // Creating cells
-//     const supplierIDCell = document.createElement("td");
-//     const supplierNameCell = document.createElement("td");
-
-//     // Setting cell contents
-//     supplierIDCell.textContent = supplierID;
-//     supplierNameCell.textContent = supplierName; // Use the formatted full name
-
-//     // Append cells to the new row
-//     newRow.appendChild(supplierIDCell);
-//     newRow.appendChild(supplierNameCell);
-
-//     // Add click event listener to the new row
-//     newRow.addEventListener('click', function () {
-//         supplier_tableRowClicked('data-supplier', newRow); // Call the callback function when a row is clicked
-//         highlightClickedTableRow('supplier-table', newRow); // Call the callback function when a row is clicked
-//     });
-
-//     // Append the new row to the table body
-//     document.getElementById("supplier-table").querySelector("tbody").appendChild(newRow);
-
-//     // Clear the input fields of the form
-//     clearFormFields('supplier-table', 'supplier-form');
-
-//     showNotification(`Supplier Added Successfully!\n\nID: ${supplierID}\nSupplier Name: ${supplierName}.`, "supplier-form");
-// }
-  
-// /*============================================================*/
-
-// function supplier_tableRowClicked(dataRow, row) {
-//     // Access the data stored in the row's custom attribute
-//     const rowData = JSON.parse(row.getAttribute(dataRow));
-
-//     // Set the input fields with the corresponding data
-//     document.getElementById("supplier-id").value = rowData.id;  // Access by key
-//     document.getElementById("supplier-name").value = rowData.name;  // Access by key
-//     document.getElementById("supplier-contact-person").value = rowData.contactPerson;  // Access by key
-//     document.getElementById("supplier-address").value = rowData.address;  // Access by key
-//     document.getElementById("supplier-phonenumber").value = rowData.phoneNumber;  // Access by key
-//     document.getElementById("supplier-email").value = rowData.email;  // Access by key
-// }
-
-// /*============================================================*/
-
-// function updateSelectedSupplier() {
-//     // Find the currently selected row
-//     const selectedRow = document.querySelector("#supplier-table .clickedTableRow");
-
-//     // Check if a row is selected
-//     if (!selectedRow) {
-//         showNotification("Please select a row in the supplier table to be updated with what you inputted.", "supplier-form");
-//         return;
-//     }
-
-//     // Validate form fields
-//     if (!formValidity('supplier-form')) {
-//         showNotification("Please fill all the required fields of the 'Supplier Form' with valid input to proceed with the update.", "supplier-form");
-//         return;
-//     }
-
-//     // Get the values of the input fields
-//     const supplierData = {
-//         id: document.getElementById("supplier-id").value,
-//         name: document.getElementById("supplier-name").value,
-//         contactPerson: document.getElementById("supplier-contact-person").value,
-//         address: document.getElementById("supplier-address").value,
-//         phoneNumber: document.getElementById("supplier-phonenumber").value,
-//         email: document.getElementById("supplier-email").value
-//     };
-
-//     // Update the data-supplier attribute with the new data
-//     selectedRow.setAttribute("data-supplier", JSON.stringify(supplierData));
-
-//     // Update the displayed cell contents
-//     const cells = selectedRow.querySelectorAll("td");
-//     if (cells.length >= 2) {
-//         const previousSupplierID = cells[0].textContent;
-//         const previousSupplierName = cells[1].textContent;
-//         cells[0].textContent = supplierData.id;  // Update the ID cell
-//         cells[1].textContent = supplierData.name; // Update the name cell
-//         showNotification(`Supplier Updated Successfully!\n\nID: "${previousSupplierID}" ➔ "${supplierData.id}"\nSupplier Name: "${previousSupplierName}" ➔ "${supplierData.name}".`, "supplier-form");
-//     }
-
-//     // Clear the input fields of the form
-//     clearFormFields('supplier-table', 'supplier-form');
-// }
-
-// /*============================================================*/
-
-
-
-
-
-
-
-
-
-
-/*============================================================*/ /*============================================================*/
-/*============================================================*/ /*============================================================*/
-/*============================================================*/ /*============================================================*/
-
-
-
-
-
-
-
-
-
-
-/*============================================================*/
-
 function addNewCustomer() {
     // Validate form fields
     if (!formValidity('customer-form')) {
-        showNotification("Please fill all the required fields of the 'Customer Form' with valid input.", "customer-form");
+        showNotification(`Fill all required fields with valid input.`);
         return;
     }
 
     // Get the values of the input fields
-    const customerID = document.getElementById("customer-id").value;
+    const customerID = document.querySelector('#customer-table tbody').rows.length + 1
     const customerStatus = document.getElementById("customer-status").value;
     const customerFirstName = document.getElementById("customer-first-name").value;
-    const customerMiddleName = document.getElementById("customer-middle-name").value;
+    const customerMiddleName = document.getElementById("customer-middle-name").value || "";
     const customerLastName = document.getElementById("customer-last-name").value;
     const customerGender = document.getElementById("customer-gender").value;
     const customerBirthdate = document.getElementById("customer-birthdate").value;
@@ -1138,7 +1112,7 @@ function addNewCustomer() {
 
     // Check if email and confirm email are the same
     if (customerEmail !== customerEmailConfirm) {
-        showNotification("The emails do not match. Please ensure that 'Email' and 'Confirm Email' fields are the same.", "customer-form");
+        showNotification(`Emails do not match. Ensure 'Email' and 'Confirm Email' fields are identical.`);
         return;
     }
 
@@ -1155,7 +1129,7 @@ function addNewCustomer() {
         const existingCustomerFullName = cells[1].textContent.trim();
 
         if (existingCustomerFullName.toLowerCase() === customerFullName.toLowerCase()) {
-            showNotification("This 'Customer' already exists!", "customer-form");
+            showNotification(`Customer: '${customerFullName}' already exists!`);
             return; // Exit if the customer already exists
         }
     }
@@ -1215,12 +1189,12 @@ function addNewCustomer() {
     });
 
     // Append the new row to the table body
-    document.getElementById("customer-table").querySelector("tbody").appendChild(newRow);
+    table.querySelector("tbody").appendChild(newRow);
 
     // Clear the input fields of the form
     clearFormFields('customer-table', 'customer-form');
 
-    showNotification(`Customer Added Successfully!`, "customer-form");
+    showNotification(`Customer: '${customerFullName}' added successfully!`);
 }
   
 /*============================================================*/
@@ -1250,19 +1224,22 @@ function updateSelectedCustomer() {
 
     // Check if a row is selected
     if (!selectedRow) {
-        showNotification("Please select a row in the customer table to be updated with what you inputted.", "customer-form");
+        showNotification(`Select a row to update from the table.`);
         return;
     }
 
     // Validate form fields
     if (!formValidity('customer-form')) {
-        showNotification("Please fill all the required fields of the 'Customer Form' to proceed with the update.", "customer-form");
+        showNotification(`Fill all required fields with valid input.`);
         return;
     }
 
     // Get the values of the input fields
+    const selectedRowData = JSON.parse(selectedRow.getAttribute('data-customer'));
+    const customerID = selectedRowData.id;
+    
     const customerData = {
-        id: document.getElementById("customer-id").value,
+        id: customerID,
         status: document.getElementById("customer-status").value,
         firstName: document.getElementById("customer-first-name").value,
         middleName: document.getElementById("customer-middle-name").value,
@@ -1277,7 +1254,7 @@ function updateSelectedCustomer() {
 
     // Check if email and confirm email are the same
     if (customerData.email !== customerData.emailConfirm) {
-        showNotification("The emails do not match. Please ensure that 'Email' and 'Confirm Email' fields are the same.", "staff-form");
+        showNotification(`Emails do not match. Ensure 'Email' and 'Confirm Email' fields are identical.`);
         return;
     }
 
@@ -1306,7 +1283,7 @@ function updateSelectedCustomer() {
         statusBadge.className = `status-${customerData.status.toLowerCase()}`; // Change class based on new status
         cells[3].className = 'status-cell'; // Ensure correct cell styling
 
-        showNotification(`Customer Updated Successfully!`, "customer-form");
+        showNotification(`Customer: '${customerFullName}' updated successfully!`);
     }
 
     // Clear the input fields of the form
@@ -1345,13 +1322,14 @@ function addIngredientToList() {
     const ingredientComboBox = document.getElementById("ingredient-name-combobox");
     const selectedIndex = ingredientComboBox.selectedIndex;
 
-    if (selectedIndex === 0) { 
-        alert("Please select an ingredient to add.");
+    if (!ingredientComboBox.checkValidity()) { 
+        ingredientComboBox.reportValidity();
+        showNotification(`Select an ingredient to add to the recipe.`);
         return; // Exit if no ingredient is selected
     }
 
     // Get the selected ingredient ID from the value of the selected option
-    const selectedIngredientID = ingredientComboBox.options[selectedIndex].value.trim();
+    const selectedIngredientID = parseInt(ingredientComboBox.options[selectedIndex].value);
 
     // Get the table and search for the row where the ingredient ID matches
     const table = document.getElementById('ingredient-table');
@@ -1361,13 +1339,13 @@ function addIngredientToList() {
     // Find the matching row by comparing the ingredient ID
     rows.forEach(row => {
         const ingredientData = JSON.parse(row.getAttribute('data-ingredient')); // Parse the data-ingredient attribute
-        if (ingredientData.id.trim() === selectedIngredientID) {
+        if (ingredientData.id === selectedIngredientID) {
             selectedRow = row;
         }
     });
 
     if (!selectedRow) {
-        alert("Ingredient not found in the table.");
+        showNotification(`Ingredient not found in the Ingredient Table.`);
         return;
     }
 
@@ -1375,12 +1353,20 @@ function addIngredientToList() {
     const ingredientListTableBody = document.getElementById("ingredient-list-table-body");
     const ingredientListRows = ingredientListTableBody.querySelectorAll("tr");
 
+    // Use a flag to determine if the ingredient is already added
+    let isIngredientAlreadyAdded = false;
+
     for (const row of ingredientListRows) {
-        const existingIngredientID = row.getAttribute('data-ingredient-id'); // Compare by ID
+        const existingIngredientID = parseInt(row.getAttribute('data-ingredient-id')); // Compare by ID
         if (existingIngredientID === selectedIngredientID) {
-            alert("This ingredient has already been added to the list.");
-            return;  // Exit if the ingredient is already in the table
+            isIngredientAlreadyAdded = true; // Set the flag to true if a match is found
+            break; // Exit the loop if ingredient is found
         }
+    }
+
+    if (isIngredientAlreadyAdded) {
+        showNotification(`This ingredient is already in the list.`);
+        return; // Exit if the ingredient is already in the table
     }
 
     // Add a new row to the "ingredient-list-table"
@@ -1401,13 +1387,14 @@ function addIngredientToList() {
     const qtyInput = document.createElement("input");
     qtyInput.type = "number";
     qtyInput.placeholder = "Qty";
-    qtyInput.min = "0";  // Ensure no negative values
+    qtyInput.min = "1";  // Ensure no negative values
+    qtyInput.required = true; // Mark as required
     qtyCell.appendChild(qtyInput);
 
     // Set the 3rd column with the formatted ingredient name, unit, and the delete button below
     const formattedIngredient = document.createElement("span");
     formattedIngredient.classList.add("formatted-ingredient");
-    formattedIngredient.innerHTML = formattedIngredientIDWithExtra(selectedIngredientID);
+    formattedIngredient.innerHTML = formattedIngredientIDWithExtra(selectedIngredientID, true);
 
     // Create the delete button
     const deleteButton = document.createElement("button");
@@ -1426,6 +1413,9 @@ function addIngredientToList() {
     newRow.appendChild(qtyCell);
     newRow.appendChild(ingredientCell);
 
+    // Set the data-ingredient-id attribute for the new row for later checks
+    newRow.setAttribute('data-ingredient-id', selectedIngredientID);
+
     // Append the new row to the ingredient list table body
     ingredientListTableBody.appendChild(newRow);
 
@@ -1436,26 +1426,30 @@ function addIngredientToList() {
 /*============================================================*/
 
 function addNewMenuItem() {
-    if (!formValidity('menu-item-form')) {
-        showNotification("Please fill all the required fields of the 'Menu Item Form' with valid input.", "menu-item-form");
+    if (!formValidity('menu-item-form', ['ingredient-name-combobox'])) {
+        showNotification(`Fill all required fields with valid input.`);
         return;
     }
 
     // Gather data from the form fields
+    const menuItemId = document.querySelector('#menu-item-table tbody').rows.length + 1;
     const menuItemImage = document.getElementById('preview-image').src;
-    const menuItemId = document.getElementById('menu-item-id').value;
     const menuItemName = document.getElementById('menu-item-name').value;
     const menuItemAssignedCategory_ComboBox = document.getElementById("menu-category-combobox");
     const menuItemAssignedCategory = menuItemAssignedCategory_ComboBox.options[menuItemAssignedCategory_ComboBox.selectedIndex].textContent;
     let menuItemPrice = document.getElementById('menu-item-price').value;
     const menuItemDescription = document.getElementById('menu-item-description').value;
 
-    // Check if the menu item name already exists in the menu-item-table
-    const menuItemTableBody = document.getElementById('menu-item-table-body');
-    for (let row of menuItemTableBody.rows) {
-        const existingMenuItemName = row.cells[1].innerText; // The second column contains the menu item name
-        if (existingMenuItemName.toLowerCase() === menuItemName.toLowerCase()) {
-            showNotification(`A menu item with the name "${menuItemName}" already exists. Please choose a different name.`, "menu-item-form");
+    // Check for duplicate name in the table
+    const table = document.getElementById("menu-item-table");
+    const existingRows = table.querySelectorAll("tbody tr");
+
+    for (const row of existingRows) {
+        const rowData = JSON.parse(row.getAttribute("data-menu-item"));
+        const existingName = rowData.name.trim();
+
+        if (existingName.toLowerCase() === menuItemName.toLowerCase()) {
+            showNotification(`Menu Item Name: '${menuItemName}' already exists!`);
             return;
         }
     }
@@ -1463,7 +1457,8 @@ function addNewMenuItem() {
     // Validate price input
     menuItemPrice = parseFloat(menuItemPrice);
     if (isNaN(menuItemPrice) || menuItemPrice <= 0) {
-        showNotification(`Invalid price: Please enter a valid number greater than zero for the price.`, "menu-item-form");
+        document.getElementById('menu-item-price').reportValidity();
+        showNotification(`Invalid input for Menu Item Price.`);
         return;
     }
     menuItemPrice = `Php ${menuItemPrice.toFixed(2)}`;
@@ -1472,19 +1467,24 @@ function addNewMenuItem() {
     const ingredientsTable = document.getElementById('ingredient-list-table-body');
     const ingredientsData = [];
     if (ingredientsTable.rows.length === 0) {
-        showNotification(`A menu item must have at least one ingredient in its recipe. Please add ingredients.`, "menu-item-form");
+        document.getElementById('ingredient-list-table-body').focus();
+        showNotification(`At least one ingredient is required in the recipe. Please add ingredients.`);
         return;
     }
 
     let mainIngredientSelected = false;
+    let invalidQuantityInputField = null; // To track invalid quantity input field
+
     for (let row of ingredientsTable.rows) {
         const mainIngredientCheckbox = row.cells[0].querySelector('input[type="checkbox"]');
-        const quantityConsumed = row.cells[1].querySelector('input').value;
-        const ingredientID = row.cells[2].innerHTML.match(/\[(.*?)\]/)[1];
+        const quantityInput = row.cells[1].querySelector('input');
+        const quantityConsumed = quantityInput.value;
+        const ingredientID = parseInt(row.cells[2].innerHTML.match(/\[(.*?)\]/)[1]);
 
         if (!quantityConsumed || isNaN(parseFloat(quantityConsumed)) || parseFloat(quantityConsumed) <= 0) {
-            showNotification(`Invalid quantity for ingredient ID: ${ingredientID}. Please enter a valid quantity.`, "menu-item-form");
-            return;
+            invalidQuantityInputField = quantityInput; // Track the invalid input field
+            showNotification(`Invalid quantity for Ingredient ID: '${ingredientID}'`);
+            return; // Continue checking other rows
         }
 
         if (mainIngredientCheckbox.checked) {
@@ -1498,8 +1498,18 @@ function addNewMenuItem() {
         });
     }
 
+    if (invalidQuantityInputField) {
+        invalidQuantityInputField.reportValidity(); // Focus on the invalid quantity input field
+        return;
+    }
+
     if (!mainIngredientSelected) {
-        showNotification("Please select at least one key ingredient for this menu item.", "menu-item-form");
+        // Focus on the first checkbox if none are selected
+        const firstCheckbox = ingredientsTable.querySelector('input[type="checkbox"]');
+        if (firstCheckbox) {
+            firstCheckbox.focus();
+        }
+        showNotification(`Select at least ONE KEY ingredient for this Menu Item.`);
         return;
     }
 
@@ -1532,12 +1542,12 @@ function addNewMenuItem() {
     });
 
     // Append the new row to the menu item table
-    menuItemTableBody.appendChild(newRow);
+    table.querySelector("tbody").appendChild(newRow);
 
     // Clear the input fields of the form
     clearFormFields('menu-item-table', 'menu-item-form');
 
-    showNotification(`Menu Item Added Successfully!`, "menu-item-form");
+    showNotification(`Menu Item: '${menuItemName}' added successfully!`);
 }
 
 /*============================================================*/
@@ -1592,14 +1602,15 @@ function menuItem_tableRowClicked(dataRow, row) {
         const qtyInput = document.createElement('input');
         qtyInput.type = 'number';
         qtyInput.value = ingredient.quantityConsumed;
-        qtyInput.min = '0';  // Ensure no negative values
+        qtyInput.min = '1';  // Ensure no negative values
         qtyInput.required = true;
         qtyCell.appendChild(qtyInput);
 
         // Create the ingredient name and unit (formatted span)
         const formattedIngredient = document.createElement('span');
         formattedIngredient.classList.add('formatted-ingredient');
-        formattedIngredient.innerHTML = formattedIngredientIDWithExtra(ingredient.ingredientID);
+        console.log(ingredient.ingredientID);
+        formattedIngredient.innerHTML = formattedIngredientIDWithExtra(ingredient.ingredientID,true);
 
         // Create the delete button
         const deleteButton = document.createElement('button');
@@ -1621,8 +1632,6 @@ function menuItem_tableRowClicked(dataRow, row) {
         // Append the new row to the ingredient list table body
         ingredientListTableBody.appendChild(newRow);
     });
-
-    showNotification(`Menu Item Form filled with the selected row's data!`, "menu-item-form");
 }
 
 /*============================================================*/
@@ -1632,18 +1641,20 @@ function updateSelectedMenuItem() {
     const selectedRow = document.querySelector('#menu-item-table .clickedTableRow');
     
     if (!selectedRow) {
-        showNotification("Please select a row in the 'Menu Item Table' to be updated with what you inputted.", "menu-item-form");
+        showNotification(`Select a row to update from the table.`);
         return;
     }
     
-    if (!formValidity('menu-item-form')) {
-        showNotification("Please fill all the required fields of the 'Menu Item Form' with valid input to proceed with the update.", "menu-item-form");
+    if (!formValidity('menu-item-form', ['ingredient-name-combobox'])) {
+        showNotification(`Fill required fields with valid input.`);
         return;
     }
 
     // Gather updated data from the form fields
+    const selectedRowData = JSON.parse(selectedRow.getAttribute('data-menu-item'));
+    const updatedMenuItemId = selectedRowData.id;
+    
     const updatedMenuItemImage = document.getElementById('preview-image').src;
-    const updatedMenuItemId = document.getElementById('menu-item-id').value;
     const updatedMenuItemName = document.getElementById('menu-item-name').value;
     const updatedMenuItemAssignedCategory_ComboBox = document.getElementById("menu-category-combobox");
     const updatedMenuItemAssignedCategory = updatedMenuItemAssignedCategory_ComboBox.options[updatedMenuItemAssignedCategory_ComboBox.selectedIndex].textContent;
@@ -1654,7 +1665,8 @@ function updateSelectedMenuItem() {
     updatedMenuItemPrice = parseFloat(updatedMenuItemPrice); // Convert to a number (float)
     
     if (isNaN(updatedMenuItemPrice) || updatedMenuItemPrice <= 0) {
-        showNotification(`Invalid price: Please enter a valid number greater than zero for the price.`, "menu-item-form");
+        document.getElementById('menu-item-price').reportValidity();
+        showNotification(`Invalid input for Menu Item Price.`);
         return; // Exit the function if the price is invalid
     }
 
@@ -1667,19 +1679,24 @@ function updateSelectedMenuItem() {
 
     // Check if the ingredient list is empty
     if (ingredientsTable.rows.length === 0) {
-        showNotification(`A menu item must have at least one ingredient in its recipe. Please add ingredients.`, "menu-item-form");
+        document.getElementById('ingredient-list-table-body').focus();
+        showNotification(`At least one ingredient is required in the recipe. Please add ingredients.`);
         return; // Exit the function if no ingredients are provided
     }
 
     let mainIngredientSelected = false;
+    let invalidQuantityInputField = null; // To track invalid quantity input field
+    
     for (let row of ingredientsTable.rows) {
         const mainIngredientCheckbox = row.cells[0].querySelector('input[type="checkbox"]');
-        const quantityConsumed = row.cells[1].querySelector('input').value;
-        const ingredientID = row.cells[2].innerHTML.match(/\[(.*?)\]/)[1];
+        const quantityInput = row.cells[1].querySelector('input');
+        const quantityConsumed = quantityInput.value;
+        const ingredientID = parseInt(row.cells[2].innerHTML.match(/\[(.*?)\]/)[1]);
 
         // Check for empty or invalid inputs
         if (!quantityConsumed || isNaN(parseFloat(quantityConsumed)) || parseFloat(quantityConsumed) <= 0) {
-            showNotification(`Invalid quantity for ingredient ID: ${ingredientID}. Please enter a valid quantity.`, "menu-item-form");
+            invalidQuantityInputField = quantityInput; // Track the invalid input field
+            showNotification(`Invalid quantity for Ingredient ID: '${ingredientID}'`);
             return; // Exit the function if the quantity is invalid
         }
 
@@ -1696,10 +1713,19 @@ function updateSelectedMenuItem() {
         });
     }
 
-    // Ensure that at least one main ingredient is selected
+    if (invalidQuantityInputField) {
+        invalidQuantityInputField.reportValidity(); // Focus on the invalid quantity input field
+        return;
+    }
+
     if (!mainIngredientSelected) {
-        showNotification("Please select at least one key ingredient for this menu item.", "menu-item-form");
-        return; // Exit the function if no main ingredient is selected
+        // Focus on the first checkbox if none are selected
+        const firstCheckbox = ingredientsTable.querySelector('input[type="checkbox"]');
+        if (firstCheckbox) {
+            firstCheckbox.focus();
+        }
+        showNotification(`Select at least ONE KEY ingredient for this Menu Item.`);
+        return;
     }
 
     // Update the row's HTML with the new values
@@ -1724,7 +1750,7 @@ function updateSelectedMenuItem() {
     // Clear the input fields of the form
     clearFormFields('menu-item-table', 'menu-item-form');
 
-    showNotification(`Menu Item Updated Successfully!`, "menu-item-form");
+    showNotification(`Menu Item: '${updatedMenuItemName}' updated successfully!`);
 }
 
 /*============================================================*/
@@ -1756,23 +1782,24 @@ function updateSelectedMenuItem() {
 function addNewMenuCategory() {
 
     if (!formValidity('menu-category-form')) {
-        showNotification("Please fill all the required fields of the 'Menu Category Form' with valid input.", "menu-category-form");
+        showNotification(`Fill all required fields with valid input.`);
         return;
     }
 
     // Get the values of the input fields
-    const menuCategoryID = document.getElementById("menu-category-id").value;
+    const menuCategoryID = document.querySelector('#menu-category-table tbody').rows.length + 1
     const menuCategoryName = document.getElementById("menu-category-name").value;
 
-    // Get the table and search for a row where the 2nd column matches the menu category name
+    // Check for duplicate name in the table
     const table = document.getElementById("menu-category-table");
-    const rows = table.querySelectorAll("tbody tr");
+    const existingRows = table.querySelectorAll("tbody tr");
 
-    // Check if the category already exists in the 2nd column
-    for (const row of rows) {
-        const existingCategoryName = row.cells[1].textContent.trim();
-        if (existingCategoryName.toLowerCase() === menuCategoryName.toLowerCase()) {
-            showNotification("This 'Menu Category' already exists!", "menu-category-form");
+    for (const row of existingRows) {
+        const rowData = JSON.parse(row.getAttribute("data-menu-category"));
+        const existingName = rowData.name.trim();
+
+        if (existingName.toLowerCase() === menuCategoryName.toLowerCase()) {
+            showNotification(`Menu Category: '${menuCategoryName}' already exists!`);
             return;
         }
     }
@@ -1811,7 +1838,7 @@ function addNewMenuCategory() {
     // Clear the input fields of the form
     clearFormFields('menu-category-table', 'menu-category-form');
 
-    showNotification(`Menu Category Added Successfully!`, "menu-category-form");
+    showNotification(`Menu Category: '${menuCategoryName}' added successfully!`);
 }
 
 /*============================================================*/
@@ -1833,24 +1860,20 @@ function updateSelectedMenuCategory() {
 
     // Check if a row is selected
     if (!selectedRow) {
-        showNotification(
-            "Please select a row in the 'Menu Category Table' to update with your input.",
-            "menu-category-form"
-        );
+        showNotification(`Select a row to update from the table.`);
         return;
     }
 
     // Validate the form inputs
     if (!formValidity('menu-category-form')) {
-        showNotification(
-            "Please fill all the required fields of the 'Menu Category Form' with valid input.",
-            "menu-category-form"
-        );
+        showNotification(`Fill all required fields with valid input.`);
         return;
     }
 
     // Get values from the input fields
-    const menuCategoryID = document.getElementById("menu-category-id").value;
+    const selectedRowData = JSON.parse(selectedRow.getAttribute('data-menu-category'));
+    const menuCategoryID = selectedRowData.id;
+    
     const menuCategoryName = document.getElementById("menu-category-name").value;
 
     // Update the data-menu-category attribute with new data as an object
@@ -1867,7 +1890,7 @@ function updateSelectedMenuCategory() {
         cells[1].textContent = menuCategoryName; // Update the Name cell
     }
 
-    showNotification("Menu Category Updated Successfully!", "menu-category-form");
+    showNotification(`Menu Category: '${menuCategoryName}' updated successfully!`);
 
     // Update the combo box with the new data
     repopulateComboBoxFromTable("menu-category-table", "data-menu-category", "menu-category-combobox");
@@ -1904,12 +1927,12 @@ function updateSelectedMenuCategory() {
 
 function addNewIngredient() {
     if (!formValidity('ingredient-form')) {
-        showNotification("Please fill all the required fields of the 'Ingredient Form' with valid input.", "ingredient-form");
+        showNotification(`Fill all required fields with valid input.`);
         return;
     }
 
     // Get input values
-    const ingredientID = document.getElementById("ingredient-id").value.trim();
+    const ingredientID = document.querySelector('#ingredient-table tbody').rows.length + 1
     const ingredientName = document.getElementById("ingredient-name").value.trim();
     const categoryComboBox = document.getElementById("ingredient-category-combobox");
     const assignedCategory = categoryComboBox.options[categoryComboBox.selectedIndex].textContent;
@@ -1918,6 +1941,12 @@ function addNewIngredient() {
     const lowStockThreshold = parseFloat(document.getElementById("ingredient-low-stock-threshold").value);
     const mediumStockThreshold = parseFloat(document.getElementById("ingredient-medium-stock-threshold").value);
     const reorderPoint = parseFloat(document.getElementById("ingredient-reorder-point").value);
+
+    if (lowStockThreshold >= mediumStockThreshold) {
+        showNotification(`Low Stock Threshold must be less than Medium Stock Threshold.`);
+        document.getElementById("ingredient-low-stock-threshold").focus();
+        return;
+    }
 
     // Default total quantity
     const totalQuantity = 0;
@@ -1928,9 +1957,11 @@ function addNewIngredient() {
     const existingRows = table.querySelectorAll("tbody tr");
 
     for (const row of existingRows) {
-        const existingName = row.cells[1].textContent.split('] ')[1].trim();
+        const rowData = JSON.parse(row.getAttribute("data-ingredient"));
+        const existingName = rowData.name.trim();
+
         if (existingName.toLowerCase() === ingredientName.toLowerCase()) {
-            showNotification("This 'Ingredient' already exists!", "ingredient-form");
+            showNotification(`Ingredient: '${ingredientName}' already exists!`);
             return;
         }
     }
@@ -1944,8 +1975,8 @@ function addNewIngredient() {
         name: ingredientName,
         category: assignedCategory,
         unit: assignedUnit,
-        lowStock: lowStockThreshold,
-        mediumStock: mediumStockThreshold,
+        lowStockTH: lowStockThreshold,
+        mediumStockTH: mediumStockThreshold,
         reorderPoint: reorderPoint,
         quantity: totalQuantity
     };
@@ -2002,7 +2033,7 @@ function addNewIngredient() {
     ingredientComboBox.add(new Option(ingredientName, ingredientID));
 
     // Show success notification
-    showNotification(`Ingredient Added Successfully!`, "ingredient-form");
+    showNotification(`Ingredient: '${ingredientName}' added successfully!`);
 }
 
 /*============================================================*/
@@ -2022,8 +2053,8 @@ function ingredient_tableRowClicked(dataRow, row) {
     setComboBoxValue("ingredient-unit-combobox", rowData.unit);
 
     // Populate threshold values and reorder point
-    document.getElementById("ingredient-low-stock-threshold").value = rowData.lowStock;
-    document.getElementById("ingredient-medium-stock-threshold").value = rowData.mediumStock;
+    document.getElementById("ingredient-low-stock-threshold").value = rowData.lowStockTH;
+    document.getElementById("ingredient-medium-stock-threshold").value = rowData.mediumStockTH;
     document.getElementById("ingredient-reorder-point").value = rowData.reorderPoint;
 }
 
@@ -2035,24 +2066,20 @@ function updateSelectedIngredient() {
 
     // Check if a row is selected
     if (!selectedRow) {
-        showNotification(
-            "Please select a row in the 'Ingredient Table' to update with your input.",
-            "ingredient-form"
-        );
+        showNotification(`Select a row to update from the table.`);
         return;
     }
 
     // Validate the form inputs
     if (!formValidity('ingredient-form')) {
-        showNotification(
-            "Please fill all the required fields of the 'Ingredient Form' with valid input to proceed.",
-            "ingredient-form"
-        );
+        showNotification(`Fill all required fields with valid input.`);
         return;
     }
 
     // Retrieve input values
-    const ingredientID = document.getElementById("ingredient-id").value.trim();
+    const selectedRowData = JSON.parse(selectedRow.getAttribute('data-ingredient'));
+    const ingredientID = selectedRowData.id;
+    
     const ingredientName = document.getElementById("ingredient-name").value.trim();
     const ingredientCategory = getSelectedComboBoxText("ingredient-category-combobox");
     const ingredientUnit = getSelectedComboBoxText("ingredient-unit-combobox");
@@ -2060,9 +2087,9 @@ function updateSelectedIngredient() {
     const mediumStockThreshold = parseInt(document.getElementById("ingredient-medium-stock-threshold").value, 10);
     const reorderPoint = parseInt(document.getElementById("ingredient-reorder-point").value, 10);
 
-    // Ensure input integrity
-    if (!ingredientID || !ingredientName) {
-        showNotification("Ingredient ID and Name cannot be empty.", "ingredient-form");
+    if (lowStockThreshold >= mediumStockThreshold) {
+        showNotification(`Low Stock Threshold must be less than Medium Stock Threshold.`);
+        document.getElementById("ingredient-low-stock-threshold").focus();
         return;
     }
 
@@ -2078,8 +2105,8 @@ function updateSelectedIngredient() {
             name: ingredientName,
             category: ingredientCategory,
             unit: ingredientUnit,
-            lowStock: lowStockThreshold,
-            mediumStock: mediumStockThreshold,
+            lowStockTH: lowStockThreshold,
+            mediumStockTH: mediumStockThreshold,
             reorderPoint: reorderPoint,
             quantity: existingQuantity
         };
@@ -2090,7 +2117,7 @@ function updateSelectedIngredient() {
         // Update the visible table cells
         const cells = selectedRow.querySelectorAll("td");
         if (cells.length >= 4) {
-            cells[1].textContent = `[${ingredientID}] ${ingredientName}`;
+            cells[1].innerHTML = `[${ingredientID}] ${ingredientName}<br><small>(${ingredientUnit})</small>`;
             cells[2].textContent = ingredientCategory;
 
             // Create or update the <span> inside the quantity cell
@@ -2106,7 +2133,7 @@ function updateSelectedIngredient() {
         animateRowHighlight(selectedRow);
 
         // Show success notification
-        showNotification("Ingredient Updated Successfully!", "ingredient-form");
+        showNotification(`Ingredient: '${ingredientName}' updated successfully!`);
 
         // Repopulate the combobox with the updated ingredient data
         repopulateComboBoxFromTable("ingredient-table", "data-ingredient", "ingredient-name-combobox");
@@ -2114,8 +2141,6 @@ function updateSelectedIngredient() {
         // Clear the form fields
         clearFormFields("ingredient-table", "ingredient-form");
     } catch (error) {
-        console.error("Failed to update the ingredient:", error);
-        showNotification("An error occurred while updating the ingredient. Please try again.", "ingredient-form");
     }
 }
 
@@ -2147,20 +2172,24 @@ function updateSelectedIngredient() {
 
 function addNewIngredientCategory() {
     if (!formValidity('ingredient-category-form')) {
-        showNotification("Please fill all the required fields of the 'Ingredient Category Form' with valid input.", "ingredient-category-form");
+        showNotification(`Fill all required fields with valid input.`);
         return;
     }
 
     // Gather data from the form fields
-    const ingredientCategoryID = document.getElementById("ingredient-category-id").value;
+    const ingredientCategoryID = document.querySelector('#ingredient-category-table tbody').rows.length + 1
     const ingredientCategoryName = document.getElementById("ingredient-category-name").value;
 
-    // Check if the ingredient category already exists in the table
-    const tableBody = document.getElementById("ingredient-category-table").querySelector("tbody");
-    for (const row of tableBody.rows) {
-        const existingCategoryName = row.cells[1].textContent.trim();
-        if (existingCategoryName.toLowerCase() === ingredientCategoryName.toLowerCase()) {
-            showNotification("This 'Ingredient Category' already exists!", "ingredient-category-form");
+    // Check for duplicate name in the table
+    const table = document.getElementById("ingredient-category-table");
+    const existingRows = table.querySelectorAll("tbody tr");
+
+    for (const row of existingRows) {
+        const rowData = JSON.parse(row.getAttribute("data-ingredient-category"));
+        const existingName = rowData.name.trim();
+
+        if (existingName.toLowerCase() === ingredientCategoryName.toLowerCase()) {
+            showNotification(`Ingredient Category: '${ingredientCategoryName}' already exists!`);
             return;
         }
     }
@@ -2188,7 +2217,7 @@ function addNewIngredientCategory() {
     });
 
     // Append the new row to the table body
-    tableBody.appendChild(newRow);
+    table.querySelector("tbody").appendChild(newRow);
 
     // Add the new category to the combo box
     const ingredientCategoryComboBox = document.getElementById("ingredient-category-combobox");
@@ -2198,7 +2227,7 @@ function addNewIngredientCategory() {
     clearFormFields('ingredient-category-table', 'ingredient-category-form');
 
     // Show a success notification
-    showNotification(`Ingredient Category Added Successfully!`, "ingredient-category-form");
+    showNotification(`Ingredient Category: '${ingredientCategoryName}' added successfully!`);
 }
 
 /*============================================================*/
@@ -2220,24 +2249,26 @@ function updateSelectedIngredientCategory() {
 
     // Check if a row is selected
     if (!selectedRow) {
-        showNotification("Please select a row in the ingredient category table to be updated with what you inputted.", "ingredient-category-form");
+        showNotification(`Select a row to update from the table.`);
         return;
     }
 
     // Validate form input
     if (!formValidity('ingredient-category-form')) {
-        showNotification("Please fill all the required fields of the 'Ingredient Category Form' with valid input to proceed with the update.", "ingredient-category-form");
+        showNotification(`Fill all required fields with valid input.`);
         return;
     }
 
     // Get the values from the input fields
-    const ingredientCategoryID = document.getElementById("ingredient-category-id").value;
-    const ingredientCategory = document.getElementById("ingredient-category-name").value;
+    const selectedRowData = JSON.parse(selectedRow.getAttribute('data-ingredient-category'));
+    const ingredientCategoryID = selectedRowData.id;
+    
+    const ingredientCategoryName = document.getElementById("ingredient-category-name").value;
 
     // Create an object to store the ingredient category data
     const ingredientCategoryData = {
         id: ingredientCategoryID,
-        name: ingredientCategory
+        name: ingredientCategoryName
     };
 
     // Update the data-ingredient-category attribute with the new data
@@ -2247,8 +2278,8 @@ function updateSelectedIngredientCategory() {
     const cells = selectedRow.querySelectorAll("td");
     if (cells.length >= 2) {
         cells[0].textContent = ingredientCategoryID; // Update the ID cell
-        cells[1].textContent = ingredientCategory;    // Update the name cell
-        showNotification(`Ingredient Category Updated Successfully!`, "ingredient-category-form");
+        cells[1].textContent = ingredientCategoryName;    // Update the name cell
+        showNotification(`Ingredient Category: '${ingredientCategoryName}' updated successfully!`);
     }
 
     // Repopulate the combo box from the table
@@ -2286,26 +2317,25 @@ function updateSelectedIngredientCategory() {
 
 function addNewIngredientUnit() {
     if (!formValidity('ingredient-unit-form')) {
-        showNotification("Please fill all the required fields of the 'Ingredient Unit Form' with valid input.", "ingredient-unit-form");
+        showNotification(`Fill all required fields with valid input.`);
         return;
     }
 
     // Get the values of the input fields
-    const ingredientUnitID = document.getElementById("ingredient-unit-id").value;
-    const ingredientUnit = document.getElementById("ingredient-unit-name").value;
+    const ingredientUnitID = document.querySelector('#ingredient-unit-table tbody').rows.length + 1
+    const ingredientUnitName = document.getElementById("ingredient-unit-name").value;
 
-    // Get the table and search for the row where the 2nd column matches the ingredient name
+    // Check for duplicate name in the table
     const table = document.getElementById("ingredient-unit-table");
-    const rows = table.querySelectorAll("tbody tr");
+    const existingRows = table.querySelectorAll("tbody tr");
 
-    // Check if the ingredient already exists in the 2nd column
-    for (const row of rows) {
-        const cells = row.getElementsByTagName("td");
-        const existingIngredientUnit = cells[1].textContent.trim();
+    for (const row of existingRows) {
+        const rowData = JSON.parse(row.getAttribute("data-ingredient-unit"));
+        const existingName = rowData.name.trim();
 
-        if (existingIngredientUnit.toLowerCase() === ingredientUnit.toLowerCase()) {
-            showNotification("This 'Ingredient Unit' already exists!", "ingredient-unit-form");
-            return; // Exit if the ingredient already exists
+        if (existingName.toLowerCase() === ingredientUnitName.toLowerCase()) {
+            showNotification(`Ingredient Unit: '${ingredientUnitName}' already exists!`);
+            return;
         }
     }
 
@@ -2315,7 +2345,7 @@ function addNewIngredientUnit() {
     // Create an object for ingredient unit data
     const ingredientUnitData = {
         id: ingredientUnitID,
-        name: ingredientUnit
+        name: ingredientUnitName
     };
 
     // Setting ingredient unit data as a custom attribute on the row
@@ -2327,7 +2357,7 @@ function addNewIngredientUnit() {
 
     // Setting cell contents
     ingredientUnitIDCell.textContent = ingredientUnitID;
-    ingredientUnitCell.textContent = ingredientUnit;
+    ingredientUnitCell.textContent = ingredientUnitName;
 
     // Append cells to the new row
     newRow.appendChild(ingredientUnitIDCell);
@@ -2340,15 +2370,15 @@ function addNewIngredientUnit() {
     });
 
     // Append the new row to the table body
-    document.getElementById("ingredient-unit-table").querySelector("tbody").appendChild(newRow);
+    table.querySelector("tbody").appendChild(newRow);
 
     // Clear the input fields of the form
     clearFormFields('ingredient-unit-table', 'ingredient-unit-form');
 
     const ingredientUnit_comboBox = document.getElementById("ingredient-unit-combobox");
-    ingredientUnit_comboBox.add(new Option(ingredientUnit, ingredientUnitID));
+    ingredientUnit_comboBox.add(new Option(ingredientUnitName, ingredientUnitID));
 
-    showNotification(`Ingredient Unit Added Successfully!`, "ingredient-unit-form");
+    showNotification(`Ingredient Unit: '${ingredientUnitName}' added successfully!`);
 }
 
 /*============================================================*/
@@ -2371,23 +2401,25 @@ function updateSelectedIngredientUnit() {
 
     // Check if a row is selected
     if (!selectedRow) {
-        showNotification("Please select a row in the 'Ingredient Unit Table' to be updated with what you inputted.", "ingredient-unit-form");
+        showNotification(`Select a row to update from the table.`);
         return;
     }
 
     if (!formValidity('ingredient-unit-form')) {
-        showNotification("Please fill all the required fields of the 'Ingredient Unit Form' with valid input.", "ingredient-unit-form");
+        showNotification(`Fill all required fields with valid input.`);
         return;
     }
 
     // Get the values from the input fields
-    const ingredientUnitID = document.getElementById("ingredient-unit-id").value;
-    const ingredientUnit = document.getElementById("ingredient-unit-name").value;
+    const selectedRowData = JSON.parse(selectedRow.getAttribute('data-ingredient-unit'));
+    const ingredientUnitID = selectedRowData.id;
+    
+    const ingredientUnitName = document.getElementById("ingredient-unit-name").value;
 
     // Create an object to hold the updated data
     const ingredientUnitData = {
         id: ingredientUnitID,
-        name: ingredientUnit
+        name: ingredientUnitName
     };
 
     // Update the data-ingredient-unit attribute with the new data
@@ -2397,8 +2429,8 @@ function updateSelectedIngredientUnit() {
     const cells = selectedRow.querySelectorAll("td");
     if (cells.length >= 2) {
         cells[0].textContent = ingredientUnitID; // Update the ID cell
-        cells[1].textContent = ingredientUnit;    // Update the name cell
-        showNotification(`Ingredient Unit Updated Successfully!`, "ingredient-unit-form");
+        cells[1].textContent = ingredientUnitName;    // Update the name cell
+        showNotification(`Ingredient Unit: '${ingredientUnitName}' updated successfully!`);
     }
     
     // Repopulate the combo box to reflect changes
