@@ -587,11 +587,13 @@ function confirmedIngsToStock(button) {
     const today = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
     const isStockOut = button.textContent.trim() === "Confirm Stock Out"; // Check if it's stock-out action
 
-    const generatedStockID = stockTableBody.rows.length + 1; // Auto-generate Stock ID
     let hasInvalidInput = false; // Flag for invalid input
     let firstInvalidInput; // To store the first invalid input element for focusing
 
-    Array.from(stockInNOutTableBody.rows).forEach((row) => {
+    // Use 'for...of' loop to allow early exit
+    for (const row of stockInNOutTableBody.rows) {
+        const generatedStockID = stockTableBody.rows.length + 1; // Auto-generate Stock ID
+
         const stockID = row.cells[0].innerText.trim();
         const ingredientID = parseInt(row.cells[1].innerHTML.match(/\[(.*?)\]/)[1]); // Ingredient ID extracted from format
         const quantityAddedInput = row.cells[2].querySelector('input');
@@ -610,7 +612,7 @@ function confirmedIngsToStock(button) {
             firstInvalidInput = firstInvalidInput || quantityAddedInput; // Focus on the first invalid input
             quantityAddedInput.reportValidity(); // Focus on the invalid quantity input
             showNotification(`Invalid quantity for Ingredient ID: '${ingredientID}'`);
-            return; // Stop further processing for this row
+            break; // Stop the loop on invalid input
         }
 
         // Validate expiration date
@@ -619,20 +621,20 @@ function confirmedIngsToStock(button) {
             firstInvalidInput = firstInvalidInput || expirationInput; // Focus on the first invalid input
             expirationInput.reportValidity(); // Focus on the invalid expiration date input
             showNotification(`Invalid expiration date for Ingredient ID: '${ingredientID}'`);
-            return; // Stop further processing for this row
+            break; // Stop the loop on invalid input
         }
 
-        // If no invalid input, continue with the existing logic
+        // Continue with the logic if inputs are valid
         let currentQtyRemaining = 0;
         let updatedQtyRemaining = quantityAdded;
 
-        // Search for an existing row with the same ingredient name
-        const existingRow = Array.from(stockTableBody.rows).find(
+        // Search for an existing row with the same stock ID
+        let existingRow = Array.from(stockTableBody.rows).find(
             stockRow => stockRow.cells[1].textContent.trim() === stockID
         );
 
         if (existingRow) {
-            // If found, update the existing row's quantity and data attribute
+            // Update existing row's quantity and data attribute
             currentQtyRemaining = parseInt(existingRow.cells[3].textContent);
             updatedQtyRemaining = isStockOut
                 ? currentQtyRemaining - quantityAdded
@@ -641,30 +643,28 @@ function confirmedIngsToStock(button) {
             // Prevent negative quantity for stock out
             if (isStockOut && updatedQtyRemaining < 0) {
                 showNotification(`Insufficient quantity available for Ingredient ID: '${ingredientID}'`);
-                return; // Stop processing if not enough stock is available
+                break; // Stop processing if not enough stock is available
             }
 
-            // Update the quantity and data attribute
-            existingRow.cells[3].textContent = updatedQtyRemaining + ' ' + grabSpecificDataFromID('ingredient', ingredientID, 'unit');
+            existingRow.cells[3].textContent = 
+                `${updatedQtyRemaining} ${grabSpecificDataFromID('ingredient', ingredientID, 'unit')}`;
 
             const stockData = JSON.parse(existingRow.getAttribute('data-stock'));
             stockData.quantityRemaining = updatedQtyRemaining;
-            stockData.expirationDate = expirationDate || stockData.expirationDate; // Update expiration if provided
-            stockData.expirationAlertTH = expirationAlertTH || stockData.expirationAlertTH; // Update alert threshold
+            stockData.expirationDate = expirationDate || stockData.expirationDate; 
+            stockData.expirationAlertTH = expirationAlertTH || stockData.expirationAlertTH; 
 
             existingRow.setAttribute('data-stock', JSON.stringify(stockData));
         } else {
-            // Generate a new Stock ID and create a new row if no match is found
+            // Create a new row if no match found
             const newRow = document.createElement('tr');
-
             newRow.innerHTML = `
                 <td><input type="checkbox"></td>
                 <td>${generatedStockID}</td>
-                <td>${formattedIngredientIDWithExtra(ingredientID,true)}</td>
+                <td>${formattedIngredientIDWithExtra(ingredientID, true)}</td>
                 <td>${quantityAdded + ' ' + grabSpecificDataFromID('ingredient', ingredientID, 'unit')}</td>
                 <td>AVAILABLE</td>
             `;
-
             newRow.setAttribute('data-stock', JSON.stringify({
                 id: generatedStockID,
                 ingredientID: ingredientID,
@@ -675,25 +675,19 @@ function confirmedIngsToStock(button) {
                 expirationAlertTH,
                 stockStatus: 'AVAILABLE'
             }));
-    
-            // Add row click event
-            newRow.addEventListener('click', function (event) {
-                // Check if the click happened inside the first column (td:nth-child(1))
+
+            newRow.addEventListener('click', (event) => {
                 const clickedCell = event.target.closest('td');
                 const firstCell = newRow.querySelector('td:first-child');
-            
-                if (clickedCell === firstCell) {
-                    return; // Ignore the click if it happened on the first column
-                }
-            
-                stock_tableRowClicked('data-stock', newRow); // Handle row selection
-                highlightClickedTableRow('stock-table', newRow); // Highlight selected row
+                if (clickedCell === firstCell) return; 
+                stock_tableRowClicked('data-stock', newRow);
+                highlightClickedTableRow('stock-table', newRow);
             });
 
             stockTableBody.appendChild(newRow);
         }
 
-        // Create a new stock transaction row
+        // Create a stock transaction row
         const txnRow = document.createElement('tr');
         const transactionID = stockTransactionTableBody.rows.length + 1;
         const transactionType = isStockOut ? 'STOCK OUT' : 'STOCK IN';
@@ -702,11 +696,10 @@ function confirmedIngsToStock(button) {
         txnRow.innerHTML = `
             <td>${transactionID}</td>
             <td>${existingRow ? existingRow.cells[1].textContent : generatedStockID}</td>
-            <td>${formattedIngredientIDWithExtra(ingredientID,true)}</td>
+            <td>${formattedIngredientIDWithExtra(ingredientID, true)}</td>
             <td>${qtyChange + ' ' + grabSpecificDataFromID('ingredient', ingredientID, 'unit')}</td>
             <td>${transactionType}</td>
         `;
-
         txnRow.setAttribute('data-stock-transaction', JSON.stringify({
             id: transactionID,
             stock_ID: existingRow ? existingRow.cells[1].textContent : generatedStockID,
@@ -719,28 +712,26 @@ function confirmedIngsToStock(button) {
             order_ID: '',
             emp_ID: ''
         }));
-    
-        // Add row click event
-        txnRow.addEventListener('click', function (event) {        
-            stockTransaction_tableRowClicked('data-stock-transaction', txnRow); // Handle row selection
-            highlightClickedTableRow('stock-transaction-table', txnRow); // Highlight selected row
+
+        txnRow.addEventListener('click', (event) => {
+            stockTransaction_tableRowClicked('data-stock-transaction', txnRow);
+            highlightClickedTableRow('stock-transaction-table', txnRow);
         });
 
         stockTransactionTableBody.appendChild(txnRow);
 
-        updateIngredientQuantity(ingredientID, quantityAdded, isStockOut ? 'STOCK OUT' : 'STOCK IN');
-    });
+        updateIngredientQuantity(ingredientID, quantityAdded, transactionType);
+    }
 
-    // Clear the stock-in table and uncheck all checkboxes
+    if (hasInvalidInput) return; // Stop entire operation if any input is invalid
+
+    // Clear stock-in table and uncheck all checkboxes
     document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
         checkbox.checked = false;
     });
 
-    // Close the modal after confirmation if there was no invalid input
-    if (!hasInvalidInput) {
-        stockInNOutTableBody.innerHTML = '';
-        closeModal('stock-in-n-out-modal');
-    }
+    stockInNOutTableBody.innerHTML = ''; // Clear the modal content
+    closeModal('stock-in-n-out-modal'); // Close the modal
 }
 
 /*============================================================*/

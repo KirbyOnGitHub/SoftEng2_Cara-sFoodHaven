@@ -4,7 +4,7 @@
   <head>
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-pQi0pc+Zks4ozY3ICaNf3UUBHS5PDfZl+hL5DI/F3+SXL0fW4IzQfKzKW0gjL70HskdBbEQ26z9I1ARt/rlRWQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
       <link rel="stylesheet" href="restaurant-management-system.css">
       <script src="restaurant-management-system.js"></script>
       <title> Mgmt. System | Cara's Food Haven </title>
@@ -18,11 +18,23 @@
     <!-- ============================================================ -->
     
     <nav>
-      <a href="#"> <img src="../RestaurantLogo-Cut.png" class="RestaurantLogo_Nav"> </a>
-      <div id="nav-header">RESTAURANT MANAGEMENT SYSTEM</div>
+      <div id="nav-header">CARA'S FOOD HAVEN: MANAGEMENT SYSTEM</div>
       <ul>
-        <img id="staff_img" src="manager-pic-cut.png">
-        <li class="current-page"><a href="#">[ MANAGER ] - Kirby Adrian P. Saligan</a></li>
+        <li class="account-dropdown">
+          <div class="account-info">
+            <img id="staff_img" src="manager-pic-cut.png" alt="Avatar">
+            <div>
+              <span class="account-name">Kirby Adrian P. Saligan</span>
+              <span class="account-role">Manager</span>
+            </div>
+            <i class="fas fa-caret-down" id="dropdown-arrow"></i>
+          </div>
+          <div class="dropdown-content">
+            <a href="#">
+              <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+          </div>
+        </li>
       </ul>
     </nav>
       
@@ -31,31 +43,50 @@
     <!-- ============================================================ -->
 
     <div class="verticalmenu_container">
-      <div id="verticalmenu"></div>
-      <label class="verticalmenu-label">RESTAURANT MGMT.</label>
-      <button class="verticalmenu-btn" id="orderManagementPage">Order Management</button>
-      <button class="verticalmenu-btn" id="stockPage">Stock</button>
-      <button class="verticalmenu-btn" id="stockTransactionPage">Stock Transaction</button>
-      <button class="verticalmenu-btn" id="staffPage">Staff</button>
-      <button class="verticalmenu-btn" id="customerPage">Customer</button>
       <br>
-      <label class="verticalmenu-label">MENU ITEM</label>
-      <button class="verticalmenu-btn" id="menuItemPage">Menu Item List</button>
-      <button class="verticalmenu-btn" id="menuCategoryPage">Menu Category</button>
+      <div class="verticalmenu-section">
+        <label class="verticalmenu-label">RESTAURANT<BR>MANAGEMENT</label>
+        <button class="verticalmenu-btn" id="orderManagementPage">
+          <i class="fas fa-receipt"></i> Order Management
+        </button>
+        <button class="verticalmenu-btn" id="stockPage">
+          <i class="fas fa-boxes"></i> Stock
+        </button>
+        <button class="verticalmenu-btn" id="stockTransactionPage">
+          <i class="fas fa-exchange-alt"></i> Stock Transaction
+        </button>
+        <button class="verticalmenu-btn" id="staffPage">
+          <i class="fas fa-user-tie"></i> Staff
+        </button>
+        <button class="verticalmenu-btn" id="customerPage">
+          <i class="fas fa-users"></i> Customer
+        </button>
+      </div>
       <br>
-      <label class="verticalmenu-label">INGREDIENT</label>
-      <button class="verticalmenu-btn" id="ingredientPage">Ingredient List</button>
-      <button class="verticalmenu-btn" id="ingredientCategoryPage">Ingredient Category</button>
-      <button class="verticalmenu-btn" id="ingredientUnitPage">Ingredient Unit</button>
-      <!-- <button class="verticalmenu-btn" id="supplierPage">Supplier</button> -->
-      <!-- <button class="verticalmenu-btn" id="reportsPage">Reports</button> -->
-      <!-- <button class="verticalmenu-btn" id="chartsPage">Charts</button> -->
-      <!-- <button class="verticalmenu-btn" id="invRestockRequestsPage">Inventory Restock Requests</button> -->
-      <!-- <button class="verticalmenu-btn" id=""></button> -->
-      <!-- <span>=====================</span> -->
+      <div class="verticalmenu-section">
+        <label class="verticalmenu-label">MENU ITEM</label>
+        <button class="verticalmenu-btn" id="menuItemPage">
+          <i class="fas fa-utensils"></i> Menu Item List
+        </button>
+        <button class="verticalmenu-btn" id="menuCategoryPage">
+          <i class="fas fa-tags"></i> Menu Category
+        </button>
+      </div>
+      <br>
+      <div class="verticalmenu-section">
+        <label class="verticalmenu-label">INGREDIENT</label>
+        <button class="verticalmenu-btn" id="ingredientPage">
+          <i class="fas fa-carrot"></i> Ingredient List
+        </button>
+        <button class="verticalmenu-btn" id="ingredientCategoryPage">
+          <i class="fas fa-list"></i> Ingredient Category
+        </button>
+        <button class="verticalmenu-btn" id="ingredientUnitPage">
+          <i class="fas fa-balance-scale"></i> Ingredient Unit
+        </button>
       </div>
     </div>
-      
+        
     <!-- ============================================================ -->
     <!-- ============================================================ -->
     <!-- ============================================================ -->
@@ -73,7 +104,7 @@
             <table id="stock-in-n-out-table">
                 <thead>
                     <tr>
-                      <th>STOCK ID</th>
+                      <th class="id-columns">STOCK ID</th>
                       <th>[ID] INGREDIENT</th>
                       <th id="stock-in-n-out-column-head">QUANTITY<br>ADDED</th>
                       <th>EXPIRATION DATE</th>
@@ -98,6 +129,224 @@
     <!-- Notification Container -->
     <div id="notification-container"></div>
 
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+
+
+
+
+
+
+
+
+
+    
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+
+    <div class="container" id="orderManagement">
+      <div class="container-full">
+        
+        <!-- ============================== -->
+
+        <div class="filter-bar">
+          <button class="filter-btn" data-status="ALL">
+            <i class="fas fa-list"></i> All (<span class="count" id="count-ALL"></span>)
+          </button>
+          <button class="filter-btn" data-status="PENDING">
+            <i class="fas fa-hourglass-start"></i> Pending (<span class="count" id="count-PENDING"></span>)
+          </button>
+          <button class="filter-btn" data-status="PREPARING">
+            <i class="fas fa-fire"></i> Preparing (<span class="count" id="count-PREPARING"></span>)
+          </button>
+          <button class="filter-btn" data-status="READY FOR PICKUP">
+            <i class="fas fa-concierge-bell"></i> Ready for Pickup (<span class="count" id="count-READY FOR PICKUP"></span>)
+          </button>
+          <button class="filter-btn" data-status="COMPLETE">
+            <i class="fas fa-check-circle"></i> Complete (<span class="count" id="count-COMPLETE"></span>)
+          </button>
+          <button class="filter-btn" data-status="CANCELED">
+            <i class="fas fa-times-circle"></i> Canceled (<span class="count" id="count-CANCELED"></span>)
+          </button>
+        </div>
+
+        <!-- ============================== -->
+    
+        <div class="orders">
+           
+          <!-- ============================== -->
+
+          <div class="order-card" data-status="PENDING">
+            <div class="order-header">
+              <h2>Order ID #1234</h2>
+              <span class="status pending">Pending</span>
+            </div>
+            <table class="order-table">
+              <tr>
+                <th>Menu Item</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Subtotal</th>
+              </tr>
+              <tr>
+                <td>Fried Chicken</td>
+                <td>PHP 500.00</td>
+                <td>1</td>
+                <td>PHP 500.00</td>
+              </tr>
+              <tr>
+                <td colspan="3" class="total-label">TOTAL</td>
+                <td>PHP 500.00</td>
+              </tr>
+              <tr>
+                <td colspan="3" class="discount-label">Discount Code</td>
+                <td>ABC123</td>
+              </tr>
+            </table>
+            <div class="action-buttons">
+              <button class="action-btn">Prepare</button>
+              <button class="action-btn cancel">Cancel</button>
+            </div>
+          </div>
+
+          <!-- ============================== -->
+
+          <div class="order-card" data-status="PREPARING">
+            <div class="order-header">
+              <h2>Order ID #1235</h2>
+              <span class="status preparing">Preparing</span>
+            </div>
+            <table class="order-table">
+              <tr>
+                <th>Menu Item</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Subtotal</th>
+              </tr>
+              <tr>
+                <td>Burger</td>
+                <td>PHP 350.00</td>
+                <td>1</td>
+                <td>PHP 350.00</td>
+              </tr>
+              <tr>
+                <td colspan="3" class="total-label">TOTAL</td>
+                <td>PHP 350.00</td>
+              </tr>
+              <tr>
+                <td colspan="3" class="discount-label">Discount Code</td>
+                <td>N/A</td>
+              </tr>
+            </table>
+            <div class="action-buttons">
+              <button class="action-btn">Mark Ready</button>
+            </div>
+          </div>
+
+          <!-- ============================== -->
+
+          <div class="order-card" data-status="READY FOR PICKUP">
+            <div class="order-header">
+              <h2>Order ID #1236</h2>
+              <span class="status ready">Ready for Pickup</span>
+            </div>
+            <table class="order-table">
+              <tr>
+                <th>Menu Item</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Subtotal</th>
+              </tr>
+              <tr>
+                <td>Pizza</td>
+                <td>PHP 600.00</td>
+                <td>1</td>
+                <td>PHP 600.00</td>
+              </tr>
+              <tr>
+                <td colspan="3" class="total-label">TOTAL</td>
+                <td>PHP 600.00</td>
+              </tr>
+              <tr>
+                <td colspan="3" class="discount-label">Discount Code</td>
+                <td>N/A</td>
+              </tr>
+            </table>
+            <div class="action-buttons">
+              <button class="action-btn">Mark Complete</button>
+            </div>
+          </div>
+
+          <!-- ============================== -->
+
+          <div class="order-card" data-status="COMPLETE">
+            <div class="order-header">
+              <h2>Order ID #1237</h2>
+              <span class="status complete">Complete</span>
+            </div>
+            <table class="order-table">
+              <tr>
+                <th>Menu Item</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Subtotal</th>
+              </tr>
+              <tr>
+                <td>Salad</td>
+                <td>PHP 150.00</td>
+                <td>1</td>
+                <td>PHP 150.00</td>
+              </tr>
+              <tr>
+                <td colspan="3" class="total-label">TOTAL</td>
+                <td>PHP 150.00</td>
+              </tr>
+              <tr>
+                <td colspan="3" class="discount-label">Discount Code</td>
+                <td>N/A</td>
+              </tr>
+            </table>
+          </div>
+
+          <!-- ============================== -->
+
+          <div class="order-card" data-status="CANCELED">
+            <div class="order-header">
+              <h2>Order ID #1238</h2>
+              <span class="status canceled">Canceled</span>
+            </div>
+            <table class="order-table">
+              <tr>
+                <th>Menu Item</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Subtotal</th>
+              </tr>
+              <tr>
+                <td>Pasta</td>
+                <td>PHP 400.00</td>
+                <td>1</td>
+                <td>PHP 400.00</td>
+              </tr>
+              <tr>
+                <td colspan="3" class="total-label">TOTAL</td>
+                <td>PHP 400.00</td>
+              </tr>
+              <tr>
+                <td colspan="3" class="discount-label">Discount Code</td>
+                <td>N/A</td>
+              </tr>
+            </table>
+          </div>
+
+          <!-- ============================== -->
+          
+        </div>
+      </div>
+    </div>   
+    
     <!-- ============================================================ -->
     <!-- ============================================================ -->
     <!-- ============================================================ -->
@@ -149,11 +398,12 @@
             <button id="stock-sort-btn" type="button" onclick="sortTableByColumn('-table', 'stock-sort-options', this, 'YES')">🡹</button>
           </div>
           <div class="right-section">
-            <button type="button" onclick="addSelectedIngredientsToStockInTable('stock-table_body',true)">Stock In</button>
-            <button type="button" onclick="addSelectedIngredientsToStockInTable('stock-table_body',false)">Stock Out</button>
+            <button class="updateButtons" type="button" onclick="addSelectedIngredientsToStockInTable('stock-table_body',true)">Stock In</button>
+            <button class="updateButtons" type="button" onclick="addSelectedIngredientsToStockInTable('stock-table_body',false)">Stock Out</button>
           </div>
         </div>
 
+        <br>
         <br>
 
         <h1>STOCK TABLE</h1>
@@ -162,8 +412,8 @@
           <table id="stock-table">
             <thead>
               <tr>
-                <th></th>
-                <th>ID</th>
+                <th class="id-columns"></th>
+                <th class="id-columns">ID</th>
                 <th>[ID] INGREDIENT</th>
                 <th>QTY LEFT</th>
                 <th>STATUS</th>
@@ -300,6 +550,7 @@
         </div>
 
         <br>
+        <br>  
 
         <h1>STOCK TRANSACTION TABLE</h1>
 
@@ -307,7 +558,7 @@
           <table id="stock-transaction-table">
             <thead>
               <tr>
-                <th>ID</th>
+                <th class="id-columns">ID</th>
                 <th>STOCK ID</th>
                 <th>[ID] INGREDIENT</th>
                 <th>QTY CHANGES</th>
@@ -460,6 +711,7 @@
         </div>
 
         <br>
+        <br>
 
         <h1>STAFF TABLE</h1>
 
@@ -467,7 +719,7 @@
           <table id="staff-table">
             <thead>
               <tr>
-                <th>ID</th>
+                <th class="id-columns">ID</th>
                 <th>FULL NAME</th>
                 <th>CONTACT INFO</th>
                 <th>STATUS</th>
@@ -601,151 +853,6 @@
     <!-- ============================================================ -->
     <!-- ============================================================ -->
 
-    <div class="container" id="supplier">
-
-      <!-- ============================================================ -->
-
-      <div class="container-left-side">
-
-        <!-- ============================== -->
-
-        <div class="tool-bar">
-          <div class="left-section">
-            <select id="supplier-attribute-input">
-              <option value="" disabled selected>--- Select an Attribute to Filter ---</option>
-            </select>
-            <button type="button" onclick="">Reset</button>
-          </div>
-          <div class="right-section">
-            <button class="formFeaturesButtons" type="button" onclick="fillForm('supplier-id', 'supplier-table', 'supplier', 'supplier-form')">Fill Form with ID</button>
-            <button class="formFeaturesButtons" type="button" onclick="clearFormFields('supplier-table','supplier-form','YES')">Clear Form</button>
-          </div>
-        </div>
-        
-        <div class="tool-bar">
-          <div class="left-section">
-            <select id="supplier-sort-options">
-              <option value="" disabled selected>--- Select an Attribute to Sort By ---</option>
-              <option value="">Supplier ID</option>
-              <option value="">Supplier Name</option>
-            </select>
-            <button id="supplier-sort-btn" type="button" onclick="sortTableByColumn('supplier-table', 'supplier-sort-options', this, 'YES')">🡹</button>
-          </div>
-          <div class="right-section">
-            <button class="addButtons" type="button" onclick="addNewSupplier()">Add</button>
-            <button class="updateButtons" type="button" onclick="updateSelectedSupplier()">Update</button>
-            <button class="deleteButtons" type="button" onclick="deleteSelectedSupplier()">Delete</button>
-          </div>
-        </div>
-
-        <br>
-
-        <h1>SUPPLIER TABLE</h1>
-
-        <div class="table-container">
-          <table id="supplier-table">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>SUPPLIER NAME</th>
-              </tr>
-            </thead>
-            <tbody id="supplier-table-body">
-            </tbody>
-          </table>
-        </div>
-
-        <!-- ============================== -->
-
-      </div>
-
-      <!-- ============================================================ -->
-
-      <div class="container-right-side">
-
-        <!-- ============================== -->
-        
-        <h2>SUPPLIER FORM</h2>
-        
-        <div class="details-display-container">
-
-          <form id="supplier-form">
-  
-            <label for="supplier-id">Supplier ID:</label>
-            <input type="number" id="supplier-id" name="supplier-id" placeholder="Enter supplier ID" min="1" tabindex="-1">
-  
-            <br>
-
-            <label for="supplier-name">Supplier:</label>
-            <input type="text" id="supplier-name" name="supplier-name" placeholder="Enter supplier name" required>
-  
-            <br>
-  
-            <label for="supplier-contact-person">Contact Person:</label>
-            <input type="text" id="supplier-contact-person" name="supplier-contact-person" placeholder="Enter contact person name" required>
-  
-            <br>
-            
-            <label for="supplier-address">Address:</label>
-            <textarea id="supplier-address" name="supplier-address" placeholder="Enter company's address" rows="8" required></textarea>
-  
-            <br>
-    
-            <label for="supplier-phonenumber">Contact Number:</label>
-            <input type="text" id="supplier-phonenumber" name="supplier-phonenumber" placeholder="Enter supplier's phone number (09XXXXXXXXX)" required  minlength="11" maxlength="11" pattern="\d{11}">
-  
-            <br>
-  
-            <label for="supplier-email">Email:</label>
-            <input type="email" id="supplier-email" name="supplier-email" placeholder="Enter supplier's email" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" title="Please enter a valid email address." autocomplete="off" maxlength="254">
-            
-            <br>
-
-            <label for="supplier-email-confirm">Confirm Email:</label>
-            <input type="email" id="supplier-email-confirm" name="supplier-email-confirm" placeholder="Re-enter supplier's email" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" title="Please enter a valid email address." autocomplete="off" maxlength="254">
-  
-            <br>
-            <br>  
-            <span>====================================</span>
-            <br>
-
-            <div class="form-buttons-container">
-              <button class="addButtons" type="button" onclick="addNewSupplier()">Add</button>
-              <button class="updateButtons" type="button" onclick="updateSelectedSupplier()">Update</button>
-              <button class="deleteButtons" type="button" onclick="deleteSelectedSupplier()">Delete</button>
-            </div>
-            
-            <br>
-
-          </form>
-
-        </div>
-
-        <!-- ============================== -->
-        
-      </div>
-
-      <!-- ============================================================ -->
-
-    </div>
-      
-    <!-- ============================================================ -->
-    <!-- ============================================================ -->
-    <!-- ============================================================ -->
-
-
-
-
-
-
-
-
-
-    
-    <!-- ============================================================ -->
-    <!-- ============================================================ -->
-    <!-- ============================================================ -->
-
     <div class="container" id="customer">
 
       <!-- ============================================================ -->
@@ -786,6 +893,7 @@
         </div>
 
         <br>
+        <br>
 
         <h1>CUSTOMER TABLE</h1>
 
@@ -793,7 +901,7 @@
           <table id="customer-table">
             <thead>
               <tr>
-                <th>ID</th>
+                <th class="id-columns">ID</th>
                 <th>FULL NAME</th>
                 <th>CONTACT INFO</th>
                 <th>STATUS</th>
@@ -966,6 +1074,7 @@
         </div>
 
         <br>
+        <br>
 
         <h1>MENU ITEM TABLE</h1>
 
@@ -1004,6 +1113,7 @@
               <img src="../img_placeholder.png" id="preview-image" alt="Menu Item Preview">
             </div>
   
+            <br>
             <br>
   
             <label for="menu-item-id">Menu Item ID:</label>
@@ -1149,6 +1259,7 @@
         </div>
 
         <br>
+        <br>
 
         <h1>MENU CATEGORY TABLE</h1>
 
@@ -1156,7 +1267,7 @@
           <table id="menu-category-table">
             <thead>
               <tr>
-                <th>ID</th>
+                <th class="id-columns">ID</th>
                 <th>MENU CATEGORY</th>
               </tr>
             </thead>
@@ -1270,6 +1381,7 @@
         </div>
 
         <br>
+        <br>
 
         <h1>INGREDIENT TABLE</h1>
 
@@ -1277,7 +1389,7 @@
           <table id="ingredient-table">
             <thead>
               <tr>
-                <th><button type="button" onclick="addSelectedIngredientsToStockInTable('ingredient-table_body',true)">Stock In</button></th>
+                <th><button class="updateButtons" type="button" onclick="addSelectedIngredientsToStockInTable('ingredient-table_body',true)">Stock In</button></th>
                 <th>[ID] INGREDIENT</th>
                 <th>ING. CATEGORY</th>
                 <th>TOTAL QUANTITY</th>
@@ -1340,6 +1452,14 @@
   
             <label for="ingredient-reorder-point">Reorder Point:</label>
             <input type="number" id="ingredient-reorder-point" name="ingredient-reorder-point" placeholder="Enter a Number" required min="1">
+            
+            <br>
+
+            <label for="ingredient-auto-deduct">System Auto-Deducts Stocks</label>
+            <select id="ingredient-auto-deduct" name="ingredient-auto-deduct" required>
+              <option value="true">TRUE</option>
+              <option value="false">FALSE</option>
+            </select>
   
             <br>
             <br>  
@@ -1421,6 +1541,7 @@
         </div>
 
         <br>
+        <br>
 
         <h1>INGREDIENT CATEGORY TABLE</h1>
 
@@ -1428,7 +1549,7 @@
           <table id="ingredient-category-table">
             <thead>
               <tr>
-                <th>ID</th>
+                <th class="id-columns">ID</th>
                 <th>INGREDIENT CATEGORY</th>
               </tr>
             </thead>
@@ -1541,6 +1662,7 @@
         </div>
 
         <br>
+        <br>
 
         <h1>INGREDIENT UNIT TABLE</h1>
 
@@ -1548,7 +1670,7 @@
           <table id="ingredient-unit-table">
             <thead>
               <tr>
-                <th>ID</th>
+                <th class="id-columns">ID</th>
                 <th>INGREDIENT UNIT</th>
               </tr>
             </thead>
@@ -1670,7 +1792,7 @@
         /*==============================*/
 
         // Set the "?Page" container as active by default
-        const defaultContainerId = "ingredient";
+        const defaultContainerId = "orderManagement";
         const defaultButton = document.getElementById(defaultContainerId + "Page");
 
         showContainer(defaultContainerId);
@@ -1687,62 +1809,79 @@
       
       /*============================================================*/
 
-      function addHoverEffectToTableRows(tableId) {
-        // Get the table by its ID
-        const table = document.getElementById(tableId);
+      document.addEventListener("DOMContentLoaded", function() {
+        const accountDropdown = document.querySelector('.account-dropdown');
+        const dropdownArrow = document.getElementById('dropdown-arrow');
 
-        // Check if the table exists
-        if (!table) {
-          console.error(`Table with ID '${tableId}' not found.`);
-          return;
+        accountDropdown.addEventListener('click', function(event) {
+          event.stopPropagation(); // Prevent click from bubbling up
+          accountDropdown.classList.toggle('active'); // Toggle the active class
+
+          // Toggle the arrow direction
+          if (accountDropdown.classList.contains('active')) {
+            dropdownArrow.classList.remove('fa-caret-down');
+            dropdownArrow.classList.add('fa-caret-up');
+          } else {
+            dropdownArrow.classList.remove('fa-caret-up');
+            dropdownArrow.classList.add('fa-caret-down');
+          }
+        });
+
+        document.addEventListener('click', function(event) {
+          if (!accountDropdown.contains(event.target)) {
+            accountDropdown.classList.remove('active'); // Remove active class when clicking outside
+            dropdownArrow.classList.remove('fa-caret-up');
+            dropdownArrow.classList.add('fa-caret-down');
+          }
+        });
+      });
+
+      /*============================================================*/
+
+      document.addEventListener('DOMContentLoaded', () => {
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const orderCards = document.querySelectorAll('.order-card');
+
+        // Function to update the counts on filter buttons
+        function updateCounts() {
+          const statuses = ['ALL', 'PENDING', 'PREPARING', 'READY FOR PICKUP', 'COMPLETE', 'CANCELED'];
+          statuses.forEach(status => {
+            const count = status === 'ALL' 
+              ? orderCards.length 
+              : document.querySelectorAll(`.order-card[data-status="${status}"]`).length;
+            document.getElementById(`count-${status}`).textContent = count;
+          });
         }
 
-        // Get the table body
-        const tableBody = table.querySelector("tbody");
+        // Function to handle filter button click and apply active class
+        function handleFilterClick(button) {
+          // Remove 'active' class from all buttons
+          filterButtons.forEach(btn => btn.classList.remove('active'));
 
-        // Add event listeners using event delegation
-        tableBody.addEventListener("mouseover", function (event) {
-          // Check if the hovered element is a table row
-          const row = event.target.closest("tr");
-          if (row) {
-            row.style.backgroundColor = "#d7d7d7"; 
-            row.style.cursor = "pointer";
+          // Add 'active' class to the clicked button
+          button.classList.add('active');
 
-            // Change the text color to black for all cells within the row
-            row.querySelectorAll("td").forEach((cell) => {
-              cell.style.color = "black";
-            });
-          }
+          // Filter orders based on the button's status
+          const status = button.getAttribute('data-status');
+          orderCards.forEach(card => {
+            const cardStatus = card.getAttribute('data-status');
+            card.style.display = (status === 'ALL' || status === cardStatus) ? 'block' : 'none';
+          });
+
+          // Update counts after filtering
+          updateCounts();
+        }
+
+        // Add click event listeners to filter buttons
+        filterButtons.forEach(button => {
+          button.addEventListener('click', () => handleFilterClick(button));
         });
 
-        tableBody.addEventListener("mouseout", function (event) {
-          // Check if the mouse left a table row
-          const row = event.target.closest("tr");
-          if (row) {
-            row.style.backgroundColor = ""; 
-            row.style.cursor = "";
+        // Initial count update
+        updateCounts();
+      });
 
-            // Reset the text color for all cells within the row
-            row.querySelectorAll("td").forEach((cell) => {
-              cell.style.color = ""; 
-            });
-          }
-        });
-      }
-      
-      /*==============================*/
-
-      addHoverEffectToTableRows("stock-table");
-      addHoverEffectToTableRows("stock-transaction-table");
-      addHoverEffectToTableRows("staff-table");
-      addHoverEffectToTableRows("customer-table");
-      addHoverEffectToTableRows("menu-item-table");
-      addHoverEffectToTableRows("menu-category-table");
-      addHoverEffectToTableRows("ingredient-table");
-      addHoverEffectToTableRows("ingredient-category-table");
-      addHoverEffectToTableRows("ingredient-unit-table");
-      
-      /*============================================================*/
+      /*============================================================*/    
 
       function previewImage(event) {
           const file = event.target.files[0]; // Get the selected file

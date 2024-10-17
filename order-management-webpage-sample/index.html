@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order Management</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container" id="orderManagement">
+    <div class="filter-bar">
+      <button class="filter-btn" data-status="ALL">All</button>
+      <button class="filter-btn" data-status="PENDING">Pending</button>
+      <button class="filter-btn" data-status="PREPARING">Preparing</button>
+      <button class="filter-btn" data-status="READY FOR PICKUP">Ready for Pickup</button>
+      <button class="filter-btn" data-status="COMPLETE">Complete</button>
+      <button class="filter-btn" data-status="CANCELED">Canceled</button>
+    </div>
+
+    <div class="orders">
+      <!-- Sample Order Cards -->
+      <div class="order-card" data-status="PENDING">
+        <h2>Order #1234</h2>
+        <p>Status: <span class="status pending">Pending</span></p>
+        <p>Menu Item: Fried Chicken</p>
+        <p>Total Price: PHP 500.00</p>
+        <button class="action-btn">Prepare</button>
+        <button class="action-btn cancel">Cancel</button>
+      </div>
+
+      <div class="order-card" data-status="PREPARING">
+        <h2>Order #1235</h2>
+        <p>Status: <span class="status preparing">Preparing</span></p>
+        <p>Menu Item: Burger</p>
+        <p>Total Price: PHP 350.00</p>
+        <button class="action-btn">Mark Ready</button>
+      </div>
+
+      <div class="order-card" data-status="READY FOR PICKUP">
+        <h2>Order #1236</h2>
+        <p>Status: <span class="status ready">Ready for Pickup</span></p>
+        <p>Menu Item: Pizza</p>
+        <p>Total Price: PHP 600.00</p>
+        <button class="action-btn">Mark Complete</button>
+      </div>
+
+      <div class="order-card" data-status="COMPLETE">
+        <h2>Order #1237</h2>
+        <p>Status: <span class="status complete">Complete</span></p>
+        <p>Menu Item: Salad</p>
+        <p>Total Price: PHP 150.00</p>
+      </div>
+
+      <div class="order-card" data-status="CANCELED">
+        <h2>Order #1238</h2>
+        <p>Status: <span class="status canceled">Canceled</span></p>
+        <p>Menu Item: Pasta</p>
+        <p>Total Price: PHP 400.00</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
