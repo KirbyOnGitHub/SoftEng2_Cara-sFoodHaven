@@ -161,23 +161,25 @@
 
         <div class="filter-bar">
           <button class="filter-btn" data-status="ALL">
-            <i class="fas fa-list"></i> All (<span class="count" id="count-ALL"></span>)
+            <i class="fas fa-list"></i> All<span class="count" id="count-ALL"></span>
           </button>
           <button class="filter-btn" data-status="PENDING">
-            <i class="fas fa-hourglass-start"></i> Pending (<span class="count" id="count-PENDING"></span>)
+            <i class="fas fa-hourglass-start"></i> Pending<span class="count" id="count-PENDING"></span>
           </button>
           <button class="filter-btn" data-status="PREPARING">
-            <i class="fas fa-fire"></i> Preparing (<span class="count" id="count-PREPARING"></span>)
+            <i class="fas fa-fire"></i>  Preparing<span class="count" id="count-PREPARING"></span>
           </button>
           <button class="filter-btn" data-status="READY FOR PICKUP">
-            <i class="fas fa-concierge-bell"></i> Ready for Pickup (<span class="count" id="count-READY FOR PICKUP"></span>)
+            <i class="fas fa-concierge-bell"></i> Ready for Pickup<span class="count" id="count-READY FOR PICKUP"></span>
           </button>
           <button class="filter-btn" data-status="COMPLETE">
-            <i class="fas fa-check-circle"></i> Complete (<span class="count" id="count-COMPLETE"></span>)
+            <i class="fas fa-check-circle"></i> Complete<span class="count" id="count-COMPLETE"></span>
           </button>
           <button class="filter-btn" data-status="CANCELED">
-            <i class="fas fa-times-circle"></i> Canceled (<span class="count" id="count-CANCELED"></span>)
+            <i class="fas fa-times-circle"></i> Canceled<span class="count" id="count-CANCELED"></span>
           </button>
+          <!-- Date Display -->
+          <div id="current-date" class="current-date"></div>
         </div>
 
         <!-- ============================== -->
@@ -188,7 +190,7 @@
 
           <div class="order-card" data-status="PENDING">
             <div class="order-header">
-              <h2>Order ID #1234</h2>
+              <h2>Order ID #1</h2>
               <span class="status pending">Pending</span>
             </div>
             <table class="order-table">
@@ -199,16 +201,16 @@
                 <th>Subtotal</th>
               </tr>
               <tr>
-                <td>Fried Chicken</td>
-                <td>PHP 200.00</td>
-                <td>1</td>
-                <td>PHP 200.00</td>
-              </tr>
-              <tr>
                 <td>Beef Pares</td>
                 <td>PHP 275.00</td>
                 <td>3</td>
                 <td>PHP 825.00</td>
+              </tr>
+              <tr>
+                <td>Fried Chicken</td>
+                <td>PHP 200.00</td>
+                <td>1</td>
+                <td>PHP 200.00</td>
               </tr>
               <tr>
                 <td>Chocolate Cake</td>
@@ -235,7 +237,7 @@
 
           <div class="order-card" data-status="PENDING">
             <div class="order-header">
-              <h2>Order ID #1234</h2>
+              <h2>Order ID #2</h2>
               <span class="status pending">Pending</span>
             </div>
             <table class="order-table">
@@ -244,6 +246,12 @@
                 <th>Price</th>
                 <th>Quantity</th>
                 <th>Subtotal</th>
+              </tr>
+              <tr>
+                <td>Chocolate Cake</td>
+                <td>PHP 800.00</td>
+                <td>2</td>
+                <td>PHP 1600.00</td>
               </tr>
               <tr>
                 <td>Fried Chicken</td>
@@ -256,12 +264,6 @@
                 <td>PHP 275.00</td>
                 <td>3</td>
                 <td>PHP 825.00</td>
-              </tr>
-              <tr>
-                <td>Chocolate Cake</td>
-                <td>PHP 800.00</td>
-                <td>2</td>
-                <td>PHP 1600.00</td>
               </tr>
               <tr>
                 <td colspan="3" class="total-label">TOTAL</td>
@@ -282,7 +284,7 @@
 
           <div class="order-card" data-status="PENDING">
             <div class="order-header">
-              <h2>Order ID #1234</h2>
+              <h2>Order ID #3</h2>
               <span class="status pending">Pending</span>
             </div>
             <table class="order-table">
@@ -1888,51 +1890,6 @@
       /*============================================================*/
 
       document.addEventListener('DOMContentLoaded', () => {
-        const filterButtons = document.querySelectorAll('.filter-btn');
-        const orderCards = document.querySelectorAll('.order-card');
-
-        // Function to update the counts on filter buttons
-        function updateCounts() {
-          const statuses = ['ALL', 'PENDING', 'PREPARING', 'READY FOR PICKUP', 'COMPLETE', 'CANCELED'];
-          statuses.forEach(status => {
-            const count = status === 'ALL' 
-              ? orderCards.length 
-              : document.querySelectorAll(`.order-card[data-status="${status}"]`).length;
-            document.getElementById(`count-${status}`).textContent = count;
-          });
-        }
-
-        // Function to handle filter button click and apply active class
-        function handleFilterClick(button) {
-          // Remove 'active' class from all buttons
-          filterButtons.forEach(btn => btn.classList.remove('active'));
-
-          // Add 'active' class to the clicked button
-          button.classList.add('active');
-
-          // Filter orders based on the button's status
-          const status = button.getAttribute('data-status');
-          orderCards.forEach(card => {
-            const cardStatus = card.getAttribute('data-status');
-            card.style.display = (status === 'ALL' || status === cardStatus) ? 'block' : 'none';
-          });
-
-          // Update counts after filtering
-          updateCounts();
-        }
-
-        // Add click event listeners to filter buttons
-        filterButtons.forEach(button => {
-          button.addEventListener('click', () => handleFilterClick(button));
-        });
-
-        // Initial count update
-        updateCounts();
-      });
-
-      /*============================================================*/   
-
-      document.addEventListener('DOMContentLoaded', () => {
         const ordersContainer = document.querySelector('.orders');
         const filterButtons = document.querySelectorAll('.filter-btn');
 
@@ -2059,20 +2016,163 @@
               <span class="status ${orderData.status.toLowerCase().replace(/ /g, '-')}">${orderData.statusText}</span>
             </div>
             <table class="order-table">
+              <tr>
+                <th>Menu Item</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Subtotal</th>
+              </tr>
               <!-- Table content here -->
+              <tr>
+                <td colspan="3" class="total-label">TOTAL</td>
+                <td>PHP 000.00</td>
+              </tr>
+              <tr>
+                <td colspan="3" class="discount-label">Discount Code</td>
+                <td>ABC123</td>
+              </tr>
             </table>
             <div class="action-buttons">
-              <button class="action-btn">${orderData.buttonText}</button>
-              <button class="action-btn cancel">Cancel</button>
+              <button class="action-btn" ${orderData.status === 'COMPLETE' || orderData.status === 'CANCELED' ? 'style="display:none;"' : ''}>${getButtonText(orderData.status)}</button>
+              <button class="action-btn cancel" ${orderData.status === 'COMPLETE' || orderData.status === 'CANCELED' ? 'style="display:none;"' : ''}>Cancel</button>
             </div>
           `;
           ordersContainer.appendChild(newCard);
           attachEventListeners(newCard);
           updateCounts();
+          reapplyCurrentFilter();
         }
+
+        function getButtonText(status) {
+          switch (status) {
+            case 'PENDING':
+              return 'Prepare';
+            case 'PREPARING':
+              return 'Mark Ready';
+            case 'READY FOR PICKUP':
+              return 'Mark Complete';
+            default:
+              return '';
+          }
+        }
+
+        function reapplyCurrentFilter() {
+          const activeButton = document.querySelector('.filter-btn.active');
+          if (activeButton) {
+            const status = activeButton.getAttribute('data-status');
+            const orderCards = document.querySelectorAll('.order-card');
+            orderCards.forEach(card => {
+              const cardStatus = card.getAttribute('data-status');
+              card.style.display = (status === 'ALL' || status === cardStatus) ? 'block' : 'none';
+            });
+          }
+        }
+        
+        /*============================================================*/
+  
+        // // Sample order data for each status
+  
+        // // PENDING
+        // const pendingOrderData = {
+        //   id: 4,
+        //   status: 'PENDING',
+        //   statusText: 'Pending'
+        // };
+  
+        // // PREPARING
+        // const preparingOrderData = {
+        //   id: 5,
+        //   status: 'PREPARING',
+        //   statusText: 'Preparing'
+        // };
+  
+        // // READY FOR PICKUP
+        // const readyForPickupOrderData = {
+        //   id: 6,
+        //   status: 'READY FOR PICKUP',
+        //   statusText: 'Ready for Pickup'
+        // };
+  
+        // // COMPLETE
+        // const completeOrderData = {
+        //   id: 7,
+        //   status: 'COMPLETE',
+        //   statusText: 'Complete'
+        // };
+  
+        // // CANCELED
+        // const canceledOrderData = {
+        //   id: 8,
+        //   status: 'CANCELED',
+        //   statusText: 'Canceled'  
+        // };
+  
+        // // Example of adding each order card
+        // addNewOrderCard(pendingOrderData);
+        // addNewOrderCard(preparingOrderData);
+        // addNewOrderCard(readyForPickupOrderData);
+        // addNewOrderCard(completeOrderData);
+        // addNewOrderCard(canceledOrderData);
+          
+        /*============================================================*/
+
       });
-      
+
       /*============================================================*/
+
+      document.addEventListener('DOMContentLoaded', () => {
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const orderCards = document.querySelectorAll('.order-card');
+
+        // Function to update the counts on filter buttons
+        function updateCounts() {
+          const statuses = ['ALL', 'PENDING', 'PREPARING', 'READY FOR PICKUP', 'COMPLETE', 'CANCELED'];
+          statuses.forEach(status => {
+            const count = status === 'ALL' 
+              ? orderCards.length 
+              : document.querySelectorAll(`.order-card[data-status="${status}"]`).length;
+            document.getElementById(`count-${status}`).textContent = count;
+          });
+        }
+
+        // Function to handle filter button click and apply active class
+        function handleFilterClick(button) {
+          // Remove 'active' class from all buttons
+          filterButtons.forEach(btn => btn.classList.remove('active'));
+
+          // Add 'active' class to the clicked button
+          button.classList.add('active');
+
+          // Filter orders based on the button's status
+          const status = button.getAttribute('data-status');
+          orderCards.forEach(card => {
+            const cardStatus = card.getAttribute('data-status');
+            card.style.display = (status === 'ALL' || status === cardStatus) ? 'block' : 'none';
+          });
+
+          // Update counts after filtering
+          updateCounts();
+        }
+
+        // Add click event listeners to filter buttons
+        filterButtons.forEach(button => {
+          button.addEventListener('click', () => handleFilterClick(button));
+        });
+
+        // Initial count update
+        updateCounts();
+
+        // Simulate a click on the "ALL" filter button on page load
+        document.querySelector('.filter-btn[data-status="ALL"]').click();
+      });
+
+      /*============================================================*/   
+      document.addEventListener('DOMContentLoaded', () => {
+    const currentDateElement = document.getElementById('current-date');
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    const today = new Date().toLocaleDateString(undefined, options);
+    currentDateElement.textContent = `Today's Date: ${today}`;
+  });
 
     </script>
       

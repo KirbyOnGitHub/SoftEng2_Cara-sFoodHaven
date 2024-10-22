@@ -869,7 +869,19 @@ td.status-cell {
     padding: 15px;
     border: 3px solid #ccc; 
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.8);
-  }
+}
+
+.current-date {
+    position: absolute;
+    top: 100%; 
+    left: 0; 
+    font-size: 1.1rem;
+    color: #666;
+    margin-top: 5px; 
+    background-color: #f9f9f9;
+    padding: 10px; 
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1); 
+}
 
 .filter-btn[data-status="ALL"] {
     background-color: #182735 !important;
@@ -915,6 +927,24 @@ td.status-cell {
     transform: scale(1.2) !important;
 }
 
+.filter-btn:not(.active) {
+    filter: brightness(0.5);
+}
+
+.filter-btn .count {
+    display: inline-flex; /* Use flexbox for centering */
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    width: 28px; /* Set width */
+    height: 28px; /* Set height to make it a circle */
+    background-color: #f0f0f0; /* Light background color */
+    border-radius: 50%; /* Make it a circle */
+    font-weight: bold; /* Bold text */
+    color: #333; /* Text color */
+    margin-left: 5px; /* Space between icon/text and count */
+    font-size: 0.9rem; /* Adjust font size as needed */
+}
+
 .filter-btn.active,
 .filter-btn:hover.active {
     background-color: inherit; 
@@ -931,12 +961,12 @@ td.status-cell {
 }
 
 .order-card {
-    padding: 15px;
+    padding: 30px;
     background-color: #172534;  
     border: 3px solid #16a085;
     border-radius: 8px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    margin-bottom: 30px;
+    margin: 30px 0;
 }
 
 .order-header {
