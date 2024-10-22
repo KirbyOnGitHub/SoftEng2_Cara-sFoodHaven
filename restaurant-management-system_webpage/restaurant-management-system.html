@@ -30,6 +30,9 @@
             <i class="fas fa-caret-down" id="dropdown-arrow"></i>
           </div>
           <div class="dropdown-content">
+            <a href="#" id="toggle-mode">
+              <i class="fas fa-sun" id="mode-icon"></i> Toggle Light Mode
+            </a>
             <a href="#">
               <i class="fas fa-sign-out-alt"></i> Logout
             </a>
@@ -49,8 +52,12 @@
         <button class="verticalmenu-btn" id="orderManagementPage">
           <i class="fas fa-receipt"></i> Order Management
         </button>
+        <button class="verticalmenu-btn" id="analyticsPage">
+          <i class="fas fa-chart-line"></i> Analytics
+        </button>
         <button class="verticalmenu-btn" id="stockPage">
           <i class="fas fa-boxes"></i> Stock
+          <span class="notification-badge" style="display: none;">0</span>
         </button>
         <button class="verticalmenu-btn" id="stockTransactionPage">
           <i class="fas fa-exchange-alt"></i> Stock Transaction
@@ -77,6 +84,7 @@
         <label class="verticalmenu-label">INGREDIENT</label>
         <button class="verticalmenu-btn" id="ingredientPage">
           <i class="fas fa-carrot"></i> Ingredient List
+          <span class="notification-badge" style="display: none;">0</span>
         </button>
         <button class="verticalmenu-btn" id="ingredientCategoryPage">
           <i class="fas fa-list"></i> Ingredient Category
@@ -192,13 +200,25 @@
               </tr>
               <tr>
                 <td>Fried Chicken</td>
-                <td>PHP 500.00</td>
+                <td>PHP 200.00</td>
                 <td>1</td>
-                <td>PHP 500.00</td>
+                <td>PHP 200.00</td>
+              </tr>
+              <tr>
+                <td>Beef Pares</td>
+                <td>PHP 275.00</td>
+                <td>3</td>
+                <td>PHP 825.00</td>
+              </tr>
+              <tr>
+                <td>Chocolate Cake</td>
+                <td>PHP 800.00</td>
+                <td>2</td>
+                <td>PHP 1600.00</td>
               </tr>
               <tr>
                 <td colspan="3" class="total-label">TOTAL</td>
-                <td>PHP 500.00</td>
+                <td>PHP 2625.00</td>
               </tr>
               <tr>
                 <td colspan="3" class="discount-label">Discount Code</td>
@@ -213,10 +233,10 @@
 
           <!-- ============================== -->
 
-          <div class="order-card" data-status="PREPARING">
+          <div class="order-card" data-status="PENDING">
             <div class="order-header">
-              <h2>Order ID #1235</h2>
-              <span class="status preparing">Preparing</span>
+              <h2>Order ID #1234</h2>
+              <span class="status pending">Pending</span>
             </div>
             <table class="order-table">
               <tr>
@@ -226,31 +246,44 @@
                 <th>Subtotal</th>
               </tr>
               <tr>
-                <td>Burger</td>
-                <td>PHP 350.00</td>
+                <td>Fried Chicken</td>
+                <td>PHP 200.00</td>
                 <td>1</td>
-                <td>PHP 350.00</td>
+                <td>PHP 200.00</td>
+              </tr>
+              <tr>
+                <td>Beef Pares</td>
+                <td>PHP 275.00</td>
+                <td>3</td>
+                <td>PHP 825.00</td>
+              </tr>
+              <tr>
+                <td>Chocolate Cake</td>
+                <td>PHP 800.00</td>
+                <td>2</td>
+                <td>PHP 1600.00</td>
               </tr>
               <tr>
                 <td colspan="3" class="total-label">TOTAL</td>
-                <td>PHP 350.00</td>
+                <td>PHP 2625.00</td>
               </tr>
               <tr>
                 <td colspan="3" class="discount-label">Discount Code</td>
-                <td>N/A</td>
+                <td>ABC123</td>
               </tr>
             </table>
             <div class="action-buttons">
-              <button class="action-btn">Mark Ready</button>
+              <button class="action-btn">Prepare</button>
+              <button class="action-btn cancel">Cancel</button>
             </div>
           </div>
 
           <!-- ============================== -->
 
-          <div class="order-card" data-status="READY FOR PICKUP">
+          <div class="order-card" data-status="PENDING">
             <div class="order-header">
-              <h2>Order ID #1236</h2>
-              <span class="status ready">Ready for Pickup</span>
+              <h2>Order ID #1234</h2>
+              <span class="status pending">Pending</span>
             </div>
             <table class="order-table">
               <tr>
@@ -260,90 +293,44 @@
                 <th>Subtotal</th>
               </tr>
               <tr>
-                <td>Pizza</td>
-                <td>PHP 600.00</td>
+                <td>Fried Chicken</td>
+                <td>PHP 200.00</td>
                 <td>1</td>
-                <td>PHP 600.00</td>
+                <td>PHP 200.00</td>
+              </tr>
+              <tr>
+                <td>Beef Pares</td>
+                <td>PHP 275.00</td>
+                <td>3</td>
+                <td>PHP 825.00</td>
+              </tr>
+              <tr>
+                <td>Chocolate Cake</td>
+                <td>PHP 800.00</td>
+                <td>2</td>
+                <td>PHP 1600.00</td>
               </tr>
               <tr>
                 <td colspan="3" class="total-label">TOTAL</td>
-                <td>PHP 600.00</td>
+                <td>PHP 2625.00</td>
               </tr>
               <tr>
                 <td colspan="3" class="discount-label">Discount Code</td>
-                <td>N/A</td>
+                <td>ABC123</td>
               </tr>
             </table>
             <div class="action-buttons">
-              <button class="action-btn">Mark Complete</button>
+              <button class="action-btn">Prepare</button>
+              <button class="action-btn cancel">Cancel</button>
             </div>
-          </div>
-
-          <!-- ============================== -->
-
-          <div class="order-card" data-status="COMPLETE">
-            <div class="order-header">
-              <h2>Order ID #1237</h2>
-              <span class="status complete">Complete</span>
-            </div>
-            <table class="order-table">
-              <tr>
-                <th>Menu Item</th>
-                <th>Price</th>
-                <th>Quantity</th>
-                <th>Subtotal</th>
-              </tr>
-              <tr>
-                <td>Salad</td>
-                <td>PHP 150.00</td>
-                <td>1</td>
-                <td>PHP 150.00</td>
-              </tr>
-              <tr>
-                <td colspan="3" class="total-label">TOTAL</td>
-                <td>PHP 150.00</td>
-              </tr>
-              <tr>
-                <td colspan="3" class="discount-label">Discount Code</td>
-                <td>N/A</td>
-              </tr>
-            </table>
-          </div>
-
-          <!-- ============================== -->
-
-          <div class="order-card" data-status="CANCELED">
-            <div class="order-header">
-              <h2>Order ID #1238</h2>
-              <span class="status canceled">Canceled</span>
-            </div>
-            <table class="order-table">
-              <tr>
-                <th>Menu Item</th>
-                <th>Price</th>
-                <th>Quantity</th>
-                <th>Subtotal</th>
-              </tr>
-              <tr>
-                <td>Pasta</td>
-                <td>PHP 400.00</td>
-                <td>1</td>
-                <td>PHP 400.00</td>
-              </tr>
-              <tr>
-                <td colspan="3" class="total-label">TOTAL</td>
-                <td>PHP 400.00</td>
-              </tr>
-              <tr>
-                <td colspan="3" class="discount-label">Discount Code</td>
-                <td>N/A</td>
-              </tr>
-            </table>
           </div>
 
           <!-- ============================== -->
           
         </div>
+
+        <!-- ============================== -->
+
       </div>
     </div>   
     
@@ -1161,8 +1148,8 @@
                 <thead>
                   <tr>
                     <th>KEY<br>ING.</th>
-                    <th>QUANTITY<br>USED</th>
-                    <th>[ID] INGREDIENT<br>( ING. UNIT )</th>
+                    <th>QTY USED<br>( ING. UNIT )</th>
+                    <th>[ID] INGREDIENT</th>
                   </tr>
                 </thead>
                 <tbody id="ingredient-list-table-body">
@@ -1836,6 +1823,68 @@
         });
       });
 
+      /*============================================================*/ 
+
+      function previewImage(event) {
+          const file = event.target.files[0]; // Get the selected file
+          const previewImage = document.getElementById('preview-image'); // Get the image element
+
+          if (file) {
+              const reader = new FileReader(); // Create a new FileReader instance
+
+              // Define what happens when the file is read
+              reader.onload = function(e) {
+                  previewImage.src = e.target.result; // Set the image src to the file's data URL
+              }
+
+              // Read the file as a data URL
+              reader.readAsDataURL(file);
+          } else {
+              previewImage.src = '../img_placeholder.png'; // Reset to placeholder if no file is selected
+          }
+      }
+      
+      /*============================================================*/
+
+      document.addEventListener("DOMContentLoaded", function() {
+        const forms = document.querySelectorAll('form');
+
+        forms.forEach(form => {
+          const tabbableElements = Array.from(form.querySelectorAll('input, select, button'))
+            .filter(el => !el.disabled && el.tabIndex !== -1);
+
+          form.addEventListener('keydown', function(event) {
+            if (event.key === 'Tab' && !event.shiftKey) {
+              const lastElement = tabbableElements[tabbableElements.length - 1];
+              if (document.activeElement === lastElement) {
+                event.preventDefault();
+                tabbableElements[0].focus();
+              }
+            }
+          });
+        });
+      });
+      
+      /*============================================================*/
+
+      document.getElementById('toggle-mode').addEventListener('click', function(event) {
+        event.preventDefault();
+        const icon = document.getElementById('mode-icon');
+        const toggleText = this;
+
+        if (icon.classList.contains('fa-sun')) {
+          icon.classList.remove('fa-sun');
+          icon.classList.add('fa-moon');
+          toggleText.innerHTML = '<i class="fas fa-moon" id="mode-icon"></i> Toggle Dark Mode';
+          // Add logic to switch to dark mode
+        } else {
+          icon.classList.remove('fa-moon');
+          icon.classList.add('fa-sun');
+          toggleText.innerHTML = '<i class="fas fa-sun" id="mode-icon"></i> Toggle Light Mode';
+          // Add logic to switch to light mode
+        }
+      });
+      
       /*============================================================*/
 
       document.addEventListener('DOMContentLoaded', () => {
@@ -1881,26 +1930,147 @@
         updateCounts();
       });
 
-      /*============================================================*/    
+      /*============================================================*/   
 
-      function previewImage(event) {
-          const file = event.target.files[0]; // Get the selected file
-          const previewImage = document.getElementById('preview-image'); // Get the image element
+      document.addEventListener('DOMContentLoaded', () => {
+        const ordersContainer = document.querySelector('.orders');
+        const filterButtons = document.querySelectorAll('.filter-btn');
 
-          if (file) {
-              const reader = new FileReader(); // Create a new FileReader instance
+        // Attach event listeners to existing order cards
+        const orderCards = document.querySelectorAll('.order-card');
+        orderCards.forEach(card => attachEventListeners(card));
 
-              // Define what happens when the file is read
-              reader.onload = function(e) {
-                  previewImage.src = e.target.result; // Set the image src to the file's data URL
-              }
+        // Attach event listeners to filter buttons
+        filterButtons.forEach(button => {
+          button.addEventListener('click', () => filterOrders(button));
+        });
 
-              // Read the file as a data URL
-              reader.readAsDataURL(file);
-          } else {
-              previewImage.src = '../img_placeholder.png'; // Reset to placeholder if no file is selected
+        function attachEventListeners(card) {
+          const prepareButton = card.querySelector('.action-btn:not(.cancel)');
+          const cancelButton = card.querySelector('.action-btn.cancel');
+
+          if (prepareButton) {
+            prepareButton.addEventListener('click', () => handlePrepare(card));
           }
-      }
+
+          if (cancelButton) {
+            cancelButton.addEventListener('click', () => handleCancel(card));
+          }
+        }
+
+        function handlePrepare(card) {
+          const status = card.getAttribute('data-status');
+          switch (status) {
+            case 'PENDING':
+              updateOrderStatus(card, 'PREPARING', 'Preparing', 'Mark Ready');
+              break;
+            case 'PREPARING':
+              updateOrderStatus(card, 'READY FOR PICKUP', 'Ready for Pickup', 'Mark Complete');
+              break;
+            case 'READY FOR PICKUP':
+              updateOrderStatus(card, 'COMPLETE', 'Complete', null);
+              break;
+            default:
+              break;
+          }
+        }
+
+        function handleCancel(card) {
+          updateOrderStatus(card, 'CANCELED', 'Canceled', null);
+        }
+
+        function updateOrderStatus(card, newStatus, newStatusText, newButtonText) {
+          card.setAttribute('data-status', newStatus);
+          const statusSpan = card.querySelector('.status');
+          statusSpan.textContent = newStatusText;
+          statusSpan.className = `status ${newStatus.toLowerCase().replace(/ /g, '-')}`;
+
+          const prepareButton = card.querySelector('.action-btn:not(.cancel)');
+          if (newButtonText) {
+            prepareButton.textContent = newButtonText;
+            prepareButton.style.display = 'inline-block';
+          } else {
+            prepareButton.style.display = 'none';
+          }
+
+          const cancelButton = card.querySelector('.action-btn.cancel');
+          if (newStatus === 'CANCELED' || newStatus === 'COMPLETE') {
+            cancelButton.style.display = 'none';
+          } else {
+            cancelButton.style.display = 'inline-block';
+          }
+
+          updateCounts(); // Update the filter button counts
+          reapplyCurrentFilter(); // Reapply the current filter to update the UI
+        }
+
+        function moveCardToSection(card, newStatus) {
+          ordersContainer.appendChild(card);
+          // Optionally, you can sort the cards or update the UI to reflect the new status
+        }
+
+        function updateCounts() {
+          const statuses = ['ALL', 'PENDING', 'PREPARING', 'READY FOR PICKUP', 'COMPLETE', 'CANCELED'];
+          statuses.forEach(status => {
+            const count = status === 'ALL' 
+              ? document.querySelectorAll('.order-card').length 
+              : document.querySelectorAll(`.order-card[data-status="${status}"]`).length;
+            document.getElementById(`count-${status}`).textContent = count;
+          });
+        }
+
+        function filterOrders(button) {
+          const status = button.getAttribute('data-status');
+          orderCards.forEach(card => {
+            if (status === 'ALL' || card.getAttribute('data-status') === status) {
+              card.style.display = 'block';
+            } else {
+              card.style.display = 'none';
+            }
+          });
+        }
+
+        function reapplyCurrentFilter() {
+          const activeButton = document.querySelector('.filter-btn.active');
+          if (activeButton) {
+            activeButton.click();
+          }
+        }
+
+        // Initial count update
+        updateCounts();
+
+        // Simulate a click on the "ALL" filter button on page load
+        const allButton = document.querySelector('.filter-btn[data-status="ALL"]');
+        if (allButton) {
+          allButton.click();
+        }
+      
+        /*============================================================*/
+
+        // Example function to add a new order card
+        function addNewOrderCard(orderData) {
+          const newCard = document.createElement('div');
+          newCard.className = 'order-card';
+          newCard.setAttribute('data-status', orderData.status);
+          newCard.innerHTML = `
+            <div class="order-header">
+              <h2>Order ID #${orderData.id}</h2>
+              <span class="status ${orderData.status.toLowerCase().replace(/ /g, '-')}">${orderData.statusText}</span>
+            </div>
+            <table class="order-table">
+              <!-- Table content here -->
+            </table>
+            <div class="action-buttons">
+              <button class="action-btn">${orderData.buttonText}</button>
+              <button class="action-btn cancel">Cancel</button>
+            </div>
+          `;
+          ordersContainer.appendChild(newCard);
+          attachEventListeners(newCard);
+          updateCounts();
+        }
+      });
       
       /*============================================================*/
 

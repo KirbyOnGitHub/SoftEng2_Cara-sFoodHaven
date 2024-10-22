@@ -290,7 +290,8 @@ function getSelectedComboBoxText(comboBoxId) {
 
 function animateRowHighlight(row) {
     row.classList.add("highlight-animation");
-    setTimeout(() => row.classList.remove("highlight-animation"), 1000);
+    row.focus()
+    setTimeout(() => row.classList.remove("highlight-animation"), 2000);
 }
 
 /*============================================================*/
@@ -311,6 +312,15 @@ function deleteSelectedTableRow(tableID, dataName) {
     // Grab the selected row's data attribute and its ID
     const selectedRowData = JSON.parse(selectedRow.getAttribute(`data-${dataName}`));
     const selectedRowID = parseInt(selectedRowData.id); // Ensure ID is a number
+    
+    // Check if the table is the ingredient-table
+    if (tableID === "ingredient-table") {
+        // Get the quantity cell and check its class
+        const quantityCell = selectedRow.querySelector("td:last-child span");
+        if (quantityCell && quantityCell.classList.contains('status-lowstockth')) {
+            updateBadge('ingredientPage', -1);
+        }
+    }
 
     // Remove the selected row
     selectedRow.remove();
@@ -410,6 +420,26 @@ function grabSpecificDataFromID(pageID, ID, dataAttributeName) {
 
     // Return null if no matching ID is found
     return null;
+}
+
+/*============================================================*/
+
+// Function to update the badge count based on category ID
+function updateBadge(ID, change) {
+    const menuBtn = document.querySelector(`.verticalmenu-btn[id="${ID}"]`);
+    
+    if (menuBtn) { // Ensure the element is a vertical menu button
+        const badge = menuBtn.querySelector('.notification-badge');
+        let currentCount = parseInt(badge.textContent) || 0;
+
+        currentCount += change; // Update the count based on the change
+        badge.textContent = currentCount; // Set the new count
+
+        // Show the badge if count is 1 or more, otherwise hide it
+        badge.style.display = currentCount > 0 ? 'inline-block' : 'none';
+    } else {
+        console.warn(`No vertical menu button found with ID: ${ID}`);
+    }
 }
 
 /*============================================================*/
@@ -518,13 +548,22 @@ function addSelectedIngredientsToStockInTable(tableBodyID, ifStockIN) {
 
             // Add the ingredient ID and name with unit as the second column
             const ingredientNameCell = document.createElement('td');
-            ingredientNameCell.innerHTML = formattedIngredientIDWithExtra(ingredientID,true); // Set innerHTML for formatting
+            ingredientNameCell.textContent = `[${ingredientID}] ${grabSpecificDataFromID('ingredient', ingredientID, 'name')}`;
             newRow.appendChild(ingredientNameCell);
 
             // Add input for Quantity Added/Removed
             const quantityCell = document.createElement('td');
             quantityCell.innerHTML = `<input type="number" min="1" placeholder="Qty" required>`; // Placeholder as "Qty"
             newRow.appendChild(quantityCell);
+
+            // Use grabSpecificDataFromID to get the unit
+            const ingredientUnit = grabSpecificDataFromID('ingredient', ingredientID, 'unit');
+        
+            // Add the unit below the quantity input
+            const unitSpan = document.createElement("span");
+            unitSpan.textContent = ingredientUnit;
+            quantityCell.appendChild(document.createElement("br")); // Line break for better layout
+            quantityCell.appendChild(unitSpan);
 
             // Add input for Expiration Date
             const expirationCell = document.createElement('td');
@@ -588,6 +627,7 @@ function confirmedIngsToStock(button) {
     const isStockOut = button.textContent.trim() === "Confirm Stock Out"; // Check if it's stock-out action
 
     let hasInvalidInput = false; // Flag for invalid input
+    let stocksOutInsufficient = false; // Flag for insufficient stock for stock out
     let firstInvalidInput; // To store the first invalid input element for focusing
 
     // Use 'for...of' loop to allow early exit
@@ -642,6 +682,9 @@ function confirmedIngsToStock(button) {
 
             // Prevent negative quantity for stock out
             if (isStockOut && updatedQtyRemaining < 0) {
+                stocksOutInsufficient = true;
+                quantityAddedInput.setCustomValidity(`Insufficient quantity available for Ingredient ID: '${ingredientID}'`);
+                quantityAddedInput.reportValidity(); // Focus on the insufficient quantity input to stock out
                 showNotification(`Insufficient quantity available for Ingredient ID: '${ingredientID}'`);
                 break; // Stop processing if not enough stock is available
             }
@@ -655,6 +698,9 @@ function confirmedIngsToStock(button) {
             stockData.expirationAlertTH = expirationAlertTH || stockData.expirationAlertTH; 
 
             existingRow.setAttribute('data-stock', JSON.stringify(stockData));
+
+            // Highlight the updated row for visual feedback
+            animateRowHighlight(existingRow);
         } else {
             // Create a new row if no match found
             const newRow = document.createElement('tr');
@@ -723,7 +769,7 @@ function confirmedIngsToStock(button) {
         updateIngredientQuantity(ingredientID, quantityAdded, transactionType);
     }
 
-    if (hasInvalidInput) return; // Stop entire operation if any input is invalid
+    if (hasInvalidInput || stocksOutInsufficient) return; // Stop entire operation if any input is invalid
 
     // Clear stock-in table and uncheck all checkboxes
     document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
@@ -773,17 +819,31 @@ function updateIngredientQuantity(ingredientID, quantityChange, transactionType)
     const quantityCell = matchingRow.querySelector("td:last-child span");
     const unit = ingredientData.unit;
     quantityCell.textContent = `${newQuantity} ${unit}`;
+    
+    // Store the previous class
+    const previousClass = quantityCell.className;
 
+    // Determine the new class based on the quantity
     const lowStockThreshold = ingredientData.lowStockTH;
     const mediumStockThreshold = ingredientData.mediumStockTH;
+    let newClass = 'status-highstockth'; // Default class
+
     if (newQuantity <= lowStockThreshold) {
-        quantityCell.className = 'status-lowstockth';
+        newClass = 'status-lowstockth';
+    } else if (newQuantity <= mediumStockThreshold) {
+        newClass = 'status-mediumstockth';
     }
-    else if (newQuantity <= mediumStockThreshold) {
-        quantityCell.className = 'status-mediumstockth';
-    }
-    else {
-        quantityCell.className = 'status-highstockth';
+
+    // Update the class only if it has changed
+    if (previousClass !== newClass) {
+        quantityCell.className = newClass;
+
+        // Update the badge based on the class change
+        if (newClass === 'status-lowstockth') {
+            updateBadge('ingredientPage', 1);
+        } else if (previousClass === 'status-lowstockth') {
+            updateBadge('ingredientPage', -1);
+        }
     }
 }
 
@@ -1048,6 +1108,9 @@ function updateSelectedStaff() {
         showNotification(`Staff Member: '${staffFullName}' updated successfully!`);
     }
 
+    // Highlight the updated row for visual feedback
+    animateRowHighlight(selectedRow);
+
     // Clear the input fields of the form
     clearFormFields('staff-table', 'staff-form');
 }
@@ -1277,6 +1340,9 @@ function updateSelectedCustomer() {
         showNotification(`Customer: '${customerFullName}' updated successfully!`);
     }
 
+    // Highlight the updated row for visual feedback
+    animateRowHighlight(selectedRow);
+
     // Clear the input fields of the form
     clearFormFields('customer-table', 'customer-form');
 }
@@ -1382,10 +1448,19 @@ function addIngredientToList() {
     qtyInput.required = true; // Mark as required
     qtyCell.appendChild(qtyInput);
 
-    // Set the 3rd column with the formatted ingredient name, unit, and the delete button below
+    // Use grabSpecificDataFromID to get the unit
+    const ingredientUnit = grabSpecificDataFromID('ingredient', selectedIngredientID, 'unit');
+
+    // Add the unit below the quantity input
+    const unitSpan = document.createElement("span");
+    unitSpan.textContent = ingredientUnit;
+    qtyCell.appendChild(document.createElement("br")); // Line break for better layout
+    qtyCell.appendChild(unitSpan);
+
+    // Set the 3rd column with just the [ID] INGREDIENT
     const formattedIngredient = document.createElement("span");
     formattedIngredient.classList.add("formatted-ingredient");
-    formattedIngredient.innerHTML = formattedIngredientIDWithExtra(selectedIngredientID, true);
+    formattedIngredient.textContent = `[${selectedIngredientID}] ${grabSpecificDataFromID('ingredient', selectedIngredientID, 'name')}`;
 
     // Create the delete button
     const deleteButton = document.createElement("button");
@@ -1597,11 +1672,19 @@ function menuItem_tableRowClicked(dataRow, row) {
         qtyInput.required = true;
         qtyCell.appendChild(qtyInput);
 
-        // Create the ingredient name and unit (formatted span)
+        // Use grabSpecificDataFromID to get the unit
+        const ingredientUnit = grabSpecificDataFromID('ingredient', ingredient.ingredientID, 'unit');
+
+        // Add the unit below the quantity input
+        const unitSpan = document.createElement("span");
+        unitSpan.textContent = ingredientUnit;
+        qtyCell.appendChild(document.createElement("br")); // Line break for better layout
+        qtyCell.appendChild(unitSpan);
+
+        // Set the 3rd column with just the [ID] INGREDIENT
         const formattedIngredient = document.createElement('span');
         formattedIngredient.classList.add('formatted-ingredient');
-        console.log(ingredient.ingredientID);
-        formattedIngredient.innerHTML = formattedIngredientIDWithExtra(ingredient.ingredientID,true);
+        formattedIngredient.textContent = `[${ingredient.ingredientID}] ${grabSpecificDataFromID('ingredient', ingredient.ingredientID, 'name')}`;
 
         // Create the delete button
         const deleteButton = document.createElement('button');
@@ -1737,6 +1820,9 @@ function updateSelectedMenuItem() {
         description: updatedMenuItemDescription,
         ingredients: updatedIngredientsData  // Store the updated ingredient data including unit and main ingredient
     }));
+
+    // Highlight the updated row for visual feedback
+    animateRowHighlight(selectedRow);
 
     // Clear the input fields of the form
     clearFormFields('menu-item-table', 'menu-item-form');
@@ -1881,6 +1967,9 @@ function updateSelectedMenuCategory() {
         cells[1].textContent = menuCategoryName; // Update the Name cell
     }
 
+    // Highlight the updated row for visual feedback
+    animateRowHighlight(selectedRow);
+
     showNotification(`Menu Category: '${menuCategoryName}' updated successfully!`);
 
     // Update the combo box with the new data
@@ -1932,6 +2021,8 @@ function addNewIngredient() {
     const lowStockThreshold = parseFloat(document.getElementById("ingredient-low-stock-threshold").value);
     const mediumStockThreshold = parseFloat(document.getElementById("ingredient-medium-stock-threshold").value);
     const reorderPoint = parseFloat(document.getElementById("ingredient-reorder-point").value);
+    const autoDeductSelect = document.getElementById("ingredient-auto-deduct");
+    const autoDeduct = autoDeductSelect.value === "true";
 
     if (lowStockThreshold >= mediumStockThreshold) {
         showNotification(`Low Stock Threshold must be less than Medium Stock Threshold.`);
@@ -1969,7 +2060,8 @@ function addNewIngredient() {
         lowStockTH: lowStockThreshold,
         mediumStockTH: mediumStockThreshold,
         reorderPoint: reorderPoint,
-        quantity: totalQuantity
+        quantity: totalQuantity,
+        autoDeduct: autoDeduct
     };
     newRow.setAttribute("data-ingredient", JSON.stringify(ingredientData));
 
@@ -2025,6 +2117,8 @@ function addNewIngredient() {
 
     // Show success notification
     showNotification(`Ingredient: '${ingredientName}' added successfully!`);
+    
+    updateBadge('ingredientPage', 1);
 }
 
 /*============================================================*/
@@ -2047,6 +2141,9 @@ function ingredient_tableRowClicked(dataRow, row) {
     document.getElementById("ingredient-low-stock-threshold").value = rowData.lowStockTH;
     document.getElementById("ingredient-medium-stock-threshold").value = rowData.mediumStockTH;
     document.getElementById("ingredient-reorder-point").value = rowData.reorderPoint;
+    
+    // Set the auto-deduct value
+    document.getElementById("ingredient-auto-deduct").value = rowData.autoDeduct.toString();
 }
 
 /*============================================================*/
@@ -2077,6 +2174,8 @@ function updateSelectedIngredient() {
     const lowStockThreshold = parseInt(document.getElementById("ingredient-low-stock-threshold").value, 10);
     const mediumStockThreshold = parseInt(document.getElementById("ingredient-medium-stock-threshold").value, 10);
     const reorderPoint = parseInt(document.getElementById("ingredient-reorder-point").value, 10);
+    const autoDeductSelect = document.getElementById("ingredient-auto-deduct");
+    const autoDeduct = autoDeductSelect.value === "true"; // Convert to boolean
 
     if (lowStockThreshold >= mediumStockThreshold) {
         showNotification(`Low Stock Threshold must be less than Medium Stock Threshold.`);
@@ -2099,7 +2198,8 @@ function updateSelectedIngredient() {
             lowStockTH: lowStockThreshold,
             mediumStockTH: mediumStockThreshold,
             reorderPoint: reorderPoint,
-            quantity: existingQuantity
+            quantity: existingQuantity,
+            autoDeduct: autoDeduct // Include the auto-deduct value
         };
 
         // Update the row's data attribute
@@ -2120,7 +2220,7 @@ function updateSelectedIngredient() {
             quantitySpan.textContent = formattedQuantity;
         }
 
-        // Optional: Highlight the updated row for visual feedback
+        // Highlight the updated row for visual feedback
         animateRowHighlight(selectedRow);
 
         // Show success notification
@@ -2132,6 +2232,7 @@ function updateSelectedIngredient() {
         // Clear the form fields
         clearFormFields("ingredient-table", "ingredient-form");
     } catch (error) {
+        console.error("Error updating ingredient:", error);
     }
 }
 
@@ -2272,6 +2373,9 @@ function updateSelectedIngredientCategory() {
         cells[1].textContent = ingredientCategoryName;    // Update the name cell
         showNotification(`Ingredient Category: '${ingredientCategoryName}' updated successfully!`);
     }
+
+    // Highlight the updated row for visual feedback
+    animateRowHighlight(selectedRow);
 
     // Repopulate the combo box from the table
     repopulateComboBoxFromTable("ingredient-category-table", "data-ingredient-category", "ingredient-category-combobox");
@@ -2423,6 +2527,9 @@ function updateSelectedIngredientUnit() {
         cells[1].textContent = ingredientUnitName;    // Update the name cell
         showNotification(`Ingredient Unit: '${ingredientUnitName}' updated successfully!`);
     }
+
+    // Highlight the updated row for visual feedback
+    animateRowHighlight(selectedRow);
     
     // Repopulate the combo box to reflect changes
     repopulateComboBoxFromTable("ingredient-unit-table", "data-ingredient-unit", "ingredient-unit-combobox");

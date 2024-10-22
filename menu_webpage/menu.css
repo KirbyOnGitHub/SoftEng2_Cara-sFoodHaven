@@ -183,6 +183,7 @@ nav ul li a#current-page {
     display: flex;
     flex-direction: column;
     padding: 15px;
+    padding-top: 80px;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.6);
     overflow-y: auto;
     scrollbar-width: thin;

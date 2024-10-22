@@ -204,6 +204,7 @@ nav ul li {
 
 /* Button styles */
 .verticalmenu-btn {
+    position: relative;
     width: 100%;
     padding: 10px 15px;
     margin-bottom: 10px;
@@ -240,14 +241,23 @@ nav ul li {
 margin-right: 8px; /* Space between icon and text */
 }
 
-@media (max-width: 768px) {
-    .verticalmenu_container {
-        width: 180px;
-    }
-
-    .verticalmenu-btn {
-        font-size: 0.9rem;
-    }
+.notification-badge {
+    position: absolute; 
+    top: 50%; 
+    right: -15px;
+    transform: translateY(-50%); 
+    width: 30px; 
+    height: 30px; 
+    background-color: red;
+    color: white;
+    font-size: 14px; 
+    border-radius: 6px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); 
+    padding: 5px; 
+    box-sizing: border-box; 
+    text-align: center; 
+    line-height: 20px; 
+    z-index: 20;
 }
 
 label {
@@ -526,7 +536,7 @@ table tbody tr {
     transition: background-color 0.3s ease, color 0.3s ease; /* Add transition for smooth animation */
 }
 
-table tbody tr:hover:not(#stock-in-n-out-table):not(.order-table tr) {
+table tbody tr:hover:not(#stock-in-n-out-table tr):not(.order-table tr) {
     /* background-color: #14997e; */
     background-color: #2980b9 !important; /* Active button color */
     border-color: #2980b9;
@@ -560,6 +570,14 @@ tr.clickedTableRow td.status-cell {
 .details-display-container {
     text-align: left;
     padding: 20px;
+}
+
+.highlight-animation {
+    animation: highlight 1s ease-in-out;
+    background-color: #e9b844 !important; 
+    border: 2px solid #de7600 !important;
+    color: black !important;
+    font-weight: bolder !important;
 }
 
 #stock-in-n-out-table th {
@@ -843,7 +861,7 @@ td.status-cell {
 
 .filter-bar {
     position: sticky;
-    top: -30.5px;
+    top: -28.5px;
     display: flex;
     justify-content: space-around;
     margin-bottom: 20px;
@@ -985,7 +1003,7 @@ td.status-cell {
 
 .status.pending { background-color: orange; }
 .status.preparing { background-color: orangered; }
-.status.ready { background-color: blue; }
+.status.ready-for-pickup { background-color: blue; }
 .status.complete { background-color: green; }
 .status.canceled { background-color: red; }
 
