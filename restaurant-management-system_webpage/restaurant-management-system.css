@@ -869,6 +869,7 @@ td.status-cell {
     padding: 15px;
     border: 3px solid #ccc; 
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.8);
+    z-index: 30;
 }
 
 .current-date {
@@ -879,7 +880,7 @@ td.status-cell {
     color: #666;
     margin-top: 5px; 
     background-color: #f9f9f9;
-    padding: 10px; 
+    padding: 5px 10px; 
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.1); 
 }
 
@@ -914,7 +915,7 @@ td.status-cell {
 }
   
 .filter-btn {
-    padding: 10px 20px;
+    padding: 5px 20px;
     color: white;
     border: none;
     border-radius: 5px;
@@ -979,7 +980,8 @@ td.status-cell {
 .order-table {
   width: 100%;
   border-collapse: collapse;
-  margin-bottom: 10px;
+  margin: 30px 0;
+  font-size: 0.9rem; 
 }
 
 .order-table th,
@@ -992,6 +994,15 @@ td.status-cell {
     background-color: #4bb6a1;
     /* background-color: #18a68a; */
     color: #2c3e50;
+    text-align: center;
+}
+
+.order-table td:nth-child(2),
+.order-table td:nth-child(4) {
+  white-space: nowrap;  
+  overflow: hidden;    
+  text-overflow: ellipsis;
+  text-align: right;
 }
 
 .order-table tr:nth-last-child(2),
@@ -1015,8 +1026,12 @@ td.status-cell {
 .action-buttons {
   display: flex;
   gap: 10px;
-  justify-content: flex-end;
+  align-items: center;
 }
+
+.right-buttons {
+    margin-left: auto; /* Push the right buttons to the right */
+  }
 
 .order-card h2 {
     margin: 0 0 10px;   
@@ -1028,33 +1043,96 @@ td.status-cell {
     border-radius: 5px;
     color: white;
     font-weight: bold;
+    font-size: larger;
     border: 3px solid #ecf0f1; 
+    text-transform: uppercase;
 }
 
-.status.pending { background-color: orange; }
-.status.preparing { background-color: orangered; }
-.status.ready-for-pickup { background-color: blue; }
-.status.complete { background-color: green; }
-.status.canceled { background-color: red; }
+.status.pending { background-color: orange !important; }
+.status.preparing { background-color: orangered !important; }
+.status.ready-for-pickup { background-color: blue !important; }
+.status.complete { background-color: green !important; }
+.status.canceled { background-color: red !important; }
 
-.action-btn {
-    margin-right: 10px;
-    padding: 8px 12px;
-    border: none;
-    background-color: #007bff;
-    color: white;
-    border-radius: 5px;
+.action-btn { 
+    color: white; 
+    border: none; 
+    padding: 8px 16px; 
+    margin: 5px;
     cursor: pointer;
-}
+    border-radius: 5px;
+    transition: background-color 0.3s;
+  }
 
 .action-btn:hover {
-    background-color: #0056b3;
+    transform: scale(1.1)
 }
 
-.cancel {
-    background-color: #dc3545;
+.action-btn.revert.status-pending { background-color: orange !important; }
+.action-btn.revert.status-preparing { background-color: orangered !important; }
+
+.action-btn.update.preparing { background-color: orangered !important; }
+.action-btn.update.ready-for-pickup { background-color: blue !important; }
+.action-btn.update.complete { background-color: green !important; }
+
+.action-btn.cancel { background-color: red !important; }
+
+
+
+
+.icon-container {
+    position: relative; 
 }
 
-.cancel:hover {
-    background-color: #c82333;
+.icon i {
+    display: inline-flex; 
+    justify-content: center; 
+    align-items: center; 
+    width: 28px; 
+    height: 28px; 
+    border-radius: 50%; 
+    font-weight: bold; 
+    margin: 0 5px; 
+    font-size: 0.9rem; 
 }
+
+.question-icon i {
+    background-color: #f0f0f0; 
+    color: #333; 
+    font-weight: bold; 
+}
+
+.fire-icon i {
+    background-color: orangered; 
+    color: white; 
+    font-weight: bold; 
+}
+
+.bell-icon i {
+    background-color: blue;
+    color: white; 
+}
+  
+.tooltip {
+    visibility: hidden;
+    font-size: 10px;
+    width: 180px; /* Adjust the width as needed */
+    background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent black background */
+    color: #fff; /* Tooltip text color */
+    text-align: center; /* Centered text */
+    border-radius: 6px; /* Rounded corners */
+    padding: 5px 0; /* Padding around text */
+    position: absolute; /* Position relative to the icon */
+    z-index: 1; /* Display above other elements */
+    bottom: 125%; /* Position above the icon */
+    left: 50%; /* Center horizontally */
+    margin-left: -80px; /* Adjust left margin for centering */
+    opacity: 0; /* Hidden by default */
+    transition: opacity 0.3s; /* Smooth transition for appearance */
+}
+
+.icon-container:hover .tooltip {
+    visibility: visible; /* Show the tooltip on hover */
+    opacity: 1; /* Fully opaque */
+}
+  

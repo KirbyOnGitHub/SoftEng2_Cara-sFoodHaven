@@ -2021,8 +2021,6 @@ function addNewIngredient() {
     const lowStockThreshold = parseFloat(document.getElementById("ingredient-low-stock-threshold").value);
     const mediumStockThreshold = parseFloat(document.getElementById("ingredient-medium-stock-threshold").value);
     const reorderPoint = parseFloat(document.getElementById("ingredient-reorder-point").value);
-    const autoDeductSelect = document.getElementById("ingredient-auto-deduct");
-    const autoDeduct = autoDeductSelect.value === "true";
 
     if (lowStockThreshold >= mediumStockThreshold) {
         showNotification(`Low Stock Threshold must be less than Medium Stock Threshold.`);
@@ -2060,8 +2058,7 @@ function addNewIngredient() {
         lowStockTH: lowStockThreshold,
         mediumStockTH: mediumStockThreshold,
         reorderPoint: reorderPoint,
-        quantity: totalQuantity,
-        autoDeduct: autoDeduct
+        quantity: totalQuantity
     };
     newRow.setAttribute("data-ingredient", JSON.stringify(ingredientData));
 
@@ -2174,8 +2171,6 @@ function updateSelectedIngredient() {
     const lowStockThreshold = parseInt(document.getElementById("ingredient-low-stock-threshold").value, 10);
     const mediumStockThreshold = parseInt(document.getElementById("ingredient-medium-stock-threshold").value, 10);
     const reorderPoint = parseInt(document.getElementById("ingredient-reorder-point").value, 10);
-    const autoDeductSelect = document.getElementById("ingredient-auto-deduct");
-    const autoDeduct = autoDeductSelect.value === "true"; // Convert to boolean
 
     if (lowStockThreshold >= mediumStockThreshold) {
         showNotification(`Low Stock Threshold must be less than Medium Stock Threshold.`);
@@ -2198,8 +2193,7 @@ function updateSelectedIngredient() {
             lowStockTH: lowStockThreshold,
             mediumStockTH: mediumStockThreshold,
             reorderPoint: reorderPoint,
-            quantity: existingQuantity,
-            autoDeduct: autoDeduct // Include the auto-deduct value
+            quantity: existingQuantity
         };
 
         // Update the row's data attribute

@@ -188,7 +188,9 @@
            
           <!-- ============================== -->
 
-          <div class="order-card" data-status="PENDING">
+
+
+          <!-- <div class="order-card" data-status="PENDING">
             <div class="order-header">
               <h2>Order ID #1</h2>
               <span class="status pending">Pending</span>
@@ -202,25 +204,25 @@
               </tr>
               <tr>
                 <td>Beef Pares</td>
-                <td>PHP 275.00</td>
+                <td>PHP 275</td>
                 <td>3</td>
-                <td>PHP 825.00</td>
+                <td>PHP 825</td>
               </tr>
               <tr>
                 <td>Fried Chicken</td>
-                <td>PHP 200.00</td>
+                <td>PHP 200</td>
                 <td>1</td>
-                <td>PHP 200.00</td>
+                <td>PHP 200</td>
               </tr>
               <tr>
                 <td>Chocolate Cake</td>
-                <td>PHP 800.00</td>
+                <td>PHP 800</td>
                 <td>2</td>
-                <td>PHP 1600.00</td>
+                <td>PHP 1600</td>
               </tr>
               <tr>
                 <td colspan="3" class="total-label">TOTAL</td>
-                <td>PHP 2625.00</td>
+                <td>PHP 2625</td>
               </tr>
               <tr>
                 <td colspan="3" class="discount-label">Discount Code</td>
@@ -233,7 +235,7 @@
             </div>
           </div>
 
-          <!-- ============================== -->
+
 
           <div class="order-card" data-status="PENDING">
             <div class="order-header">
@@ -249,25 +251,25 @@
               </tr>
               <tr>
                 <td>Chocolate Cake</td>
-                <td>PHP 800.00</td>
+                <td>PHP 800</td>
                 <td>2</td>
-                <td>PHP 1600.00</td>
+                <td>PHP 1600</td>
               </tr>
               <tr>
                 <td>Fried Chicken</td>
-                <td>PHP 200.00</td>
+                <td>PHP 200</td>
                 <td>1</td>
-                <td>PHP 200.00</td>
+                <td>PHP 200</td>
               </tr>
               <tr>
                 <td>Beef Pares</td>
-                <td>PHP 275.00</td>
+                <td>PHP 275</td>
                 <td>3</td>
-                <td>PHP 825.00</td>
+                <td>PHP 825</td>
               </tr>
               <tr>
                 <td colspan="3" class="total-label">TOTAL</td>
-                <td>PHP 2625.00</td>
+                <td>PHP 2625</td>
               </tr>
               <tr>
                 <td colspan="3" class="discount-label">Discount Code</td>
@@ -280,7 +282,7 @@
             </div>
           </div>
 
-          <!-- ============================== -->
+
 
           <div class="order-card" data-status="PENDING">
             <div class="order-header">
@@ -296,25 +298,25 @@
               </tr>
               <tr>
                 <td>Fried Chicken</td>
-                <td>PHP 200.00</td>
+                <td>PHP 200</td>
                 <td>1</td>
-                <td>PHP 200.00</td>
+                <td>PHP 200</td>
               </tr>
               <tr>
                 <td>Beef Pares</td>
-                <td>PHP 275.00</td>
+                <td>PHP 275</td>
                 <td>3</td>
-                <td>PHP 825.00</td>
+                <td>PHP 825</td>
               </tr>
               <tr>
                 <td>Chocolate Cake</td>
-                <td>PHP 800.00</td>
+                <td>PHP 800</td>
                 <td>2</td>
-                <td>PHP 1600.00</td>
+                <td>PHP 1600</td>
               </tr>
               <tr>
                 <td colspan="3" class="total-label">TOTAL</td>
-                <td>PHP 2625.00</td>
+                <td>PHP 2625</td>
               </tr>
               <tr>
                 <td colspan="3" class="discount-label">Discount Code</td>
@@ -325,7 +327,9 @@
               <button class="action-btn">Prepare</button>
               <button class="action-btn cancel">Cancel</button>
             </div>
-          </div>
+          </div> -->
+
+
 
           <!-- ============================== -->
           
@@ -1441,14 +1445,6 @@
   
             <label for="ingredient-reorder-point">Reorder Point:</label>
             <input type="number" id="ingredient-reorder-point" name="ingredient-reorder-point" placeholder="Enter a Number" required min="1">
-            
-            <br>
-
-            <label for="ingredient-auto-deduct">System Auto-Deducts Stocks</label>
-            <select id="ingredient-auto-deduct" name="ingredient-auto-deduct" required>
-              <option value="true">TRUE</option>
-              <option value="false">FALSE</option>
-            </select>
   
             <br>
             <br>  
@@ -1890,6 +1886,196 @@
       /*============================================================*/
 
       document.addEventListener('DOMContentLoaded', () => {
+
+        /*============================================================*/
+
+        function addNewOrderCard(orderData) {
+          const newCard = document.createElement('div');
+          newCard.className = 'order-card';
+          newCard.setAttribute('data-status', orderData.status);
+
+          const nextStatusClass = getNextStatusClass(orderData.status); // Get the next status class
+
+          // Sample menu items for the order with clickable icon
+          const menuItems = orderData.menuItems.map(item => `
+            <tr class="menu-item-row" onclick="toggleIcon(event)" style="cursor: ${orderData.status === 'PREPARING' ? 'pointer' : 'default'};">
+              <td>
+                <div class="icon-container">
+                  <span class="icon question-icon" data-state="question" style="display:${orderData.status === 'PREPARING' ? 'inline-block' : 'none'};">
+                      <i class="fas fa-question"></i>
+                      <span class="tooltip">Click to change status of menu item</span>
+                  </span>
+                  <span class="icon fire-icon" data-state="fire" style="display:none;">
+                    <i class="fas fa-fire"></i>
+                    <span class="tooltip">Click to change status of menu item</span>
+                  </span>
+                  <span class="icon bell-icon" data-state="bell" style="display:none;">
+                    <i class="fas fa-concierge-bell"></i>
+                    <span class="tooltip">Click to change status of menu item</span>
+                  </span>
+                  ${item.name}
+                </div>
+              </td>
+              <td>Php ${item.price}</td>
+              <td>${item.quantity}</td>
+              <td>Php ${(item.price * item.quantity)}</td>
+            </tr>
+          `).join('');
+
+          // Calculate total
+          const total = orderData.menuItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+          newCard.innerHTML = `
+            <div class="order-header">
+              <h2>Order ID #${orderData.id}</h2>
+              <span class="status ${orderData.status.toLowerCase().replace(/ /g, '-')}">
+                ${orderData.statusText}
+              </span>
+            </div>
+            <table class="order-table">
+              <tr>
+                <th>Menu Item</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Subtotal</th>
+              </tr>
+              ${menuItems}
+              <tr>
+                <td colspan="3" class="total-label">TOTAL</td>
+                <td>Php ${total.toFixed(2)}</td>
+              </tr>
+              <tr>
+                <td colspan="3" class="discount-label">Discount Code</td>
+                <td>ABC123</td>
+              </tr>
+            </table>
+            <div class="action-buttons">
+              ${getRevertButton(orderData.status)}
+              <div class="right-buttons">
+                <button class="action-btn update ${nextStatusClass}" 
+                  ${orderData.status === 'COMPLETE' || orderData.status === 'CANCELED' ? 'style="display:none;"' : ''}>
+                  ${getButtonText(orderData.status)}
+                </button>
+                <button class="action-btn cancel" 
+                  ${orderData.status === 'COMPLETE' || orderData.status === 'CANCELED' ? 'style="display:none;"' : ''}>
+                  Cancel
+                </button>
+              </div>
+            </div>
+          `;
+
+          ordersContainer.appendChild(newCard);
+          attachEventListeners(newCard);
+          updateCounts();
+          reapplyCurrentFilter();
+
+          // Update the update button state
+          updateUpdateButtonState(newCard); // Check button state when a new card is added
+        }
+
+        function toggleIcon(event) {
+          const icons = event.currentTarget.querySelectorAll('.icon');
+          const questionIcon = icons[0]; // Question icon
+          const fireIcon = icons[1];      // Fire icon
+          const bellIcon = icons[2];      // Bell icon
+          const card = event.currentTarget.closest('.order-card'); // Get the card
+
+          // Check which icon is currently displayed and toggle accordingly
+          if (questionIcon.style.display !== 'none') {
+              // If the question icon is displayed, switch to fire icon
+              questionIcon.style.display = 'none'; // Hide question icon
+              fireIcon.style.display = 'inline';    // Show fire icon
+          } else if (fireIcon.style.display !== 'none') {
+              // If the fire icon is displayed, switch to bell icon
+              fireIcon.style.display = 'none'; // Hide fire icon
+              bellIcon.style.display = 'inline'; // Show bell icon
+          } else {
+              // If the bell icon is displayed, reset to question mark
+              bellIcon.style.display = 'none'; // Hide bell icon
+              questionIcon.style.display = 'inline'; // Show question icon
+          }
+
+          updateUpdateButtonState(card); // Call update function for this card
+        }
+
+        // Function to determine button text and class based on order status
+        function getButtonText(status) {
+          switch (status) {
+            case 'PENDING':
+              return 'Prepare';
+            case 'PREPARING':
+              return 'Mark Ready';
+            case 'READY FOR PICKUP':
+              return 'Mark Complete';
+            default:
+              return '';
+          }
+        }
+
+        // Function to get the class corresponding to the next status
+        function getButtonClassForStatus(status) {
+          switch (status) {
+            case 'PENDING':
+              return 'status-preparing';
+            case 'PREPARING':
+              return 'status-ready-for-pickup';
+            case 'READY FOR PICKUP':
+              return 'status-complete';
+            default:
+              return '';
+          }
+        }
+
+        function getNextStatusClass(currentStatus) {
+          switch (currentStatus) {
+            case 'PENDING':
+              return 'preparing'; // Transitioning from PENDING to PREPARING
+            case 'PREPARING':
+              return 'ready-for-pickup'; // Transitioning from PREPARING to READY FOR PICKUP
+            case 'READY FOR PICKUP':
+              return 'complete'; // Transitioning from READY FOR PICKUP to COMPLETE
+            default:
+              return ''; // No further transitions for COMPLETE or CANCELED
+          }
+        }
+
+        // Function to add the "Revert" button with status-based class
+        function getRevertButton(status) {
+          let revertTo;
+          let revertClass;
+
+          switch (status) {
+            case 'PREPARING':
+              revertTo = 'PENDING';
+              revertClass = 'status-pending';
+              break;
+            case 'READY FOR PICKUP':
+              revertTo = 'PREPARING';
+              revertClass = 'status-preparing';
+              break;
+            default:
+              return ''; // No revert button for COMPLETE or CANCELED
+          }
+
+          return `
+            <button class="action-btn revert ${revertClass}" data-revert-to="${revertTo}">
+              Revert to ${revertTo.replace('_', ' ')}
+            </button>
+          `;
+        }
+
+        function reapplyCurrentFilter() {
+          const activeButton = document.querySelector('.filter-btn.active');
+          if (activeButton) {
+            const status = activeButton.getAttribute('data-status');
+            const orderCards = document.querySelectorAll('.order-card');
+            orderCards.forEach(card => {
+              const cardStatus = card.getAttribute('data-status');
+              card.style.display = (status === 'ALL' || status === cardStatus) ? 'block' : 'none';
+            });
+          }
+        }
+
         const ordersContainer = document.querySelector('.orders');
         const filterButtons = document.querySelectorAll('.filter-btn');
 
@@ -1902,12 +2088,99 @@
           button.addEventListener('click', () => filterOrders(button));
         });
 
-        function attachEventListeners(card) {
-          const prepareButton = card.querySelector('.action-btn:not(.cancel)');
-          const cancelButton = card.querySelector('.action-btn.cancel');
+        // Function to handle the revert button click
+        function handleRevert(event) {
+          const button = event.target;
+          if (button.classList.contains('revert')) {
+            const newStatus = button.getAttribute('data-revert-to'); // Get the status to revert to
+            const card = button.closest('.order-card'); // Get the associated order card
+            updateOrderStatus(card, newStatus, newStatus.replace('_', ' '), getButtonText(newStatus)); // Update status
+          }
+        }
 
-          if (prepareButton) {
-            prepareButton.addEventListener('click', () => handlePrepare(card));
+        // Function to handle the update button click
+        function handleUpdate(card) {
+          // const updateButton = card.querySelector('.action-btn.update.ready-for-pickup');
+          
+          // // Check if the update button is disabled
+          // if (updateButton.disabled) {
+          //   showNotification('Please ensure all menu items are marked as ready before proceeding.'); 
+          //   return; // Exit function if button is disabled
+          // }
+          // // Check if all menu items have the bell icon displayed
+          // if (!areAllIconsBell(card)) {
+          //     showNotification('Please ensure all menu items are marked as ready before proceeding.'); 
+          //     return; // Exit function if not all icons are bell
+          // }
+
+          const status = card.getAttribute('data-status');
+          
+          switch (status) {
+            case 'PENDING':
+              updateOrderStatus(card, 'PREPARING', 'Preparing', 'Mark Ready');
+              break;
+            case 'PREPARING':
+              // Check if all menu items have the bell icon displayed
+              if (areAllIconsBell(card)) {
+                updateOrderStatus(card, 'READY FOR PICKUP', 'Ready for Pickup', 'Mark Complete');
+              }
+              break;
+            case 'READY FOR PICKUP':
+              updateOrderStatus(card, 'COMPLETE', 'Complete', null);
+              break;
+            default:
+              console.warn('Unexpected status:', status);
+              break;
+          }
+        }
+
+        // Function to check if all icons are the bell icon
+        function areAllIconsBell(card) {
+          const menuItemRows = card.querySelectorAll('.menu-item-row');
+          return Array.from(menuItemRows).every(row => {
+            const icons = row.querySelectorAll('.icon');
+            return icons[2].style.display === 'inline'; // Check if the bell icon is displayed
+          });
+        }
+
+        // Update the update button state based on icons
+        function updateUpdateButtonState(card) {
+          const updateButton = card.querySelector('.action-btn.update.ready-for-pickup');
+          if (updateButton) {
+            if (areAllIconsBell(card)) {
+              updateButton.disabled = false;
+              updateButton.style.filter = 'none'; // Reset filter to normal
+            } else {
+              updateButton.disabled = true;
+              updateButton.style.filter = 'brightness(0.5)'; // Lower brightness
+            }
+          }
+        }
+
+        // Function to handle the cancel button click
+        function handleCancel(card) {
+          updateOrderStatus(card, 'CANCELED', 'Canceled', null);
+        }
+
+        function attachEventListeners(card) {
+          const revertButton = card.querySelector('.action-btn.revert'); 
+          const updateButton = card.querySelector('.action-btn.update');
+          const cancelButton = card.querySelector('.action-btn.cancel');
+          
+          // Add click event listener to menu item rows if the status is PREPARING
+          if (card.getAttribute('data-status') === 'PREPARING') {
+            const menuItemRows = card.querySelectorAll('.menu-item-row');
+            menuItemRows.forEach(row => {
+              row.addEventListener('click', toggleIcon);
+            });
+          }
+
+          if (revertButton) {
+            revertButton.addEventListener('click', handleRevert);
+          }
+
+          if (updateButton) {
+            updateButton.addEventListener('click', () => handleUpdate(card));
           }
 
           if (cancelButton) {
@@ -1915,55 +2188,67 @@
           }
         }
 
-        function handlePrepare(card) {
-          const status = card.getAttribute('data-status');
-          switch (status) {
-            case 'PENDING':
-              updateOrderStatus(card, 'PREPARING', 'Preparing', 'Mark Ready');
-              break;
-            case 'PREPARING':
-              updateOrderStatus(card, 'READY FOR PICKUP', 'Ready for Pickup', 'Mark Complete');
-              break;
-            case 'READY FOR PICKUP':
-              updateOrderStatus(card, 'COMPLETE', 'Complete', null);
-              break;
-            default:
-              break;
-          }
-        }
-
-        function handleCancel(card) {
-          updateOrderStatus(card, 'CANCELED', 'Canceled', null);
-        }
-
         function updateOrderStatus(card, newStatus, newStatusText, newButtonText) {
           card.setAttribute('data-status', newStatus);
+
+          // Update the status span with the new status and class
           const statusSpan = card.querySelector('.status');
           statusSpan.textContent = newStatusText;
           statusSpan.className = `status ${newStatus.toLowerCase().replace(/ /g, '-')}`;
 
-          const prepareButton = card.querySelector('.action-btn:not(.cancel)');
-          if (newButtonText) {
-            prepareButton.textContent = newButtonText;
-            prepareButton.style.display = 'inline-block';
+          // Determine the new class for the update button based on the new status
+          const nextStatusClass = getNextStatusClass(newStatus);
+
+          // Update the action buttons dynamically
+          const actionButtons = card.querySelector('.action-buttons');
+          actionButtons.innerHTML = `
+            ${getRevertButton(newStatus)}
+            <div class="right-buttons">
+              <button class="action-btn update ${nextStatusClass}" 
+                ${newStatus === 'COMPLETE' || newStatus === 'CANCELED' ? 'style="display:none;"' : ''}>
+                ${newButtonText || getButtonText(newStatus)}
+              </button>
+              <button class="action-btn cancel status-canceled"
+                ${newStatus === 'COMPLETE' || newStatus === 'CANCELED' ? 'style="display:none;"' : ''}>
+                Cancel
+              </button>
+            </div>
+          `;
+
+          // Re-attach event listeners to the new buttons
+          attachEventListeners(card);
+
+          // Check if the new status is not 'PREPARING'
+          if (newStatus !== 'PREPARING') {
+            // Hide icons and remove clickability from menu item rows
+            const menuItemRows = card.querySelectorAll('.menu-item-row');
+            menuItemRows.forEach(row => {
+              const icons = row.querySelectorAll('.icon');
+              icons.forEach(icon => {
+                icon.style.display = 'none'; // Hide all icons
+              });
+              row.style.cursor = 'default'; // Change cursor to default
+              row.removeEventListener('click', toggleIcon); // Remove click event listener
+            });
           } else {
-            prepareButton.style.display = 'none';
+            // If status is 'PREPARING', show the first icon and attach click event listeners
+            const menuItemRows = card.querySelectorAll('.menu-item-row');
+            menuItemRows.forEach(row => {
+              const icons = row.querySelectorAll('.icon');
+              // Show the question icon and hide others
+              icons[0].style.display = 'inline'; // Show the question icon
+              icons[1].style.display = 'none';   // Hide the fire icon
+              icons[2].style.display = 'none';   // Hide the bell icon
+              row.style.cursor = 'pointer'; // Change cursor to pointer
+              row.addEventListener('click', toggleIcon); // Reattach click event listener
+            });
           }
 
-          const cancelButton = card.querySelector('.action-btn.cancel');
-          if (newStatus === 'CANCELED' || newStatus === 'COMPLETE') {
-            cancelButton.style.display = 'none';
-          } else {
-            cancelButton.style.display = 'inline-block';
-          }
+          updateCounts();  // Update the filter button counts
+          reapplyCurrentFilter();  // Apply the active filter to update the UI
 
-          updateCounts(); // Update the filter button counts
-          reapplyCurrentFilter(); // Reapply the current filter to update the UI
-        }
-
-        function moveCardToSection(card, newStatus) {
-          ordersContainer.appendChild(card);
-          // Optionally, you can sort the cards or update the UI to reflect the new status
+          // Update the update button state based on icons
+          updateUpdateButtonState(card);
         }
 
         function updateCounts() {
@@ -1987,13 +2272,6 @@
           });
         }
 
-        function reapplyCurrentFilter() {
-          const activeButton = document.querySelector('.filter-btn.active');
-          if (activeButton) {
-            activeButton.click();
-          }
-        }
-
         // Initial count update
         updateCounts();
 
@@ -2004,116 +2282,63 @@
         }
       
         /*============================================================*/
+  
+        // Sample order data for each status with menu items
+        const pendingOrderData = {
+          id: 1,
+          status: 'PENDING',
+          statusText: 'Pending',
+          menuItems: [
+            { name: 'Cheeseburger', price: 150, quantity: 2 },
+            { name: 'French Fries', price: 75, quantity: 1 }
+          ]
+        };
 
-        // Example function to add a new order card
-        function addNewOrderCard(orderData) {
-          const newCard = document.createElement('div');
-          newCard.className = 'order-card';
-          newCard.setAttribute('data-status', orderData.status);
-          newCard.innerHTML = `
-            <div class="order-header">
-              <h2>Order ID #${orderData.id}</h2>
-              <span class="status ${orderData.status.toLowerCase().replace(/ /g, '-')}">${orderData.statusText}</span>
-            </div>
-            <table class="order-table">
-              <tr>
-                <th>Menu Item</th>
-                <th>Price</th>
-                <th>Quantity</th>
-                <th>Subtotal</th>
-              </tr>
-              <!-- Table content here -->
-              <tr>
-                <td colspan="3" class="total-label">TOTAL</td>
-                <td>PHP 000.00</td>
-              </tr>
-              <tr>
-                <td colspan="3" class="discount-label">Discount Code</td>
-                <td>ABC123</td>
-              </tr>
-            </table>
-            <div class="action-buttons">
-              <button class="action-btn" ${orderData.status === 'COMPLETE' || orderData.status === 'CANCELED' ? 'style="display:none;"' : ''}>${getButtonText(orderData.status)}</button>
-              <button class="action-btn cancel" ${orderData.status === 'COMPLETE' || orderData.status === 'CANCELED' ? 'style="display:none;"' : ''}>Cancel</button>
-            </div>
-          `;
-          ordersContainer.appendChild(newCard);
-          attachEventListeners(newCard);
-          updateCounts();
-          reapplyCurrentFilter();
-        }
+        const preparingOrderData = {
+          id: 2,
+          status: 'PREPARING',
+          statusText: 'Preparing',
+          menuItems: [
+            { name: 'Chicken Alfredo', price: 200, quantity: 1 },
+            { name: 'Garlic Bread', price: 50, quantity: 3 }
+          ]
+        };
 
-        function getButtonText(status) {
-          switch (status) {
-            case 'PENDING':
-              return 'Prepare';
-            case 'PREPARING':
-              return 'Mark Ready';
-            case 'READY FOR PICKUP':
-              return 'Mark Complete';
-            default:
-              return '';
-          }
-        }
+        const readyForPickupOrderData = {
+          id: 3,
+          status: 'READY FOR PICKUP',
+          statusText: 'Ready for Pickup',
+          menuItems: [
+            { name: 'Veggie Pizza', price: 300, quantity: 1 },
+            { name: 'Coke', price: 50, quantity: 2 }
+          ]
+        };
 
-        function reapplyCurrentFilter() {
-          const activeButton = document.querySelector('.filter-btn.active');
-          if (activeButton) {
-            const status = activeButton.getAttribute('data-status');
-            const orderCards = document.querySelectorAll('.order-card');
-            orderCards.forEach(card => {
-              const cardStatus = card.getAttribute('data-status');
-              card.style.display = (status === 'ALL' || status === cardStatus) ? 'block' : 'none';
-            });
-          }
-        }
-        
-        /*============================================================*/
-  
-        // // Sample order data for each status
-  
-        // // PENDING
-        // const pendingOrderData = {
-        //   id: 4,
-        //   status: 'PENDING',
-        //   statusText: 'Pending'
-        // };
-  
-        // // PREPARING
-        // const preparingOrderData = {
-        //   id: 5,
-        //   status: 'PREPARING',
-        //   statusText: 'Preparing'
-        // };
-  
-        // // READY FOR PICKUP
-        // const readyForPickupOrderData = {
-        //   id: 6,
-        //   status: 'READY FOR PICKUP',
-        //   statusText: 'Ready for Pickup'
-        // };
-  
-        // // COMPLETE
-        // const completeOrderData = {
-        //   id: 7,
-        //   status: 'COMPLETE',
-        //   statusText: 'Complete'
-        // };
-  
-        // // CANCELED
-        // const canceledOrderData = {
-        //   id: 8,
-        //   status: 'CANCELED',
-        //   statusText: 'Canceled'  
-        // };
-  
-        // // Example of adding each order card
-        // addNewOrderCard(pendingOrderData);
-        // addNewOrderCard(preparingOrderData);
-        // addNewOrderCard(readyForPickupOrderData);
-        // addNewOrderCard(completeOrderData);
-        // addNewOrderCard(canceledOrderData);
-          
+        const completeOrderData = {
+          id: 4,
+          status: 'COMPLETE',
+          statusText: 'Complete',
+          menuItems: [
+            { name: 'Pasta Primavera', price: 250, quantity: 1 }
+          ]
+        };
+
+        const canceledOrderData = {
+          id: 5,
+          status: 'CANCELED',
+          statusText: 'Canceled',
+          menuItems: [
+            { name: 'Caesar Salad', price: 120, quantity: 1 }
+          ]
+        };
+
+        // Example of adding each order card
+        addNewOrderCard(pendingOrderData);
+        addNewOrderCard(preparingOrderData);
+        addNewOrderCard(readyForPickupOrderData);
+        addNewOrderCard(completeOrderData);
+        addNewOrderCard(canceledOrderData);
+
         /*============================================================*/
 
       });
@@ -2167,12 +2392,13 @@
       });
 
       /*============================================================*/   
-      document.addEventListener('DOMContentLoaded', () => {
-    const currentDateElement = document.getElementById('current-date');
-    const options = { year: 'numeric', month: 'long', day: 'numeric' };
-    const today = new Date().toLocaleDateString(undefined, options);
-    currentDateElement.textContent = `Today's Date: ${today}`;
-  });
+
+      const currentDateElement = document.getElementById('current-date');
+      const options = { year: 'numeric', month: 'long', day: 'numeric' };
+      const today = new Date().toLocaleDateString(undefined, options);
+      currentDateElement.textContent = `Today's Date: ${today}`;
+
+      /*============================================================*/   
 
     </script>
       

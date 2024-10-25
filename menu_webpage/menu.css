@@ -634,9 +634,31 @@ textarea {
 
 .order-summary-table td:nth-child(2),
 .order-summary-table td:nth-child(4) {
-  white-space: nowrap;  /* Prevent text from wrapping */
-  overflow: hidden;     /* Ensure overflow is hidden */
-  text-overflow: ellipsis; /* Add ellipsis if text overflows */
+  white-space: nowrap;  
+  overflow: hidden;    
+  text-overflow: ellipsis;
+  text-align: right;
+}
+
+
+.order-summary-table th:nth-child(1),
+.order-summary-table td:nth-child(1) {
+    width: 30%; /* Menu Item */
+}
+
+.order-summary-table th:nth-child(2),
+.order-summary-table td:nth-child(2) {
+    width: 20%; /* Price */
+}
+
+.order-summary-table th:nth-child(3),
+.order-summary-table td:nth-child(3) {
+    width: 5%; /* Quantity */
+}
+
+.order-summary-table th:nth-child(4),
+.order-summary-table td:nth-child(4) {
+    width: 30%; /* Subtotal */
 }
 
 .empty-message-row td {

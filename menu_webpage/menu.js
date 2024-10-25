@@ -118,7 +118,7 @@ function updateOrderSummary(card, quantity) {
         if (existingRow) {
             // Update existing row
             existingRow.querySelector('.order-qty').textContent = quantity;
-            existingRow.querySelector('.order-subtotal').textContent = `Php ${subtotal.toFixed(2)}`;
+            existingRow.querySelector('.order-subtotal').textContent = `Php ${subtotal}`;
         } else {
             // Add new row
             const newRow = document.createElement('tr');
@@ -127,7 +127,7 @@ function updateOrderSummary(card, quantity) {
                 <td>${menuItemName}</td>
                 <td>${priceText}</td>
                 <td class="order-qty">${quantity}</td>
-                <td class="order-subtotal">Php ${subtotal.toFixed(2)}</td>
+                <td class="order-subtotal">Php ${subtotal}</td>
             `;
             orderSummaryTable.insertBefore(newRow, orderSummaryTable.querySelector('.total-row'));
         }
@@ -151,7 +151,7 @@ function updateTotalAmount() {
     });
 
     const totalAmountCell = orderSummaryTable.querySelector('.total-amount');
-    totalAmountCell.textContent = `Php ${total.toFixed(2)}`;
+    totalAmountCell.textContent = `Php ${total}`;
 
     // Check if there are no items in the order
     const emptyMessageRow = orderSummaryTable.querySelector('.empty-message-row');
