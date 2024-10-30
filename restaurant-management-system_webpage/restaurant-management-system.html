@@ -680,7 +680,7 @@
             <button type="button" onclick="">Reset</button>
           </div>
           <div class="right-section">
-            <button class="formFeaturesButtons" type="button" onclick="fillForm('staff-id', 'staff-table', 'staff', 'staff-form')">Fill Form with ID</button>
+            <button class="formFeaturesButtons" type="button" onclick="toggleInputField(this, 'staff-id')">Fill Form with ID</button>
             <button class="formFeaturesButtons" type="button" onclick="clearFormFields('staff-table','staff-form','YES')">Clear Form</button>
           </div>
         </div>
@@ -738,18 +738,16 @@
         <div class="details-display-container">
 
           <form id="staff-form">
-  
-            <label for="staff-id">Staff ID:</label>
-            <input type="number" id="staff-id" name="staff-id" placeholder="Enter the Staff's ID" min="1" tabindex="-1">
-  
-            <br>
-  
-            <label for="staff-status">Status:</label>
-            <select id="staff-status" name="staff-status" required>
-              <option value="ACTIVE">ACTIVE</option>
-              <option value="RETIRED">RETIRED</option>
-              <option value="VOIDED">VOIDED</option>
-            </select>
+            
+            <label for="staff-status">Staff ID and Status:</label>
+            <div class="input-group"> 
+              <input type="number" id="staff-id" name="staff-id" placeholder="ID" min="1" tabindex="-1" disabled oninput="fillForm('staff-id', 'staff-table', 'staff', 'staff-form')">
+              <select id="staff-status" name="staff-status" required>
+                <option value="ACTIVE">ACTIVE</option>
+                <option value="RETIRED">RETIRED</option>
+                <option value="VOIDED">VOIDED</option>
+              </select>
+            </div>
   
             <br>
   
@@ -862,7 +860,7 @@
             <button type="button" onclick="">Reset</button>
           </div>
           <div class="right-section">
-            <button class="formFeaturesButtons" type="button" onclick="fillForm('customer-id', 'customer-table', 'customer', 'customer-form')">Fill Form with ID</button>
+            <button class="formFeaturesButtons" type="button" onclick="toggleInputField(this, 'customer-id')">Fill Form with ID</button>
             <button class="formFeaturesButtons" type="button" onclick="clearFormFields('customer-table','customer-form','YES')">Clear Form</button>
           </div>
         </div>
@@ -920,22 +918,20 @@
         <div class="details-display-container">
 
           <form id="customer-form">
-
-            <label for="customer-id">Customer ID:</label>
-            <input type="number" id="customer-id" name="customer-id" placeholder="Enter the Customer's ID" min="1" tabindex="-1"> 
   
-            <br> 
-  
-            <label for="customer-status">Status:</label>
-            <select id="customer-status" name="customer-status" required>
-              <option value="ACTIVE">ACTIVE</option>
-              <option value="INACTIVE">INACTIVE</option>
-              <option value="SUSPENDED">SUSPENDED</option>
-              <option value="BANNED">BANNED</option>
-              <option value="LOST">LOST</option>
-              <option value="VIP">VIP</option>
-              <option value="GUEST">GUEST</option>
-            </select>
+            <label for="customer-status">Customer ID and Status:</label>
+            <div class="input-group"> 
+              <input type="number" id="customer-id" name="customer-id" placeholder="ID" min="1" tabindex="-1" disabled oninput="fillForm('customer-id', 'customer-table', 'customer', 'customer-form')"> 
+              <select id="customer-status" name="customer-status" required>
+                <option value="ACTIVE">ACTIVE</option>
+                <option value="INACTIVE">INACTIVE</option>
+                <option value="SUSPENDED">SUSPENDED</option>
+                <option value="BANNED">BANNED</option>
+                <option value="LOST">LOST</option>
+                <option value="VIP">VIP</option>
+                <option value="GUEST">GUEST</option>
+              </select>
+            </div>
   
             <br>
   
@@ -1044,7 +1040,7 @@
             <button type="button" onclick="">Reset</button>
           </div>
           <div class="right-section">
-            <button class="formFeaturesButtons" type="button" onclick="fillForm('menu-item-id', 'menu-item-table', 'menu-item', 'menu-item-form')">Fill Form with ID</button>
+            <button class="formFeaturesButtons" type="button" onclick="toggleInputField(this, 'menu-item-id')">Fill Form with ID</button>
             <button class="formFeaturesButtons" type="button" onclick="clearFormFields('menu-item-table','menu-item-form','YES')">Clear Form</button>
           </div>
         </div>
@@ -1062,7 +1058,7 @@
           <div class="right-section">
             <button class="addButtons" type="button" onclick="addNewMenuItem()">Add</button>
             <button class="updateButtons" type="button" onclick="updateSelectedMenuItem()">Update</button>
-            <button class="deleteButtons" type="button" onclick="deleteSelectedTableRow('menu-item-table','menu-item')">Delete</button>
+            <button class="deleteButtons" type="button" onclick="deleteSelectedMenuItem('menu-item-table','menu-item')">Delete</button>
           </div>
         </div>
 
@@ -1109,18 +1105,16 @@
             <br>
             <br>
   
-            <label for="menu-item-id">Menu Item ID:</label>
-            <input type="number" id="menu-item-id" name="menu-item-id" placeholder="Enter the Menu Item's ID" min="1" tabindex="-1">
-            
-            <br>
-  
             <label for="menu-item-img">Menu Item Image:</label>
             <input type="file" id="menu-item-img" name="menu-item-img" accept="image/*" onchange="previewImage(event)" required>
   
             <br>
   
             <label for="menu-item-name">Menu Item Name:</label>
-            <input type="text" id="menu-item-name" name="menu-item-name" placeholder="Enter the Menu Item's Name" required>
+            <div class="input-group"> 
+              <input type="number" id="menu-item-id" name="menu-item-id" placeholder="ID" min="1" tabindex="-1" disabled oninput="fillForm('menu-item-id', 'menu-item-table', 'menu-item', 'menu-item-form')">
+              <input type="text" id="menu-item-name" name="menu-item-name" placeholder="Enter the Menu Item's Name" required>
+            </div>
             
             <br>
   
@@ -1171,6 +1165,8 @@
             <br>
   
             <button type="button" onclick="addIngredientToList()">Add to the Recipe Ingredients</button>
+
+            <br>  
             
             <br>
             <br>  
@@ -1180,7 +1176,7 @@
             <div class="form-buttons-container">
               <button class="addButtons" type="button" onclick="addNewMenuItem()">Add</button>
               <button class="updateButtons" type="button" onclick="updateSelectedMenuItem()">Update</button>
-              <button class="deleteButtons" type="button" onclick="deleteSelectedTableRow('menu-item-table','menu-item')">Delete</button>
+              <button class="deleteButtons" type="button" onclick="deleteSelectedMenuItem('menu-item-table','menu-item')">Delete</button>
             </div>
 
             <br>
@@ -1230,7 +1226,7 @@
             <button type="button" onclick="">Reset</button>
           </div>
           <div class="right-section">
-            <button class="formFeaturesButtons" type="button" onclick="fillForm('menu-category-id', 'menu-category-table', 'menu-category', 'menu-category-form')">Fill Form with ID</button>
+            <button class="formFeaturesButtons" type="button" onclick="toggleInputField(this, 'menu-category-id')">Fill Form with ID</button>
             <button class="formFeaturesButtons" type="button" onclick="clearFormFields('menu-category-table','menu-category-form','YES')">Clear Form</button>
           </div>
         </div>
@@ -1247,7 +1243,7 @@
           <div class="right-section">
             <button class="addButtons" type="button" onclick="addNewMenuCategory()">Add</button>
             <button class="updateButtons" type="button" onclick="updateSelectedMenuCategory()">Update</button>
-            <button class="deleteButtons" type="button" onclick="deleteSelectedTableRow('menu-category-table','menu-category')">Delete</button>
+            <button class="deleteButtons" type="button" onclick="deleteSelectedMenuCategory('menu-category-table','menu-category')">Delete</button>
           </div>
         </div>
 
@@ -1285,13 +1281,11 @@
 
           <form id="menu-category-form">
 
-            <label for="menu-category-id">Menu Category ID:</label>
-            <input type="number" id="menu-category-id" name="menu-category-id" placeholder="Enter the Menu Category's ID" min="1" tabindex="-1">
-            
-            <br>
-
             <label for="menu-category-name">Menu Category Name:</label>
-            <input type="text" id="menu-category-name" name="menu-category-name" placeholder="Enter the Menu Category's Name" required>
+            <div class="input-group"> 
+              <input type="number" id="menu-category-id" name="menu-category-id" placeholder="ID" min="1" tabindex="-1" disabled oninput="fillForm('menu-category-id', 'menu-category-table', 'menu-category', 'menu-category-form')">
+              <input type="text" id="menu-category-name" name="menu-category-name" placeholder="Enter the Menu Category's Name" required>
+            </div>
             
             <br>
             <br>  
@@ -1301,7 +1295,7 @@
             <div class="form-buttons-container">
               <button class="addButtons" type="button" onclick="addNewMenuCategory()">Add</button>
               <button class="updateButtons" type="button" onclick="updateSelectedMenuCategory()">Update</button>
-              <button class="deleteButtons" type="button" onclick="deleteSelectedTableRow('menu-category-table','menu-category')">Delete</button>
+              <button class="deleteButtons" type="button" onclick="deleteSelectedMenuCategory('menu-category-table','menu-category')">Delete</button>
             </div>
 
             <br>
@@ -1351,7 +1345,7 @@
             <button type="button" onclick="">Reset</button>
           </div>
           <div class="right-section">
-            <button class="formFeaturesButtons" type="button" onclick="fillForm('ingredient-id', 'ingredient-table', 'ingredient', 'ingredient-form')">Fill Form with ID</button>
+            <button class="formFeaturesButtons" type="button" onclick="toggleInputField(this, 'ingredient-id')">Fill Form with ID</button>
             <button class="formFeaturesButtons" type="button" onclick="clearFormFields('ingredient-table','ingredient-form','YES')">Clear Form</button>
           </div>
         </div>
@@ -1369,7 +1363,7 @@
           <div class="right-section">
             <button class="addButtons" type="button" onclick="addNewIngredient()">Add</button>
             <button class="updateButtons" type="button" onclick="updateSelectedIngredient()">Update</button>
-            <button class="deleteButtons" type="button" onclick="deleteSelectedTableRow('ingredient-table','ingredient')">Delete</button>
+            <button class="deleteButtons" type="button" onclick="deleteSelectedIngredient('ingredient-table','ingredient')">Delete</button>
           </div>
         </div>
 
@@ -1409,13 +1403,11 @@
 
           <form id="ingredient-form">
   
-            <label for="ingredient-id">Ingredient ID:</label>
-            <input type="number" id="ingredient-id" name="ingredient-id" placeholder="Enter the Ingredient's ID" min="1" tabindex="-1">
-            
-            <br>
-  
-            <label for="ingredient-name">Ingredient:</label>
-            <input type="text" id="ingredient-name" name="ingredient-name" placeholder="Enter the Ingredient's Name" required>
+            <label for="ingredient-name">Ingredient Name:</label>
+            <div class="input-group"> 
+              <input type="number" id="ingredient-id" name="ingredient-id" placeholder="ID" min="1" tabindex="-1" disabled oninput="fillForm('ingredient-id', 'ingredient-table', 'ingredient', 'ingredient-form')">
+              <input type="text" id="ingredient-name" name="ingredient-name" placeholder="Enter the Ingredient's Name" required>       
+            </div> 
             
             <br>
   
@@ -1454,7 +1446,7 @@
             <div class="form-buttons-container">
               <button class="addButtons" type="button" onclick="addNewIngredient()">Add</button>
               <button class="updateButtons" type="button" onclick="updateSelectedIngredient()">Update</button>
-              <button class="deleteButtons" type="button" onclick="deleteSelectedTableRow('ingredient-table','ingredient')">Delete</button>
+              <button class="deleteButtons" type="button" onclick="deleteSelectedIngredient('ingredient-table','ingredient')">Delete</button>
             </div>
 
             <br>
@@ -1504,7 +1496,7 @@
             <button type="button" onclick="">Reset</button>
           </div>
           <div class="right-section">
-            <button class="formFeaturesButtons" type="button" onclick="fillForm('ingredient-category-id', 'ingredient-category-table', 'ingredient-category', 'ingredient-category-form')">Fill Form with ID</button>
+            <button class="formFeaturesButtons" type="button" onclick="toggleInputField(this, 'ingredient-category-id')">Fill Form with ID</button>
             <button class="formFeaturesButtons" type="button" onclick="clearFormFields('ingredient-category-table','ingredient-category-form','YES')">Clear Form</button>
           </div>
         </div>
@@ -1521,7 +1513,7 @@
           <div class="right-section">
             <button class="addButtons" type="button" onclick="addNewIngredientCategory()">Add</button>
             <button class="updateButtons" type="button" onclick="updateSelectedIngredientCategory()">Update</button>
-            <button class="deleteButtons" type="button" onclick="deleteSelectedTableRow('ingredient-category-table','ingredient-category')">Delete</button>
+            <button class="deleteButtons" type="button" onclick="deleteSelectedIngredientCategory('ingredient-category-table','ingredient-category')">Delete</button>
           </div>
         </div>
 
@@ -1553,19 +1545,17 @@
 
         <!-- ============================== -->
         
-        <h2>INGREDIENT CAT. FORM</h2>
+        <h2>INGREDIENT CATEGORY<br>FORM</h2>
         
         <div class="details-display-container">
 
           <form id="ingredient-category-form">
   
-            <label for="ingredient-category-id">Ingredient Category ID:</label>
-            <input type="number" id="ingredient-category-id" name="ingredient-category-id" placeholder="Enter the Ingredient Category's ID" min="1" tabindex="-1">
-            
-            <br>
-  
             <label for="ingredient-category-name">Ingredient Category Name:</label>
-            <input type="text" id="ingredient-category-name" name="ingredient-category-name" placeholder="Enter the Ingredient Category's Name" required>
+            <div class="input-group"> 
+              <input type="number" id="ingredient-category-id" name="ingredient-category-id" placeholder="ID" min="1" tabindex="-1" disabled  oninput="fillForm('ingredient-category-id', 'ingredient-category-table', 'ingredient-category', 'ingredient-category-form')">
+              <input type="text" id="ingredient-category-name" name="ingredient-category-name" placeholder="Enter the Ingredient Category's Name" required>              
+            </div> 
             
             <br>
             <br>  
@@ -1575,7 +1565,7 @@
             <div class="form-buttons-container">
               <button class="addButtons" type="button" onclick="addNewIngredientCategory()">Add</button>
               <button class="updateButtons" type="button" onclick="updateSelectedIngredientCategory()">Update</button>
-              <button class="deleteButtons" type="button" onclick="deleteSelectedTableRow('ingredient-category-table','ingredient-category')">Delete</button>
+              <button class="deleteButtons" type="button" onclick="deleteSelectedIngredientCategory('ingredient-category-table','ingredient-category')">Delete</button>
             </div>
 
             <br>
@@ -1625,7 +1615,7 @@
             <button type="button" onclick="">Reset</button>
           </div>
           <div class="right-section">
-            <button class="formFeaturesButtons" type="button" onclick="fillForm('ingredient-unit-id', 'ingredient-unit-table', 'ingredient-unit', 'ingredient-unit-form')">Fill Form with ID</button>
+            <button class="formFeaturesButtons" type="button" onclick="toggleInputField(this, 'ingredient-unit-id')">Fill Form with ID</button>
             <button class="formFeaturesButtons" type="button" onclick="clearFormFields('ingredient-unit-table','ingredient-unit-form','YES')">Clear Form</button>
           </div>
         </div>
@@ -1642,7 +1632,7 @@
           <div class="right-section">
             <button class="addButtons" type="button" onclick="addNewIngredientUnit()">Add</button>
             <button class="updateButtons" type="button" onclick="updateSelectedIngredientUnit()">Update</button>
-            <button class="deleteButtons" type="button" onclick="deleteSelectedTableRow('ingredient-unit-table','ingredient-unit')">Delete</button>
+            <button class="deleteButtons" type="button" onclick="deleteSelectedIngredientUnit('ingredient-unit-table','ingredient-unit')">Delete</button>
           </div>
         </div>
 
@@ -1679,14 +1669,12 @@
         <div class="details-display-container">
 
           <form id="ingredient-unit-form">
-  
-            <label for="ingredient-unit-id">Ingredient Unit ID:</label>
-            <input type="number" id="ingredient-unit-id" name="ingredient-unit-id" placeholder="Enter the Ingredient Unit's ID" min="1" tabindex="-1">
-            
-            <br>
-  
+   
             <label for="ingredient-unit-name">Ingredient Unit Name:</label>
-            <input type="text" id="ingredient-unit-name" name="ingredient-unit-name" placeholder="Enter the Ingredient Unit's Name" required>
+            <div class="input-group"> 
+              <input type="number" id="ingredient-unit-id" name="ingredient-unit-id" placeholder="ID" min="1" tabindex="-1" disabled oninput="fillForm('ingredient-unit-id', 'ingredient-unit-table', 'ingredient-unit', 'ingredient-unit-form')">
+              <input type="text" id="ingredient-unit-name" name="ingredient-unit-name" placeholder="Enter the Ingredient Unit's Name" required>
+            </div> 
             
             <br>
             <br>  
@@ -1696,7 +1684,7 @@
             <div class="form-buttons-container">
               <button class="addButtons" type="button" onclick="addNewIngredientUnit()">Add</button>
               <button class="updateButtons" type="button" onclick="updateSelectedIngredientUnit()">Update</button>
-              <button class="deleteButtons" type="button" onclick="deleteSelectedTableRow('ingredient-unit-table','ingredient-unit')">Delete</button>
+              <button class="deleteButtons" type="button" onclick="deleteSelectedIngredientUnit('ingredient-unit-table','ingredient-unit')">Delete</button>
             </div>
             
             <br>
@@ -1716,6 +1704,7 @@
     <!-- ============================================================ -->
     <!-- ============================================================ -->
     <!-- ============================================================ -->
+
 
 
 
@@ -1848,7 +1837,7 @@
         const forms = document.querySelectorAll('form');
 
         forms.forEach(form => {
-          const tabbableElements = Array.from(form.querySelectorAll('input, select, button'))
+          const tabbableElements = Array.from(form.querySelectorAll('input, select, button, .input-group input'))
             .filter(el => !el.disabled && el.tabIndex !== -1);
 
           form.addEventListener('keydown', function(event) {
@@ -1942,7 +1931,7 @@
               ${menuItems}
               <tr>
                 <td colspan="3" class="total-label">TOTAL</td>
-                <td>Php ${total.toFixed(2)}</td>
+                <td>Php ${total}</td>
               </tr>
               <tr>
                 <td colspan="3" class="discount-label">Discount Code</td>
@@ -2196,6 +2185,40 @@
           statusSpan.textContent = newStatusText;
           statusSpan.className = `status ${newStatus.toLowerCase().replace(/ /g, '-')}`;
 
+          // Create or update the status update time element
+          let statusUpdateTime = card.querySelector('.status-update-time');
+          const currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); // Get the current time in HH:MM format
+          if (!statusUpdateTime) {
+            // If it doesn't exist, create it
+            statusUpdateTime = document.createElement('table'); // Use a table for layout
+            statusUpdateTime.className = 'status-update-time';
+            statusUpdateTime.style.marginTop = '10px'; // Add margin at the top for the div
+            statusUpdateTime.style.borderCollapse = 'collapse'; // Collapse borders
+            statusUpdateTime.style.marginTop = '20px'; // Set the table width to 50%
+            statusUpdateTime.style.width = '50%'; // Set the table width to 50%
+            statusUpdateTime.style.marginLeft = 'auto'; // Center the table
+            statusUpdateTime.style.marginRight = 'auto'; // Center the table
+            card.appendChild(statusUpdateTime);
+          }
+            
+          // Append the new status update to the existing updates
+          const newUpdateRow = document.createElement('tr'); // Create a new row for the update
+          const statusCell = document.createElement('td'); // Create a cell for the status
+          const timeCell = document.createElement('td'); // Create a cell for the time
+
+          statusCell.textContent = `${newStatusText.toUpperCase()}`; // Set the status text
+          timeCell.textContent = currentTime; // Set the current time
+
+          // Style the cells
+          statusCell.style.textAlign = 'left'; // Align status text to the left
+          timeCell.style.textAlign = 'right'; // Align time text to the right
+          statusCell.style.border = 'none'; // Hide border for the status cell
+          timeCell.style.border = 'none'; // Hide border for the time cell
+
+          newUpdateRow.appendChild(statusCell); // Add status cell to the row
+          newUpdateRow.appendChild(timeCell); // Add time cell to the row
+          statusUpdateTime.appendChild(newUpdateRow)
+
           // Determine the new class for the update button based on the new status
           const nextStatusClass = getNextStatusClass(newStatus);
 
@@ -2290,7 +2313,8 @@
           statusText: 'Pending',
           menuItems: [
             { name: 'Cheeseburger', price: 150, quantity: 2 },
-            { name: 'French Fries', price: 75, quantity: 1 }
+            { name: 'Sphagetti', price: 220, quantity: 1 },
+            { name: 'French Fries', price: 60, quantity: 3 }
           ]
         };
 

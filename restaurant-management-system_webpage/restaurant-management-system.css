@@ -1136,3 +1136,18 @@ td.status-cell {
     opacity: 1; /* Fully opaque */
 }
   
+
+
+
+
+
+.input-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 5px;
+}
+
+.input-group input:first-child {
+    width: 50px;
+}

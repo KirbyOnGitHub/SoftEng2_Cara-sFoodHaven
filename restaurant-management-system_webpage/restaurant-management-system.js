@@ -1,6 +1,3 @@
-
-
-
 /*============================================================*/
 
 function clearFormFields(tableId,formId,ifAlert) {
@@ -10,12 +7,12 @@ function clearFormFields(tableId,formId,ifAlert) {
     if (form) {
         // Select all input elements within the form and set their value to an empty string
         form.querySelectorAll('input').forEach(input => {
-        input.value = '';
+            input.value = '';
         });
 
         // Select all select elements within the form and set their value to the first option
         form.querySelectorAll('select').forEach(select => {
-        select.selectedIndex = 0;
+            select.selectedIndex = 0;
         });
 
         // Select all textarea elements within the form and set their value to an empty string
@@ -222,19 +219,64 @@ function sortTableByColumn(tableId, selectId, button, buttonClicked) {
 
 /*============================================================*/
 
-function fillForm(inputID, tableID, dataName, formID) {
-    const inputValue = document.getElementById(inputID).value.trim(); // Trim any extra spaces
+ // Generalized toggle function
+ function toggleInputField(button, inputID) {
+    const inputField = document.getElementById(inputID);
+    
+    inputField.disabled = !inputField.disabled; // Toggle the disabled state
+    inputField.value = '';
+    button.textContent = inputField.disabled ? 'Fill Form with ID' : 'Disable ID Input'; // Update button text
+}
 
-    if (!inputValue) {
-        showNotification(`Enter an ID to auto-fill the form.`);
+/*============================================================*/
+
+function fillForm(inputID, tableID, dataName, formID) {
+    // Find the input element
+    const inputElement = document.getElementById(inputID);
+    
+    // Check if the input element exists
+    if (!inputElement) {
+        console.error(`Input element with ID '${inputID}' not found.`);
+        return; // Exit the function if the input element is not found
+    }
+
+    const inputValue = inputElement.value.trim(); // Trim any extra spaces
+    const originalValue = inputValue; // Save the original value of the ID input
+
+    // Click the closest "Clear Form" button if input is invalid
+    if (!inputValue || isNaN(inputValue)) {
+        console.warn(`Invalid input: '${inputValue}'. Clicking Clear Form.`);
+        const clearButton = Array.from(inputElement.closest('.container').querySelectorAll('button'))
+            .find(button => button.textContent.trim() === "Clear Form");
+        
+        if (clearButton) {
+            console.log("Clicking the Clear Form button."); // Debugging log
+            clearButton.click(); // Click the clear button
+        } else {
+            console.warn("Clear Form button not found."); // Debugging log
+        }
+        showNotification(`Please enter a valid numeric ID to auto-fill the form.`);
+        inputElement.value = originalValue; // Restore the original value
         return;
     }
 
     const table = document.getElementById(tableID);
     const rows = table.querySelectorAll("tbody tr");
 
+    // Click the closest "Clear Form" button if no rows are found
     if (rows.length === 0) {
+        console.warn(`No rows found in the table. Clicking Clear Form.`);
+        const clearButton = Array.from(inputElement.closest('.container').querySelectorAll('button'))
+            .find(button => button.textContent.trim() === "Clear Form");
+        
+        if (clearButton) {
+            console.log("Clicking the Clear Form button."); // Debugging log
+            clearButton.click(); // Click the clear button
+        } else {
+            console.warn("Clear Form button not found."); // Debugging log
+        }
         showNotification(`There are no rows to search in the table.`);
+        inputElement.value = originalValue; // Restore the original value
         return;
     }
 
@@ -256,14 +298,28 @@ function fillForm(inputID, tableID, dataName, formID) {
                 found = true;
             }
         } catch (error) {
+            console.error("Error parsing row data:", error);
         }
     });
 
+    // Click the closest "Clear Form" button if no record is found
     if (!found) {
+        console.warn(`No existing record with the ID: '${inputValue}'. Clicking Clear Form.`);
+        const clearButton = Array.from(inputElement.closest('.container').querySelectorAll('button'))
+            .find(button => button.textContent.trim() === "Clear Form");
+        
+        if (clearButton) {
+            console.log("Clicking the Clear Form button."); // Debugging log
+            clearButton.click(); // Click the clear button
+        } else {
+            console.warn("Clear Form button not found."); // Debugging log
+        }
         showNotification(`No existing record with the ID: '${inputValue}'`);
     }
-}
 
+    // Restore the original value after clearing
+    inputElement.value = originalValue; // Restore the original value
+}
 
 /*============================================================*/
 
@@ -296,78 +352,78 @@ function animateRowHighlight(row) {
 
 /*============================================================*/
 
-function deleteSelectedTableRow(tableID, dataName) {
-    // Get the table by ID
-    const table = document.getElementById(tableID);
+// function deleteSelectedTableRow(tableID, dataName) {
+//     // Get the table by ID
+//     const table = document.getElementById(tableID);
 
-    // Find the currently selected row
-    const selectedRow = table.querySelector(".clickedTableRow");
+//     // Find the currently selected row
+//     const selectedRow = table.querySelector(".clickedTableRow");
 
-    // Check if a row is selected
-    if (!selectedRow) {
-        showNotification(`Select a row to delete from the table.`);
-        return;
-    }
+//     // Check if a row is selected
+//     if (!selectedRow) {
+//         showNotification(`Select a row to delete from the table.`);
+//         return;
+//     }
 
-    // Grab the selected row's data attribute and its ID
-    const selectedRowData = JSON.parse(selectedRow.getAttribute(`data-${dataName}`));
-    const selectedRowID = parseInt(selectedRowData.id); // Ensure ID is a number
+//     // Grab the selected row's data attribute and its ID
+//     const selectedRowData = JSON.parse(selectedRow.getAttribute(`data-${dataName}`));
+//     const selectedRowID = parseInt(selectedRowData.id); // Ensure ID is a number
     
-    // Check if the table is the ingredient-table
-    if (tableID === "ingredient-table") {
-        // Get the quantity cell and check its class
-        const quantityCell = selectedRow.querySelector("td:last-child span");
-        if (quantityCell && quantityCell.classList.contains('status-lowstockth')) {
-            updateBadge('ingredientPage', -1);
-        }
-    }
+//     // Check if the table is the ingredient-table
+//     if (tableID === "ingredient-table") {
+//         // Get the quantity cell and check its class
+//         const quantityCell = selectedRow.querySelector("td:last-child span");
+//         if (quantityCell && quantityCell.classList.contains('status-lowstockth')) {
+//             updateBadge('ingredientPage', -1);
+//         }
+//     }
 
-    // Remove the selected row
-    selectedRow.remove();
-    clearFormFields(tableID, `${tableID.replace('-table', '-form')}`);
+//     // Remove the selected row
+//     selectedRow.remove();
+//     clearFormFields(tableID, `${tableID.replace('-table', '-form')}`);
 
-    // Show notification for deletion
-    showNotification(`Record ID: '${selectedRowID}' deleted successfully!`);
+//     // Show notification for deletion
+//     showNotification(`Record ID: '${selectedRowID}' deleted successfully!`);
 
-    // Update IDs for rows with higher IDs than the deleted one
-    const remainingRows = Array.from(table.querySelectorAll("tbody tr"));
-    remainingRows.forEach(row => {
-        const rowData = JSON.parse(row.getAttribute(`data-${dataName}`));
-        const rowID = parseInt(rowData.id);
+//     // Update IDs for rows with higher IDs than the deleted one
+//     const remainingRows = Array.from(table.querySelectorAll("tbody tr"));
+//     remainingRows.forEach(row => {
+//         const rowData = JSON.parse(row.getAttribute(`data-${dataName}`));
+//         const rowID = parseInt(rowData.id);
 
-        if (rowID > selectedRowID) {
-            const newID = rowID - 1;
+//         if (rowID > selectedRowID) {
+//             const newID = rowID - 1;
 
-            // Update the data attribute with the new ID
-            rowData.id = newID;
-            row.setAttribute(`data-${dataName}`, JSON.stringify(rowData));
+//             // Update the data attribute with the new ID
+//             rowData.id = newID;
+//             row.setAttribute(`data-${dataName}`, JSON.stringify(rowData));
 
-            // Find the first cell with textContent matching the current ID
-            for (const cell of row.cells) {
-                if (parseInt(cell.textContent) === rowID) {
-                    cell.textContent = newID; // Update the cell's content
-                    break; // Stop searching after the first match
-                }
-            }
-        }
-    });
+//             // Find the first cell with textContent matching the current ID
+//             for (const cell of row.cells) {
+//                 if (parseInt(cell.textContent) === rowID) {
+//                     cell.textContent = newID; // Update the cell's content
+//                     break; // Stop searching after the first match
+//                 }
+//             }
+//         }
+//     });
 
-    // Call repopulateComboBoxFromTable based on tableID
-    switch (tableID) {
-        case "menu-category-table":
-            repopulateComboBoxFromTable("menu-category-table", "data-menu-category", "menu-category-combobox");
-            break;
-        case "ingredient-table":
-            repopulateComboBoxFromTable("ingredient-table", "data-ingredient", "ingredient-name-combobox");
-            break;
-        case "ingredient-category-table":
-            repopulateComboBoxFromTable("ingredient-category-table", "data-ingredient-category", "ingredient-category-combobox");
-            break;
-        case "ingredient-unit-table":
-            repopulateComboBoxFromTable("ingredient-unit-table", "data-ingredient-unit", "ingredient-unit-combobox");
-            break;
-    }
-}
+//     // Call repopulateComboBoxFromTable based on tableID
+//     switch (tableID) {
+//         case "menu-category-table":
+//             repopulateComboBoxFromTable("menu-category-table", "data-menu-category", "menu-category-combobox");
+//             break;
+//         case "ingredient-table":
+//             repopulateComboBoxFromTable("ingredient-table", "data-ingredient", "ingredient-name-combobox");
+//             break;
+//         case "ingredient-category-table":
+//             repopulateComboBoxFromTable("ingredient-category-table", "data-ingredient-category", "ingredient-category-combobox");
+//             break;
+//         case "ingredient-unit-table":
+//             repopulateComboBoxFromTable("ingredient-unit-table", "data-ingredient-unit", "ingredient-unit-combobox");
+//             break;
+//     }
+// }
 
 /*============================================================*/
 
@@ -441,31 +497,6 @@ function updateBadge(ID, change) {
         console.warn(`No vertical menu button found with ID: ${ID}`);
     }
 }
-
-/*============================================================*/
-
-// function toggleFillFormFeature(pageName, inputIDField, formID) {
-//     const idInput = document.getElementById(inputIDField);
-//     const form = document.getElementById(formID);
-//     const togglableFields = form.querySelectorAll('.togglable-input-fields');
-  
-//     // Toggle the ID input field's enabled/disabled state
-//     const isEnabled = !idInput.disabled;
-//     idInput.disabled = isEnabled;
-  
-//     // Update the placeholder for the ID field
-//     idInput.value = "";
-  
-//     // Update the placeholder for the ID field
-//     idInput.placeholder = isEnabled 
-//       ? `For 'Fill Form with ID'` 
-//       : `Enter ${pageName}'s ID`;
-  
-//     // Toggle the other form fields based on the ID field's state
-//     togglableFields.forEach(field => {
-//       field.disabled = !isEnabled;
-//     });
-// }
 
 /*============================================================*/
 
@@ -1118,8 +1149,6 @@ function updateSelectedStaff() {
 /*============================================================*/
 
 
-/*============================================================*/
-
 
 
 
@@ -1348,7 +1377,6 @@ function updateSelectedCustomer() {
 }
 
 /*============================================================*/
-
 
 
 
@@ -1832,6 +1860,57 @@ function updateSelectedMenuItem() {
 
 /*============================================================*/
 
+function deleteSelectedMenuItem(tableID, dataName) {
+    // Get the table by ID
+    const table = document.getElementById(tableID);
+
+    // Find the currently selected row
+    const selectedRow = table.querySelector(".clickedTableRow");
+
+    // Check if a row is selected
+    if (!selectedRow) {
+        showNotification(`Select a row to delete from the table.`);
+        return;
+    }
+
+    // Grab the selected row's data attribute and its ID
+    const selectedRowData = JSON.parse(selectedRow.getAttribute(`data-${dataName}`));
+    const selectedRowID = parseInt(selectedRowData.id); // Ensure ID is a number
+
+    // Remove the selected row
+    selectedRow.remove();
+    clearFormFields(tableID, `${tableID.replace('-table', '-form')}`);
+
+    // Show notification for deletion
+    showNotification(`Record ID: '${selectedRowID}' deleted successfully!`);
+
+    // Update IDs for rows with higher IDs than the deleted one
+    const remainingRows = Array.from(table.querySelectorAll("tbody tr"));
+    remainingRows.forEach(row => {
+        const rowData = JSON.parse(row.getAttribute(`data-${dataName}`));
+        const rowID = parseInt(rowData.id);
+
+        if (rowID > selectedRowID) {
+            const newID = rowID - 1;
+
+            // Update the data attribute with the new ID
+            rowData.id = newID;
+            row.setAttribute(`data-${dataName}`, JSON.stringify(rowData));
+
+            // Find the first cell with textContent matching the current ID
+            for (const cell of row.cells) {
+                if (parseInt(cell.textContent) === rowID) {
+                    cell.textContent = newID; // Update the cell's content
+                    break; // Stop searching after the first match
+                }
+            }
+        }
+    });
+
+}
+
+/*============================================================*/
+
 
 
 
@@ -1977,6 +2056,59 @@ function updateSelectedMenuCategory() {
 
     // Clear the input fields of the form
     clearFormFields('menu-category-table', 'menu-category-form');
+}
+
+/*============================================================*/
+
+function deleteSelectedMenuCategory(tableID, dataName) {
+    // Get the table by ID
+    const table = document.getElementById(tableID);
+
+    // Find the currently selected row
+    const selectedRow = table.querySelector(".clickedTableRow");
+
+    // Check if a row is selected
+    if (!selectedRow) {
+        showNotification(`Select a row to delete from the table.`);
+        return;
+    }
+
+    // Grab the selected row's data attribute and its ID
+    const selectedRowData = JSON.parse(selectedRow.getAttribute(`data-${dataName}`));
+    const selectedRowID = parseInt(selectedRowData.id); // Ensure ID is a number
+
+    // Remove the selected row
+    selectedRow.remove();
+    clearFormFields(tableID, `${tableID.replace('-table', '-form')}`);
+
+    // Show notification for deletion
+    showNotification(`Record ID: '${selectedRowID}' deleted successfully!`);
+
+    // Update IDs for rows with higher IDs than the deleted one
+    const remainingRows = Array.from(table.querySelectorAll("tbody tr"));
+    remainingRows.forEach(row => {
+        const rowData = JSON.parse(row.getAttribute(`data-${dataName}`));
+        const rowID = parseInt(rowData.id);
+
+        if (rowID > selectedRowID) {
+            const newID = rowID - 1;
+
+            // Update the data attribute with the new ID
+            rowData.id = newID;
+            row.setAttribute(`data-${dataName}`, JSON.stringify(rowData));
+
+            // Find the first cell with textContent matching the current ID
+            for (const cell of row.cells) {
+                if (parseInt(cell.textContent) === rowID) {
+                    cell.textContent = newID; // Update the cell's content
+                    break; // Stop searching after the first match
+                }
+            }
+        }
+    });
+
+    repopulateComboBoxFromTable("menu-category-table", "data-menu-category", "menu-category-combobox");
+
 }
 
 /*============================================================*/
@@ -2138,9 +2270,6 @@ function ingredient_tableRowClicked(dataRow, row) {
     document.getElementById("ingredient-low-stock-threshold").value = rowData.lowStockTH;
     document.getElementById("ingredient-medium-stock-threshold").value = rowData.mediumStockTH;
     document.getElementById("ingredient-reorder-point").value = rowData.reorderPoint;
-    
-    // Set the auto-deduct value
-    document.getElementById("ingredient-auto-deduct").value = rowData.autoDeduct.toString();
 }
 
 /*============================================================*/
@@ -2228,6 +2357,68 @@ function updateSelectedIngredient() {
     } catch (error) {
         console.error("Error updating ingredient:", error);
     }
+}
+
+/*============================================================*/
+
+function deleteSelectedIngredient(tableID, dataName) {
+    // Get the table by ID
+    const table = document.getElementById(tableID);
+
+    // Find the currently selected row
+    const selectedRow = table.querySelector(".clickedTableRow");
+
+    // Check if a row is selected
+    if (!selectedRow) {
+        showNotification(`Select a row to delete from the table.`);
+        return;
+    }
+
+    // Grab the selected row's data attribute and its ID
+    const selectedRowData = JSON.parse(selectedRow.getAttribute(`data-${dataName}`));
+    const selectedRowID = parseInt(selectedRowData.id); // Ensure ID is a number
+    
+    // Check if the table is the ingredient-table
+    if (tableID === "ingredient-table") {
+        // Get the quantity cell and check its class
+        const quantityCell = selectedRow.querySelector("td:last-child span");
+        if (quantityCell && quantityCell.classList.contains('status-lowstockth')) {
+            updateBadge('ingredientPage', -1);
+        }
+    }
+
+    // Remove the selected row
+    selectedRow.remove();
+    clearFormFields(tableID, `${tableID.replace('-table', '-form')}`);
+
+    // Show notification for deletion
+    showNotification(`Record ID: '${selectedRowID}' deleted successfully!`);
+
+    // Update IDs for rows with higher IDs than the deleted one
+    const remainingRows = Array.from(table.querySelectorAll("tbody tr"));
+    remainingRows.forEach(row => {
+        const rowData = JSON.parse(row.getAttribute(`data-${dataName}`));
+        const rowID = parseInt(rowData.id);
+
+        if (rowID > selectedRowID) {
+            const newID = rowID - 1;
+
+            // Update the data attribute with the new ID
+            rowData.id = newID;
+            row.setAttribute(`data-${dataName}`, JSON.stringify(rowData));
+
+            // Find the first cell with textContent matching the current ID
+            for (const cell of row.cells) {
+                if (parseInt(cell.textContent) === rowID) {
+                    cell.textContent = newID; // Update the cell's content
+                    break; // Stop searching after the first match
+                }
+            }
+        }
+    });
+
+    repopulateComboBoxFromTable("ingredient-table", "data-ingredient", "ingredient-name-combobox");
+
 }
 
 /*============================================================*/
@@ -2376,6 +2567,59 @@ function updateSelectedIngredientCategory() {
 
     // Clear the input fields of the form
     clearFormFields('ingredient-category-table', 'ingredient-category-form');
+}
+
+/*============================================================*/
+
+function deleteSelectedIngredientCategory(tableID, dataName) {
+    // Get the table by ID
+    const table = document.getElementById(tableID);
+
+    // Find the currently selected row
+    const selectedRow = table.querySelector(".clickedTableRow");
+
+    // Check if a row is selected
+    if (!selectedRow) {
+        showNotification(`Select a row to delete from the table.`);
+        return;
+    }
+
+    // Grab the selected row's data attribute and its ID
+    const selectedRowData = JSON.parse(selectedRow.getAttribute(`data-${dataName}`));
+    const selectedRowID = parseInt(selectedRowData.id); // Ensure ID is a number
+
+    // Remove the selected row
+    selectedRow.remove();
+    clearFormFields(tableID, `${tableID.replace('-table', '-form')}`);
+
+    // Show notification for deletion
+    showNotification(`Record ID: '${selectedRowID}' deleted successfully!`);
+
+    // Update IDs for rows with higher IDs than the deleted one
+    const remainingRows = Array.from(table.querySelectorAll("tbody tr"));
+    remainingRows.forEach(row => {
+        const rowData = JSON.parse(row.getAttribute(`data-${dataName}`));
+        const rowID = parseInt(rowData.id);
+
+        if (rowID > selectedRowID) {
+            const newID = rowID - 1;
+
+            // Update the data attribute with the new ID
+            rowData.id = newID;
+            row.setAttribute(`data-${dataName}`, JSON.stringify(rowData));
+
+            // Find the first cell with textContent matching the current ID
+            for (const cell of row.cells) {
+                if (parseInt(cell.textContent) === rowID) {
+                    cell.textContent = newID; // Update the cell's content
+                    break; // Stop searching after the first match
+                }
+            }
+        }
+    });
+    
+    repopulateComboBoxFromTable("ingredient-category-table", "data-ingredient-category", "ingredient-category-combobox");
+
 }
 
 /*============================================================*/
@@ -2530,6 +2774,59 @@ function updateSelectedIngredientUnit() {
 
     // Clear the input fields of the form
     clearFormFields('ingredient-unit-table', 'ingredient-unit-form');
+}
+
+/*============================================================*/
+
+function deleteSelectedIngredientUnit(tableID, dataName) {
+    // Get the table by ID
+    const table = document.getElementById(tableID);
+
+    // Find the currently selected row
+    const selectedRow = table.querySelector(".clickedTableRow");
+
+    // Check if a row is selected
+    if (!selectedRow) {
+        showNotification(`Select a row to delete from the table.`);
+        return;
+    }
+
+    // Grab the selected row's data attribute and its ID
+    const selectedRowData = JSON.parse(selectedRow.getAttribute(`data-${dataName}`));
+    const selectedRowID = parseInt(selectedRowData.id); // Ensure ID is a number
+
+    // Remove the selected row
+    selectedRow.remove();
+    clearFormFields(tableID, `${tableID.replace('-table', '-form')}`);
+
+    // Show notification for deletion
+    showNotification(`Record ID: '${selectedRowID}' deleted successfully!`);
+
+    // Update IDs for rows with higher IDs than the deleted one
+    const remainingRows = Array.from(table.querySelectorAll("tbody tr"));
+    remainingRows.forEach(row => {
+        const rowData = JSON.parse(row.getAttribute(`data-${dataName}`));
+        const rowID = parseInt(rowData.id);
+
+        if (rowID > selectedRowID) {
+            const newID = rowID - 1;
+
+            // Update the data attribute with the new ID
+            rowData.id = newID;
+            row.setAttribute(`data-${dataName}`, JSON.stringify(rowData));
+
+            // Find the first cell with textContent matching the current ID
+            for (const cell of row.cells) {
+                if (parseInt(cell.textContent) === rowID) {
+                    cell.textContent = newID; // Update the cell's content
+                    break; // Stop searching after the first match
+                }
+            }
+        }
+    });
+    
+    repopulateComboBoxFromTable("ingredient-unit-table", "data-ingredient-unit", "ingredient-unit-combobox");
+
 }
 
 /*============================================================*/
