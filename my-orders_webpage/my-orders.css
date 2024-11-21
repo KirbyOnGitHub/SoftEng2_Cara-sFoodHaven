@@ -233,10 +233,11 @@ nav ul li a#current-page {
 .verticalmenu-btn {
     position: relative;
     width: 100%;
+    height: auto;
     padding: 10px 15px;
     margin-bottom: 10px;
     background-color: rgb(240, 240, 240);  
-    color: black; 
+    color: white; 
     border: 3px solid transparent;
     border-radius: 5px;
     text-align: left;
@@ -244,25 +245,32 @@ nav ul li a#current-page {
     cursor: pointer;
     transition: background-color 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
     z-index: 15;
-}
-
-.verticalmenu-btn:hover {
-    background-color: rgb(255, 189, 67); 
-    border: 3px solid #ff6600;
-    transform: scale(1.05); 
-}
-
-.verticalmenu-btn.active {
-    background-color: orange; 
-    border: 3px solid orangered;
-    color: #ecf0f1; 
-    transform: scale(1.05); 
-}
-
-.verticalmenu-btn {
     white-space: nowrap; 
     display: flex; 
     align-items: center; 
+}
+
+.verticalmenu-btn:hover {
+    border: 3px solid #ecf0f1; 
+    transform: scale(1.05); 
+}
+
+.verticalmenu-btn:not(.active) {
+    filter: brightness(0.8);
+}
+
+.verticalmenu-btn.active {
+    border: 3px solid #ecf0f1; 
+    transform: scale(1.05); 
+    filter: brightness(1.2);
+}
+
+
+.verticalmenu-btn.active,
+.verticalmenu-btn:hover.active {
+    border: 3px solid #ecf0f1; 
+    transform: scale(1.05); 
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5); /* Subtle glow effect */
 }
 
 .verticalmenu-btn i {
@@ -398,6 +406,8 @@ textarea {
     box-shadow: -2px 0 5px rgba(0, 0, 0, 0.3);
     scrollbar-width: thin;
     scrollbar-color: rgb(173, 104, 104) rgb(139, 52, 52); 
+    scroll-behavior: smooth;
+    behavior: smooth;
 }
 
 /*==============================*/
@@ -536,7 +546,7 @@ form {
     box-sizing: border-box;
 }
 
-.current-date {
+.current-date-time {
     position: absolute;
     top: 100%; 
     left: 0; 
@@ -582,7 +592,7 @@ form {
 .filter-btn {
     padding: 5px 20px;
     color: white;
-    border: none;
+    border: 3px solid transparent;
     border-radius: 5px;
     cursor: pointer;
     font: 1rem;
@@ -590,11 +600,12 @@ form {
 }
 
 .filter-btn:hover {
+    border: 3px solid #ecf0f1; 
     transform: scale(1.2) !important;
 }
 
 .filter-btn:not(.active) {
-    filter: brightness(0.7);
+    filter: brightness(0.8);
 }
 
 .filter-btn .count {
@@ -616,6 +627,7 @@ form {
     background-color: inherit; 
     border: 3px solid #ecf0f1; 
     transform: scale(1.2) !important; 
+    filter: brightness(1.2);
     box-shadow: 0 0 10px rgba(255, 255, 255, 0.5); /* Subtle glow effect */
 }
   
@@ -644,13 +656,17 @@ form {
 
 #order-card-details {
     width: 100%;
-    max-width:fit-content;
+    max-width: fit-content;
     border-collapse: collapse;
-    margin-top: -20px;
+    margin-top: -10px;
+    font-size: 16px !important;
+    background-color: #34495e !important;
 }
 
 #order-card-details td {
-    padding: 5px 20px;
+    text-align: left;
+    padding: 5px 20px !important;
+    border: none;
 }
 
 .order-table {

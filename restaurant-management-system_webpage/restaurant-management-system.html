@@ -179,7 +179,7 @@
             <i class="fas fa-times-circle"></i> Canceled<span class="count" id="count-CANCELED"></span>
           </button>
           <!-- Date Display -->
-          <div id="current-date" class="current-date"></div>
+          <div id="current-date-time" class="current-date-time"></div>
         </div>
 
         <!-- ============================== -->
@@ -1774,6 +1774,25 @@
                 ${orderData.statusText}
               </span>
             </div>
+
+            <table id="order-card-details">
+              ${orderData.orderType ? `
+              <tr>
+                <td>Order Type:</td>
+                <td>${orderData.orderType}</td>
+              </tr>` : ''}
+              ${orderData.orderDateTime ? `
+              <tr>
+                <td>Order Date & Time:</td>
+                <td>${orderData.orderDateTime}</td>
+              </tr>` : ''}
+              ${orderData.addressLine ? `
+              <tr>
+                <td>Address:</td>
+                <td>${orderData.addressLine}</td>
+              </tr>` : ''}
+            </table>
+
             <table class="order-table">
               <tr>
                 <th>Menu Item</th>
@@ -1788,7 +1807,7 @@
               </tr>
               <tr>
                 <td colspan="3" class="discount-label">Discount Code</td>
-                <td>ABC123</td>
+                <td>${orderData.discountCode || 'N/A'}</td>
               </tr>
             </table>
             <div class="action-buttons">
@@ -1813,7 +1832,29 @@
 
           // Update the update button state
           updateUpdateButtonState(newCard); // Check button state when a new card is added
+          rearrangeOrderCards();
         }
+      
+      /*============================================================*/
+
+      // Function to rearrange order cards in descending order by ID
+      function rearrangeOrderCards() {
+          const ordersContainer = document.querySelector('.orders');
+          const orderCards = Array.from(ordersContainer.children); // Get all order cards as an array
+
+          // Sort the order cards by ID in descending order
+          orderCards.sort((a, b) => {
+              const idA = parseInt(a.querySelector('.order-header h2').textContent.match(/\d+/)[0]); // Extract ID from the header
+              const idB = parseInt(b.querySelector('.order-header h2').textContent.match(/\d+/)[0]);
+              return idB - idA; // Sort in descending order
+          });
+
+          // Clear the container and append sorted cards
+          ordersContainer.innerHTML = ''; // Clear existing cards
+          orderCards.forEach(card => ordersContainer.appendChild(card)); // Append sorted cards
+      }
+    
+      /*============================================================*/
 
         function toggleIcon(event) {
           const icons = event.currentTarget.querySelectorAll('.icon');
@@ -2158,33 +2199,45 @@
         }
       
         /*============================================================*/
+
+        // Get the current date and time
+        const currentDateTime = formatDateTime(new Date()); // Formatted current date and time
   
         // Sample order data for each status with menu items
         const pendingOrderData = {
-          id: 1,
+          id: 5,
           status: 'PENDING',
           statusText: 'Pending',
+          orderType: 'DINE IN', 
+          orderDateTime: currentDateTime, 
+          menuItems: [
+            { name: 'Chicken Alfredo', price: 200, quantity: 1 },
+            { name: 'Garlic Bread', price: 50, quantity: 3 }
+          ],
+           discountCode: 'ABC123'
+        };
+
+        const preparingOrderData = {
+          id: 4,
+          status: 'PREPARING',
+          statusText: 'Preparing',
+          orderType: 'DELIVERY', 
+          orderDateTime: currentDateTime, 
+          addressLine: '123 Main St, Springfield, IL',
           menuItems: [
             { name: 'Cheeseburger', price: 150, quantity: 2 },
             { name: 'Sphagetti', price: 220, quantity: 1 },
             { name: 'French Fries', price: 60, quantity: 3 }
-          ]
-        };
-
-        const preparingOrderData = {
-          id: 2,
-          status: 'PREPARING',
-          statusText: 'Preparing',
-          menuItems: [
-            { name: 'Chicken Alfredo', price: 200, quantity: 1 },
-            { name: 'Garlic Bread', price: 50, quantity: 3 }
-          ]
+          ],
+           discountCode: 'ABC123'
         };
 
         const readyForPickupOrderData = {
           id: 3,
           status: 'READY FOR PICKUP',
           statusText: 'Ready for Pickup',
+          orderType: 'DINE IN', 
+          orderDateTime: currentDateTime, 
           menuItems: [
             { name: 'Veggie Pizza', price: 300, quantity: 1 },
             { name: 'Coke', price: 50, quantity: 2 }
@@ -2192,22 +2245,30 @@
         };
 
         const completeOrderData = {
-          id: 4,
+          id: 2,
           status: 'COMPLETE',
           statusText: 'Complete',
+          orderType: 'TAKEOUT', 
+          orderDateTime: currentDateTime, 
           menuItems: [
             { name: 'Pasta Primavera', price: 250, quantity: 1 }
           ]
         };
 
         const canceledOrderData = {
-          id: 5,
+          id: 1,
           status: 'CANCELED',
           statusText: 'Canceled',
+          orderType: 'DELIVERY', 
+          orderDateTime: currentDateTime, 
+          addressLine: '654 Maple St, Springfield, IL',
           menuItems: [
             { name: 'Caesar Salad', price: 120, quantity: 1 }
-          ]
+          ],
+           discountCode: 'ABC123'
         };
+
+        /*============================================================*/
 
         // Example of adding each order card
         addNewOrderCard(pendingOrderData);
@@ -2270,12 +2331,27 @@
 
       /*============================================================*/   
 
-      const currentDateElement = document.getElementById('current-date');
-      const options = { year: 'numeric', month: 'long', day: 'numeric' };
-      const today = new Date().toLocaleDateString(undefined, options);
-      currentDateElement.textContent = `Today's Date: ${today}`;
+      // Function to format the date and time
+      function formatDateTime(date) {
+          const options = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true };
+          return date.toLocaleString('en-US', options); // Format the date and time
+      } 
 
-      /*============================================================*/   
+      const currentDateTimeElement = document.getElementById('current-date-time');
+
+      // Function to update the date and time
+      function updateDateTime() {
+          const currentDateTime = formatDateTime(new Date());
+          currentDateTimeElement.textContent = `Date & Time: ${currentDateTime}`;
+      }
+
+      // Initial call to set the date and time immediately
+      updateDateTime();
+
+      // Update the date and time every second
+      setInterval(updateDateTime, 1000);
+
+      /*============================================================*/ 
 
     </script>
       

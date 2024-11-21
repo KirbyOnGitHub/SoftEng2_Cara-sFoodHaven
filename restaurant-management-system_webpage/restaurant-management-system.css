@@ -125,7 +125,7 @@ nav ul li {
     border: 3px solid #16a085;
     min-width: 200px;
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-    z-index: 1;
+    z-index: 50;
     right: 0;
     border-radius: 8px;
 }
@@ -528,7 +528,7 @@ table th, table td {
     border: 1px solid #222f3c;
 }
 
-table tbody tr:nth-child(even) {
+table:not(#order-card-details) tbody tr:nth-child(even) {
     background-color: #2f4154;
 }
 
@@ -536,7 +536,7 @@ table tbody tr {
     transition: background-color 0.3s ease, color 0.3s ease; /* Add transition for smooth animation */
 }
 
-table tbody tr:hover:not(#stock-in-n-out-table tr):not(.order-table tr) {
+table tbody tr:hover:not(#ingredient-list-table tr):not(#stock-in-n-out-table tr):not(.order-table tr):not(#order-card-details tr) {
     /* background-color: #14997e; */
     background-color: #2980b9 !important; /* Active button color */
     border-color: #2980b9;
@@ -869,10 +869,12 @@ td.status-cell {
     padding: 15px;
     border: 3px solid #ccc; 
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.8);
-    z-index: 30;
+    z-index: 10;
+    box-sizing: border-box;
+    overflow: hidden;
 }
 
-.current-date {
+.current-date-time {
     position: absolute;
     top: 100%; 
     left: 0; 
@@ -880,6 +882,7 @@ td.status-cell {
     color: #666;
     margin-top: 5px; 
     background-color: #f9f9f9;
+    border: 3px solid black;
     padding: 5px 10px; 
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.1); 
 }
@@ -917,7 +920,7 @@ td.status-cell {
 .filter-btn {
     padding: 5px 20px;
     color: white;
-    border: none;
+    border: 3px solid transparent;
     border-radius: 5px;
     cursor: pointer;
     font: 1rem;
@@ -925,11 +928,12 @@ td.status-cell {
 }
 
 .filter-btn:hover {
+    border: 3px solid #ecf0f1; 
     transform: scale(1.2) !important;
 }
 
 .filter-btn:not(.active) {
-    filter: brightness(0.5);
+    filter: brightness(0.8);
 }
 
 .filter-btn .count {
@@ -951,6 +955,7 @@ td.status-cell {
     background-color: inherit; 
     border: 3px solid #ecf0f1; 
     transform: scale(1.2) !important; 
+    filter: brightness(1.2);
     box-shadow: 0 0 10px rgba(255, 255, 255, 0.5); /* Subtle glow effect */
 }
   
@@ -977,24 +982,41 @@ td.status-cell {
     margin-bottom: 15px;
 }
 
+#order-card-details {
+    width: 100%;
+    max-width: fit-content;
+    border-collapse: collapse;
+    margin-top: -10px;
+    font-size: 16px !important;
+    background-color: #34495e !important;
+}
+
+#order-card-details td {
+    text-align: left;
+    padding: 5px 20px !important;
+    border: none;
+}
+
 .order-table {
   width: 100%;
   border-collapse: collapse;
   margin: 30px 0;
   font-size: 0.9rem; 
+  background-color: #dfa14a !important;
+  color: black;
 }
 
 .order-table th,
 .order-table td {
   padding: 8px;
   text-align: left;
+  border: 1.5px solid #9b530a !important;
 }
 
 .order-table th {
-    background-color: #4bb6a1;
-    /* background-color: #18a68a; */
-    color: #2c3e50;
+    background-color: #dc7a18 !important;
     text-align: center;
+    font-weight: bold;
 }
 
 .order-table td:nth-child(2),
@@ -1005,10 +1027,14 @@ td.status-cell {
   text-align: right;
 }
 
-.order-table tr:nth-last-child(2),
-.order-table tr:last-child {
-    background-color: #bebebe;
-    color:#17293a;
+.order-table tbody tr:nth-child(even) {
+    background-color: #d9973a !important;
+}
+
+/* More specific selector for the last two rows */
+.order-table tbody tr:nth-last-child(2):nth-child(n),
+.order-table tbody tr:last-child:nth-child(n) {
+    background-color: #dc7a18 !important; /* This will take precedence */
 }
 
 .total-label {

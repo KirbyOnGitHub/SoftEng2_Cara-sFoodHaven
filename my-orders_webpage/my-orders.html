@@ -54,16 +54,7 @@
 
     <div class="verticalmenu_container">
       <div class="verticalmenu-section">
-        <label class="verticalmenu-label">???</label>
-        <button class="verticalmenu-btn" id="1">
-          <i class="fas fa-utensils"></i> ???
-        </button>
-        <button class="verticalmenu-btn" id="2">
-          <i class="fas fa-utensils"></i> ???
-        </button>
-        <button class="verticalmenu-btn" id="3">
-          <i class="fas fa-utensils"></i> ???
-        </button>
+        <label class="verticalmenu-label"> TODAY'S ORDERS </label>
       </div>
     </div>
         
@@ -212,7 +203,7 @@
             <i class="fas fa-times-circle"></i> Canceled<span class="count" id="count-CANCELED"></span>
           </button>
           <!-- Date Display -->
-          <div id="current-date" class="current-date"></div>
+          <div id="current-date-time" class="current-date-time"></div>
         </div>
 
         <!-- ============================== -->
@@ -245,48 +236,6 @@
       /*============================================================*/
 
       document.addEventListener("DOMContentLoaded", function() {
-
-        // Add event listeners to vertical menu buttons
-        const verticalMenuButtons = document.querySelectorAll(".verticalmenu-btn");
-        const cards = document.querySelectorAll(".card");
-        const categoryHeader = document.getElementById("menu-category-header");
-
-        verticalMenuButtons.forEach(button => {
-            button.addEventListener("click", function () {
-                const targetId = button.id; // Get the clicked button's id
-
-                // Extract text content before the span
-                let textContentBeforeSpan = '';
-                button.childNodes.forEach(node => {
-                    if (node.nodeType === Node.TEXT_NODE) {
-                        textContentBeforeSpan += node.textContent.trim();
-                    } else if (node.nodeName === 'SPAN') {
-                        return; // Stop if a span is encountered
-                    }
-                });
-
-                // Set the category header text to the button's text content before the span
-                categoryHeader.textContent = textContentBeforeSpan;
-
-                // Toggle 'active' class for the buttons
-                verticalMenuButtons.forEach(btn => btn.classList.remove("active"));
-                button.classList.add("active");
-
-                // Hide all cards and show only the ones with the matching class
-                cards.forEach(card => {
-                    if (card.classList.contains(targetId)) {
-                        card.style.display = "block"; // Show matching cards
-                    } else {
-                        card.style.display = "none"; // Hide non-matching cards
-                    }
-                });
-            });
-        });
-
-        // Automatically click the first button on page load
-        window.addEventListener('DOMContentLoaded', () => {
-            verticalMenuButtons[0].click(); // Click the first button
-        });
         
         /*==============================*/
 
@@ -344,6 +293,23 @@
           const ordersContainer = document.querySelector('.orders');
           newCard.className = 'order-card';
           newCard.setAttribute('data-status', orderData.status);
+          newCard.id = `order-card-id-${orderData.id}`; // Set the ID of the new card
+
+          // Add button to vertical menu
+          const verticalMenuContainer = document.querySelector('.verticalmenu-section');
+          const orderButton = document.createElement('button');
+          orderButton.className = 'verticalmenu-btn';
+          orderButton.id = orderData.id; // Set the button ID to the order ID
+          
+          // Set inner HTML for the button with icon and text
+          orderButton.innerHTML = `
+            ${getStatusIcon(orderData.status)} Order ID #${orderData.id}
+          `;
+          orderButton.style.backgroundColor = getStatusColor(orderData.status); // Set background color based on status
+          verticalMenuContainer.appendChild(orderButton); // Append the button to the vertical menu
+
+          // Rearrange buttons in descending order
+          rearrangeOrderButtons();
 
           // Sample menu items for the order with clickable icon
           const menuItems = orderData.menuItems.map(item => `
@@ -378,23 +344,25 @@
                 ${orderData.statusText}
               </span>
             </div>
+
             <table id="order-card-details">
               ${orderData.orderType ? `
               <tr>
-                <td style="text-align: left;">Order Type:</td>
-                <td style="text-align: left;">${orderData.orderType}</td>
+                <td>Order Type:</td>
+                <td>${orderData.orderType}</td>
               </tr>` : ''}
               ${orderData.orderDateTime ? `
               <tr>
-                <td style="text-align: left;">Order Date & Time:</td>
-                <td style="text-align: left;">${orderData.orderDateTime}</td>
+                <td>Order Date & Time:</td>
+                <td>${orderData.orderDateTime}</td>
               </tr>` : ''}
               ${orderData.addressLine ? `
               <tr>
-                <td style="text-align: left;">Address:</td>
-                <td style="text-align: left;">${orderData.addressLine}</td>
+                <td>Address:</td>
+                <td>${orderData.addressLine}</td>
               </tr>` : ''}
             </table>
+
             <table class="order-table">
               <tr>
                 <th>Menu Item</th>
@@ -442,6 +410,65 @@
 
           ordersContainer.appendChild(newCard);
           rearrangeOrderCards();
+          
+          // Add event listeners to vertical menu buttons
+          const verticalMenuButtons = document.querySelectorAll(".verticalmenu-btn");
+
+          verticalMenuButtons.forEach(button => {
+            button.addEventListener("click", function () {
+              const targetId = button.id; // Get the clicked button's id
+
+              // Scroll to the order card with the corresponding ID
+              const orderCard = document.getElementById(`order-card-id-${targetId}`);
+              if (orderCard) {
+                // Get the data-status of the found card
+                const cardStatus = orderCard.getAttribute('data-status');
+
+                // Simulate a click on the corresponding filter button
+                const filterButton = document.querySelector(`.filter-btn[data-status="${cardStatus}"]`);
+                if (filterButton) {
+                    filterButton.click(); // Simulate click on the filter button
+                }
+
+                // Select the container
+                const container = document.querySelector('.container-full');
+
+                // Calculate the position of the order card relative to the container
+                const cardPosition = orderCard.getBoundingClientRect().top + container.scrollTop;
+
+                // Calculate the target position to scroll to, ensuring the top of the card is 240px from the top of the viewport
+                const targetPosition = cardPosition - 240;
+
+                // Scroll to the adjusted position within the container
+                container.scrollTo({ top: targetPosition, behavior: 'smooth' });
+              }
+
+              // Toggle 'active' class for the buttons
+              verticalMenuButtons.forEach(btn => btn.classList.remove("active"));
+              button.classList.add("active");
+            });
+          });
+        }
+      
+        /*============================================================*/
+
+        // Function to rearrange buttons in descending order by ID
+        function rearrangeOrderButtons() {
+            const verticalMenuContainer = document.querySelector('.verticalmenu-section');
+            const buttons = Array.from(verticalMenuContainer.querySelectorAll('.verticalmenu-btn')); // Get all buttons as an array
+
+            // Sort the buttons by ID in descending order
+            buttons.sort((a, b) => {
+                const idA = parseInt(a.id); // Get ID from button
+                const idB = parseInt(b.id);
+                return idB - idA; // Sort in descending order
+            });
+
+            // Remove all buttons from the container
+            buttons.forEach(button => verticalMenuContainer.removeChild(button)); // Remove each button
+
+            // Append sorted buttons back to the vertical menu
+            buttons.forEach(button => verticalMenuContainer.appendChild(button)); // Append sorted buttons
         }
       
         /*============================================================*/
@@ -461,6 +488,46 @@
             // Clear the container and append sorted cards
             ordersContainer.innerHTML = ''; // Clear existing cards
             orderCards.forEach(card => ordersContainer.appendChild(card)); // Append sorted cards
+        }
+      
+        /*============================================================*/
+
+        // Function to get the icon HTML based on order status
+        function getStatusIcon(status) {
+          switch (status) {
+            case 'PENDING':
+              return '<i class="fas fa-hourglass-start"></i>'; // Icon for pending
+            case 'PREPARING':
+              return '<i class="fas fa-fire"></i>'; // Icon for preparing
+            case 'READY FOR PICKUP':
+              return '<i class="fas fa-concierge-bell"></i>'; // Icon for ready for pickup
+            case 'COMPLETE':
+              return '<i class="fas fa-check-circle"></i>'; // Icon for complete
+            case 'CANCELED':
+              return '<i class="fas fa-times-circle"></i>'; // Icon for canceled
+            default:
+              return '<i class="fas fa-question"></i>'; // Default icon
+          }
+        }
+      
+        /*============================================================*/
+
+        // Function to get the background color based on order status
+        function getStatusColor(status) {
+          switch (status) {
+            case 'PENDING':
+              return 'orange'; 
+            case 'PREPARING':
+              return 'orangered'; 
+            case 'READY FOR PICKUP':
+              return 'blue'; 
+            case 'COMPLETE':
+              return 'green'; 
+            case 'CANCELED':
+              return 'red'; 
+            default:
+              return 'gray'; // Default color
+          }
         }
       
         /*============================================================*/
@@ -514,14 +581,94 @@
         }
       
         /*============================================================*/
-  
+
+        // Get the current date and time
+        const currentDateTime = formatDateTime(new Date()); // Formatted current date and time
+
         // Sample order data for each status with menu items
-        const pendingOrderData = {
-          id: 1,
+        const pendingOrderData6 = {
+          id: 10,
           status: 'PENDING',
           statusText: 'Pending',
           orderType: 'DINE IN', 
-          orderDateTime: '2023-10-01 15:00', 
+          orderDateTime: currentDateTime, 
+          menuItems: [
+            { name: 'Chicken Alfredo', price: 200, quantity: 1 },
+            { name: 'Garlic Bread', price: 50, quantity: 3 }
+          ],
+           discountCode: 'ABC123'
+        };
+
+        const pendingOrderData5 = {
+          id: 9,
+          status: 'PENDING',
+          statusText: 'Pending',
+          orderType: 'DINE IN', 
+          orderDateTime: currentDateTime, 
+          menuItems: [
+            { name: 'Chicken Alfredo', price: 200, quantity: 1 },
+            { name: 'Garlic Bread', price: 50, quantity: 3 }
+          ],
+           discountCode: 'ABC123'
+        };
+
+        const pendingOrderData4 = {
+          id: 8,
+          status: 'PENDING',
+          statusText: 'Pending',
+          orderType: 'DINE IN', 
+          orderDateTime: currentDateTime, 
+          menuItems: [
+            { name: 'Chicken Alfredo', price: 200, quantity: 1 },
+            { name: 'Garlic Bread', price: 50, quantity: 3 },
+            { name: 'Chicken Alfredo', price: 200, quantity: 1 },
+            { name: 'Garlic Bread', price: 50, quantity: 3 },
+            { name: 'Chicken Alfredo', price: 200, quantity: 1 },
+            { name: 'Garlic Bread', price: 50, quantity: 3 },
+            { name: 'Chicken Alfredo', price: 200, quantity: 1 },
+            { name: 'Garlic Bread', price: 50, quantity: 3 },
+            { name: 'Chicken Alfredo', price: 200, quantity: 1 },
+            { name: 'Garlic Bread', price: 50, quantity: 3 },
+            { name: 'Chicken Alfredo', price: 200, quantity: 1 },
+            { name: 'Garlic Bread', price: 50, quantity: 3 },
+            { name: 'Chicken Alfredo', price: 200, quantity: 1 },
+            { name: 'Garlic Bread', price: 50, quantity: 3 }
+          ],
+           discountCode: 'ABC123'
+        };
+
+        const pendingOrderData3 = {
+          id: 7,
+          status: 'PENDING',
+          statusText: 'Pending',
+          orderType: 'DINE IN', 
+          orderDateTime: currentDateTime, 
+          menuItems: [
+            { name: 'Chicken Alfredo', price: 200, quantity: 1 },
+            { name: 'Garlic Bread', price: 50, quantity: 3 }
+          ],
+           discountCode: 'ABC123'
+        };
+
+        const pendingOrderData2 = {
+          id: 6,
+          status: 'PENDING',
+          statusText: 'Pending',
+          orderType: 'DINE IN', 
+          orderDateTime: currentDateTime, 
+          menuItems: [
+            { name: 'Chicken Alfredo', price: 200, quantity: 1 },
+            { name: 'Garlic Bread', price: 50, quantity: 3 }
+          ],
+           discountCode: 'ABC123'
+        };
+
+        const pendingOrderData = {
+          id: 5,
+          status: 'PENDING',
+          statusText: 'Pending',
+          orderType: 'DINE IN', 
+          orderDateTime: currentDateTime, 
           menuItems: [
             { name: 'Chicken Alfredo', price: 200, quantity: 1 },
             { name: 'Garlic Bread', price: 50, quantity: 3 }
@@ -530,11 +677,11 @@
         };
 
         const preparingOrderData = {
-          id: 2,
+          id: 4,
           status: 'PREPARING',
           statusText: 'Preparing',
           orderType: 'DELIVERY', 
-          orderDateTime: '2023-10-01 14:30', 
+          orderDateTime: currentDateTime, 
           addressLine: '123 Main St, Springfield, IL',
           menuItems: [
             { name: 'Cheeseburger', price: 150, quantity: 2 },
@@ -544,27 +691,12 @@
            discountCode: 'ABC123'
         };
 
-        const preparingOrderData2 = {
-          id: 6,
-          status: 'PREPARING',
-          statusText: 'Preparing',
-          orderType: 'DELIVERY', 
-          orderDateTime: '2023-10-01 14:30', 
-          addressLine: '123 Main St, Springfield, IL',
-          menuItems: [
-            { name: 'Cheeseburger', price: 150, quantity: 2 },
-            { name: 'Sphagetti', price: 220, quantity: 1 },
-            { name: 'French Fries', price: 60, quantity: 3 }
-          ],
-          discountCode: 'ABC123'
-        };
-
         const readyForPickupOrderData = {
           id: 3,
           status: 'READY FOR PICKUP',
           statusText: 'Ready for Pickup',
           orderType: 'DINE IN', 
-          orderDateTime: '2023-10-01 15:30', 
+          orderDateTime: currentDateTime, 
           menuItems: [
             { name: 'Veggie Pizza', price: 300, quantity: 1 },
             { name: 'Coke', price: 50, quantity: 2 }
@@ -572,22 +704,22 @@
         };
 
         const completeOrderData = {
-          id: 4,
+          id: 2,
           status: 'COMPLETE',
           statusText: 'Complete',
           orderType: 'TAKEOUT', 
-          orderDateTime: '2023-10-01 16:00', 
+          orderDateTime: currentDateTime, 
           menuItems: [
             { name: 'Pasta Primavera', price: 250, quantity: 1 }
           ]
         };
 
         const canceledOrderData = {
-          id: 5,
+          id: 1,
           status: 'CANCELED',
           statusText: 'Canceled',
           orderType: 'DELIVERY', 
-          orderDateTime: '2023-10-01 16:30', 
+          orderDateTime: currentDateTime, 
           addressLine: '654 Maple St, Springfield, IL',
           menuItems: [
             { name: 'Caesar Salad', price: 120, quantity: 1 }
@@ -599,6 +731,11 @@
 
         // Example of adding each order card
         addNewOrderCard(pendingOrderData);
+        // addNewOrderCard(pendingOrderData2);
+        // addNewOrderCard(pendingOrderData3);
+        // addNewOrderCard(pendingOrderData4);
+        // addNewOrderCard(pendingOrderData5);
+        // addNewOrderCard(pendingOrderData6);
         addNewOrderCard(preparingOrderData);
         addNewOrderCard(readyForPickupOrderData);
         addNewOrderCard(completeOrderData);
@@ -656,14 +793,29 @@
         document.querySelector('.filter-btn[data-status="ALL"]').click();
       });
 
-      /*============================================================*/   
+      /*============================================================*/  
 
-      const currentDateElement = document.getElementById('current-date');
-      const options = { year: 'numeric', month: 'long', day: 'numeric' };
-      const today = new Date().toLocaleDateString(undefined, options);
-      currentDateElement.textContent = `Today's Date: ${today}`;
+      // Function to format the date and time
+      function formatDateTime(date) {
+          const options = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true };
+          return date.toLocaleString('en-US', options); // Format the date and time
+      } 
 
-      /*============================================================*/   
+      const currentDateTimeElement = document.getElementById('current-date-time');
+
+      // Function to update the date and time
+      function updateDateTime() {
+          const currentDateTime = formatDateTime(new Date());
+          currentDateTimeElement.textContent = `Date & Time: ${currentDateTime}`;
+      }
+
+      // Initial call to set the date and time immediately
+      updateDateTime();
+
+      // Update the date and time every second
+      setInterval(updateDateTime, 1000);
+
+      /*============================================================*/ 
 
     </script>
       
