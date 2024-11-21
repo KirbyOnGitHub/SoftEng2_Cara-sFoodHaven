@@ -367,229 +367,6 @@ textarea {
     box-sizing: border-box;
 }
 
-.container-full {
-    width: 100%;
-    height: 100%; 
-    box-sizing: border-box;
-    text-align: center;
-    padding-top: 30px;
-    overflow-y: auto;
-    /* background-color: #232d35;  */
-    color: #ecf0f1;
-    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.3);
-    scrollbar-width: thin;
-    scrollbar-color: rgb(173, 104, 104) rgb(139, 52, 52); 
-}
-
-/*==============================*/
-
-.header_wrapper {
-    position: relative;
-    width: 90%;
-    height: 100px;
-    background-color: rgb(155, 28, 28);
-    z-index: 1;
-    border: 5px solid #ffffff;
-    box-sizing: border-box;
-}
-  
-.header_container {
-    width: 100%;
-    height: 100%;
-    padding: 20px 0;
-    overflow: hidden;
-    box-sizing: border-box;
-    display: flex;
-    justify-content: center; 
-    align-items: center;
-    text-align: center; 
-    font-size: 32px;
-}
-
-.card-container {
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
-    width: 90%;
-    height: 100%;
-    overflow: auto; 
-    padding-top: 75px;
-    scroll-behavior: smooth; 
-    box-sizing: border-box;
-    scrollbar-width: thin;
-    scrollbar-color: rgb(173, 104, 104) rgb(139, 52, 52); 
-}   
-
-.card {
-    width: 142.5px;
-    position: relative;
-    height: 187.5px;
-    background: #f7f7f7;
-    border: 3px solid rgb(80, 80, 80);
-    box-shadow: 12px 12px #b4b4b4;
-    color: rgb(63, 63, 63);
-    margin: 7.5px 26px;
-    margin-bottom: 75px;
-    padding: 15px 20px;
-    display: flex;
-    flex-direction: column;
-    transition: 0.3s ease-in-out;
-    border-radius: 6px;
-}
-
-.card p{
-    padding: 5px; 
-    font-size: 15px;
-    position: absolute;
-    bottom: 50px;    
-}
-
-.card h1 {
-    font-size: 18px;
-    text-align: center;
-    margin-top: 45%;
-    line-height: 110%;
-}
-
-.card-img-container {
-    position: absolute;
-    width: 97.5px;
-    height: 97.5px;
-    top: 5%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2); 
-    text-align: center;
-}
-
-.card-img-container img{
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border: 3px solid rgb(80, 80, 80);
-    border-radius: 8px;
-    transition: 0.3s ease-in-out;
-}   
-
-.card-img-container:hover img{
-    transform: scale(1.1);
-    cursor: pointer;
-}
-
-.card-img-container img {
-  width: 100%; 
-  height: auto;
-  cursor: pointer; 
-}
-
-.card-img-container::after {
-  content: "Click to View Description.";
-  position: absolute;
-  bottom: -10px;
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: rgba(0, 0, 0, 0.75);
-  color: white;
-  padding: 5px 10px;
-  border-radius: 5px;
-  font-size: 12px;
-  white-space: nowrap;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s ease-in-out;
-  z-index: 2;
-}
-
-.card-img-container:hover::after {
-  opacity: 1;
-}
-
-.card-button {
-    position: absolute;
-    bottom: 10px;
-    left: 15px;
-    right: 15px;
-    padding: 7.5px;
-    font-size: 15px;
-    background-color: #e66e12; 
-    color: #ffffff; 
-    border: 2px solid #9d4d10; 
-    border-radius: 7.5px; 
-    cursor: pointer; 
-    font-family: Arial, sans-serif; 
-}
-
-.card-button:hover {
-    transform: scale(1.1); 
-}
-
-/*==============================*/
-
-.quantity-controls {
-    position: absolute;
-    bottom: 10px; /* Places the quantity controls 10px from the bottom */
-    left: 50%; /* Centers it horizontally */
-    transform: translateX(-50%); /* Adjusts for perfect centering */
-    display: flex;               
-    align-items: center;       
-    gap: 10px;                
-    width: 65%;
-}
-
-.quantity-controls > * {
-    flex: 1;                      
-    text-align: center;            
-}
-
-.quantity-button {
-    padding: 1px;         
-    border: none;               
-    color: black;             
-    border-radius: 5px;      
-    cursor: pointer;
-    box-sizing: border-box;
-    background-color: #dddddd;
-    border: 2px solid rgb(80, 80, 80);
-}
-
-#decrementQty {
-    background-color: #d74949;
-    /* color: #d74949; */
-    border: 2px solid #953939;
-}
-
-#decrementQty:hover {
-    background-color: #d16464;
-    transform: scale(1.1); 
-}
-
-#incrementQty {
-    background-color: #38a33c;
-    /* color: #38a33c; */
-    border: 2px solid #217223;
-}
-
-#incrementQty:hover {
-    background-color: #5ab65d;
-    transform: scale(1.1); 
-} 
-
-.quantity-input {
-    width: 35px;               
-    text-align: center;         
-    border: 2px solid rgb(80, 80, 80);     
-    border-radius: 5px;        
-    padding: 5px;          
-    color: black;     
-    font-weight: bolder;
-    box-sizing: border-box;
-    transition: 0.3s ease-in-out;
-}
-
-/*==============================*/
-
 .container-right-side {
     display: flex;
     flex-direction: column;
@@ -609,122 +386,21 @@ textarea {
     scrollbar-color: rgb(173, 104, 104) rgb(139, 52, 52); 
 }
 
-/* Header styling */
-.right-side-header {
-    font-size: 28px;
-    font-weight: bold;
-    margin: 30px 0;
-}
-
-/* Table styling */
-.order-summary-table {
+.container-full {
     width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 20px;
-    background-color: #dfa14a;
-    font-size: 14px;
-    color: black;
-}
-
-.order-summary-table th,
-.order-summary-table td {
-    padding: 12px;
+    height: 100%; 
+    box-sizing: border-box;
     text-align: center;
-    border: 1.5px solid #9b530a;
-}
-
-.order-summary-table th {
-    background-color: #dc7a18;
-    font-weight: bold;
-}
-
-.order-summary-table td {
-    text-align: left;
-}
-
-.order-summary-table tbody tr:nth-child(even) {
-    background-color: #d9973a;
-}
-
-.order-summary-table td:nth-child(2),
-.order-summary-table td:nth-child(4) {
-  white-space: nowrap;  
-  overflow: hidden;    
-  text-overflow: ellipsis;
-  text-align: right;
-}
-
-
-.order-summary-table th:nth-child(1),
-.order-summary-table td:nth-child(1) {
-    width: 30%; /* Menu Item */
-}
-
-.order-summary-table th:nth-child(2),
-.order-summary-table td:nth-child(2) {
-    width: 20%; /* Price */
-}
-
-.order-summary-table th:nth-child(3),
-.order-summary-table td:nth-child(3) {
-    width: 5%; /* Quantity */
-}
-
-.order-summary-table th:nth-child(4),
-.order-summary-table td:nth-child(4) {
-    width: 30%; /* Subtotal */
-}
-
-.empty-message-row td {
-    text-align: center;
-    font-style: italic;
-    color: black;
-    padding: 30px 0;
-}
-
-/* Total and Discount row styling */
-.total-row, .discount-row {
-    background-color: #dc7a18 !important;
-    font-weight: bold;
-}
-
-.total-label, .discount-label {
-    text-align: right !important;
-    padding-right: 10px;
-}
-
-/* Input styling for discount code */
-.discount-row input {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-}
-
-/* Confirm Order button styling */
-.confirm-order-button {
-    display: none;
-    padding: 10px 20px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-}
-
-.confirm-order-button:hover {
-    background-color: #45a049;
+    padding-top: 30px;
+    overflow-y: auto;
+    /* background-color: #232d35;  */
+    color: #ecf0f1;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.3);
+    scrollbar-width: thin;
+    scrollbar-color: rgb(173, 104, 104) rgb(139, 52, 52); 
 }
 
 /*==============================*/
-
-#confirm-order-header {
-    text-align: center; /* Center the text */
-    font-size: 24px; /* Larger font size for emphasis */
-    margin-bottom: 20px; /* Space below the header */
-    color: #333; /* Darker color for contrast */
-}
 
 .modal {
     display: none;
@@ -768,34 +444,6 @@ form {
     scrollbar-width: thin;
 }
 
-.wire-transfer-options {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 10px;
-}
-
-.wire-transfer-btn {
-    color: black;
-    background-color: #f0f0f0;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    padding: 10px;
-    cursor: pointer;
-    flex: 1;
-    margin: 0 5px;
-    text-align: center;
-    font-size: 14px;
-    transition: background-color 0.3s;
-}
-
-.wire-transfer-btn:hover {
-    background-color: #e0e0e0;
-}
-
-.wire-transfer-btn:active {
-    background-color: #d0d0d0;
-}
-
 .form-group {
     margin-bottom: 30px;
 }
@@ -829,22 +477,6 @@ form {
 .form-group select:focus {
     border-color: #007bff;
     outline: none;
-}
-
-#confirm-order-btn {
-    background-color: #007bff;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
-    width: 100%; 
-    margin-top: 10px;
-}
-
-#confirm-order-btn:hover {
-    background-color: #0056b3;
 }
 
 /*==============================*/

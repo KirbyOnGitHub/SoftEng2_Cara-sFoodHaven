@@ -379,14 +379,21 @@
               </span>
             </div>
             <table style="width: 50%; border-collapse: collapse;">
+              ${orderData.orderType ? `
+              <tr>
+                <td style="text-align: left;">Order Type:</td>
+                <td style="text-align: left;">${orderData.orderType}</td>
+              </tr>` : ''}
+              ${orderData.orderDateTime ? `
               <tr>
                 <td style="text-align: left;">Order Date & Time:</td>
                 <td style="text-align: left;">${orderData.orderDateTime}</td>
-              </tr>
+              </tr>` : ''}
+              ${orderData.addressLine ? `
               <tr>
                 <td style="text-align: left;">Address:</td>
                 <td style="text-align: left;">${orderData.addressLine}</td>
-              </tr>
+              </tr>` : ''}
             </table>
             <table class="order-table">
               <tr>
@@ -402,7 +409,7 @@
               </tr>
               <tr>
                 <td colspan="3" class="discount-label">Discount Code</td>
-                <td>ABC123</td>
+                <td>${orderData.discountCode || 'N/A'}</td>
               </tr>
             </table>
           `;
@@ -491,33 +498,36 @@
           id: 1,
           status: 'PENDING',
           statusText: 'Pending',
+          orderType: 'DINE IN', 
           orderDateTime: '2023-10-01 15:00', 
-          addressLine: '456 Elm St, Springfield, IL',
           menuItems: [
             { name: 'Chicken Alfredo', price: 200, quantity: 1 },
             { name: 'Garlic Bread', price: 50, quantity: 3 }
-          ]
+          ],
+           discountCode: 'ABC123'
         };
 
         const preparingOrderData = {
           id: 2,
           status: 'PREPARING',
           statusText: 'Preparing',
+          orderType: 'DELIVERY', 
           orderDateTime: '2023-10-01 14:30', 
           addressLine: '123 Main St, Springfield, IL',
           menuItems: [
             { name: 'Cheeseburger', price: 150, quantity: 2 },
             { name: 'Sphagetti', price: 220, quantity: 1 },
             { name: 'French Fries', price: 60, quantity: 3 }
-          ]
+          ],
+           discountCode: 'ABC123'
         };
 
         const readyForPickupOrderData = {
           id: 3,
           status: 'READY FOR PICKUP',
           statusText: 'Ready for Pickup',
+          orderType: 'DINE IN', 
           orderDateTime: '2023-10-01 15:30', 
-          addressLine: '789 Oak St, Springfield, IL',
           menuItems: [
             { name: 'Veggie Pizza', price: 300, quantity: 1 },
             { name: 'Coke', price: 50, quantity: 2 }
@@ -528,8 +538,8 @@
           id: 4,
           status: 'COMPLETE',
           statusText: 'Complete',
+          orderType: 'TAKEOUT', 
           orderDateTime: '2023-10-01 16:00', 
-          addressLine: '321 Pine St, Springfield, IL',
           menuItems: [
             { name: 'Pasta Primavera', price: 250, quantity: 1 }
           ]
@@ -539,11 +549,13 @@
           id: 5,
           status: 'CANCELED',
           statusText: 'Canceled',
+          orderType: 'DELIVERY', 
           orderDateTime: '2023-10-01 16:30', 
           addressLine: '654 Maple St, Springfield, IL',
           menuItems: [
             { name: 'Caesar Salad', price: 120, quantity: 1 }
-          ]
+          ],
+           discountCode: 'ABC123'
         };
 
         /*============================================================*/
