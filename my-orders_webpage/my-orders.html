@@ -378,7 +378,7 @@
                 ${orderData.statusText}
               </span>
             </div>
-            <table style="width: 50%; border-collapse: collapse;">
+            <table id="order-card-details">
               ${orderData.orderType ? `
               <tr>
                 <td style="text-align: left;">Order Type:</td>
@@ -441,7 +441,29 @@
           }
 
           ordersContainer.appendChild(newCard);
+          rearrangeOrderCards();
         }
+      
+        /*============================================================*/
+
+        // Function to rearrange order cards in descending order by ID
+        function rearrangeOrderCards() {
+            const ordersContainer = document.querySelector('.orders');
+            const orderCards = Array.from(ordersContainer.children); // Get all order cards as an array
+
+            // Sort the order cards by ID in descending order
+            orderCards.sort((a, b) => {
+                const idA = parseInt(a.querySelector('.order-header h2').textContent.match(/\d+/)[0]); // Extract ID from the header
+                const idB = parseInt(b.querySelector('.order-header h2').textContent.match(/\d+/)[0]);
+                return idB - idA; // Sort in descending order
+            });
+
+            // Clear the container and append sorted cards
+            ordersContainer.innerHTML = ''; // Clear existing cards
+            orderCards.forEach(card => ordersContainer.appendChild(card)); // Append sorted cards
+        }
+      
+        /*============================================================*/
 
         // Function to get the class corresponding to the next status
         function getButtonClassForStatus(status) {
@@ -520,6 +542,21 @@
             { name: 'French Fries', price: 60, quantity: 3 }
           ],
            discountCode: 'ABC123'
+        };
+
+        const preparingOrderData2 = {
+          id: 6,
+          status: 'PREPARING',
+          statusText: 'Preparing',
+          orderType: 'DELIVERY', 
+          orderDateTime: '2023-10-01 14:30', 
+          addressLine: '123 Main St, Springfield, IL',
+          menuItems: [
+            { name: 'Cheeseburger', price: 150, quantity: 2 },
+            { name: 'Sphagetti', price: 220, quantity: 1 },
+            { name: 'French Fries', price: 60, quantity: 3 }
+          ],
+          discountCode: 'ABC123'
         };
 
         const readyForPickupOrderData = {

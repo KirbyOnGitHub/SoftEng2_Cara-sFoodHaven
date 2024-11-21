@@ -594,7 +594,7 @@ form {
 }
 
 .filter-btn:not(.active) {
-    filter: brightness(0.5);
+    filter: brightness(0.7);
 }
 
 .filter-btn .count {
@@ -640,6 +640,17 @@ form {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 15px;
+}
+
+#order-card-details {
+    width: 100%;
+    max-width:fit-content;
+    border-collapse: collapse;
+    margin-top: -20px;
+}
+
+#order-card-details td {
+    padding: 5px 20px;
 }
 
 .order-table {
