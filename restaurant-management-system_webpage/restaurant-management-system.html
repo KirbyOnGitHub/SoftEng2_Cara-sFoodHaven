@@ -1776,15 +1776,20 @@
             </div>
 
             <table id="order-card-details">
+              ${orderData.orderDateTime ? `
+              <tr>
+                <td>Order Date & Time:</td>
+                <td>${orderData.orderDateTime}</td>
+              </tr>` : ''}
               ${orderData.orderType ? `
               <tr>
                 <td>Order Type:</td>
                 <td>${orderData.orderType}</td>
               </tr>` : ''}
-              ${orderData.orderDateTime ? `
+              ${orderData.orderTableNum ? `
               <tr>
-                <td>Order Date & Time:</td>
-                <td>${orderData.orderDateTime}</td>
+                <td>Table Number:</td>
+                <td>${orderData.orderTableNum}</td>
               </tr>` : ''}
               ${orderData.addressLine ? `
               <tr>
@@ -2202,14 +2207,92 @@
 
         // Get the current date and time
         const currentDateTime = formatDateTime(new Date()); // Formatted current date and time
-  
+
         // Sample order data for each status with menu items
+        const pendingOrderData6 = {
+          id: 10,
+          status: 'PENDING',
+          statusText: 'Pending',
+          orderDateTime: currentDateTime, 
+          orderType: 'DINE IN', 
+          menuItems: [
+            { name: 'Chicken Alfredo', price: 200, quantity: 1 },
+            { name: 'Garlic Bread', price: 50, quantity: 3 }
+          ],
+           discountCode: 'ABC123'
+        };
+
+        const pendingOrderData5 = {
+          id: 9,
+          status: 'PENDING',
+          statusText: 'Pending',
+          orderDateTime: currentDateTime, 
+          orderType: 'DINE IN', 
+          menuItems: [
+            { name: 'Chicken Alfredo', price: 200, quantity: 1 },
+            { name: 'Garlic Bread', price: 50, quantity: 3 }
+          ],
+           discountCode: 'ABC123'
+        };
+
+        const pendingOrderData4 = {
+          id: 8,
+          status: 'PENDING',
+          statusText: 'Pending',
+          orderDateTime: currentDateTime, 
+          orderType: 'DINE IN', 
+          menuItems: [
+            { name: 'Chicken Alfredo', price: 200, quantity: 1 },
+            { name: 'Garlic Bread', price: 50, quantity: 3 },
+            { name: 'Chicken Alfredo', price: 200, quantity: 1 },
+            { name: 'Garlic Bread', price: 50, quantity: 3 },
+            { name: 'Chicken Alfredo', price: 200, quantity: 1 },
+            { name: 'Garlic Bread', price: 50, quantity: 3 },
+            { name: 'Chicken Alfredo', price: 200, quantity: 1 },
+            { name: 'Garlic Bread', price: 50, quantity: 3 },
+            { name: 'Chicken Alfredo', price: 200, quantity: 1 },
+            { name: 'Garlic Bread', price: 50, quantity: 3 },
+            { name: 'Chicken Alfredo', price: 200, quantity: 1 },
+            { name: 'Garlic Bread', price: 50, quantity: 3 },
+            { name: 'Chicken Alfredo', price: 200, quantity: 1 },
+            { name: 'Garlic Bread', price: 50, quantity: 3 }
+          ],
+           discountCode: 'ABC123'
+        };
+
+        const pendingOrderData3 = {
+          id: 7,
+          status: 'PENDING',
+          statusText: 'Pending',
+          orderDateTime: currentDateTime, 
+          orderType: 'DINE IN', 
+          menuItems: [
+            { name: 'Chicken Alfredo', price: 200, quantity: 1 },
+            { name: 'Garlic Bread', price: 50, quantity: 3 }
+          ],
+           discountCode: 'ABC123'
+        };
+
+        const pendingOrderData2 = {
+          id: 6,
+          status: 'PENDING',
+          statusText: 'Pending',
+          orderDateTime: currentDateTime, 
+          orderType: 'DINE IN', 
+          menuItems: [
+            { name: 'Chicken Alfredo', price: 200, quantity: 1 },
+            { name: 'Garlic Bread', price: 50, quantity: 3 }
+          ],
+           discountCode: 'ABC123'
+        };
+
         const pendingOrderData = {
           id: 5,
           status: 'PENDING',
           statusText: 'Pending',
-          orderType: 'DINE IN', 
           orderDateTime: currentDateTime, 
+          orderType: 'DINE IN', 
+          orderTableNum: 'F2-T27',
           menuItems: [
             { name: 'Chicken Alfredo', price: 200, quantity: 1 },
             { name: 'Garlic Bread', price: 50, quantity: 3 }
@@ -2221,8 +2304,8 @@
           id: 4,
           status: 'PREPARING',
           statusText: 'Preparing',
-          orderType: 'DELIVERY', 
           orderDateTime: currentDateTime, 
+          orderType: 'DELIVERY', 
           addressLine: '123 Main St, Springfield, IL',
           menuItems: [
             { name: 'Cheeseburger', price: 150, quantity: 2 },
@@ -2236,8 +2319,9 @@
           id: 3,
           status: 'READY FOR PICKUP',
           statusText: 'Ready for Pickup',
-          orderType: 'DINE IN', 
           orderDateTime: currentDateTime, 
+          orderType: 'DINE IN', 
+          orderTableNum: 'F1-T13',
           menuItems: [
             { name: 'Veggie Pizza', price: 300, quantity: 1 },
             { name: 'Coke', price: 50, quantity: 2 }
@@ -2248,8 +2332,8 @@
           id: 2,
           status: 'COMPLETE',
           statusText: 'Complete',
-          orderType: 'TAKEOUT', 
           orderDateTime: currentDateTime, 
+          orderType: 'TAKEOUT', 
           menuItems: [
             { name: 'Pasta Primavera', price: 250, quantity: 1 }
           ]
@@ -2259,8 +2343,8 @@
           id: 1,
           status: 'CANCELED',
           statusText: 'Canceled',
-          orderType: 'DELIVERY', 
           orderDateTime: currentDateTime, 
+          orderType: 'DELIVERY', 
           addressLine: '654 Maple St, Springfield, IL',
           menuItems: [
             { name: 'Caesar Salad', price: 120, quantity: 1 }
