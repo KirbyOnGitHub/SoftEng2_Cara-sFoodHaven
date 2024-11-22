@@ -1158,10 +1158,10 @@ function updateSelectedStaff() {
 
 
 
-/*============================================================*/ /*============================================================*/
-/*============================================================*/ /*============================================================*/
-/*============================================================*/ /*============================================================*/
 
+/*============================================================*/ /*============================================================*/
+/*============================================================*/ /*============================================================*/
+/*============================================================*/ /*============================================================*/
 
 
 
@@ -1532,6 +1532,7 @@ function addNewMenuItem() {
     const menuItemAssignedCategory_ComboBox = document.getElementById("menu-category-combobox");
     const menuItemAssignedCategory = menuItemAssignedCategory_ComboBox.options[menuItemAssignedCategory_ComboBox.selectedIndex].textContent;
     let menuItemPrice = document.getElementById('menu-item-price').value;
+    let menuItemCost = document.getElementById('menu-item-cost').value; // Gather cost from the form
     const menuItemDescription = document.getElementById('menu-item-description').value;
 
     // Check for duplicate name in the table
@@ -1556,6 +1557,14 @@ function addNewMenuItem() {
         return;
     }
     menuItemPrice = `Php ${menuItemPrice.toFixed(2)}`;
+
+    // Validate cost input
+    menuItemCost = parseFloat(menuItemCost);
+    if (isNaN(menuItemCost) || menuItemCost <= 0) {
+        menuItemCost = null; // Set cost to null if invalid
+    } else {
+        menuItemCost = `Php ${menuItemCost.toFixed(2)}`; // Format cost
+    }
 
     // Gather ingredients from the ingredient list table
     const ingredientsTable = document.getElementById('ingredient-list-table-body');
@@ -1616,6 +1625,7 @@ function addNewMenuItem() {
       <td>[${menuItemId}] ${menuItemName}</td>
       <td>${menuItemAssignedCategory}</td>
       <td>${menuItemPrice}</td>
+      <td>${menuItemCost !== null ? menuItemCost : ''}</td> <!-- Add cost to the row, show '' if null -->
     `;
 
     // Store all data as a data attribute for the row
@@ -1625,6 +1635,7 @@ function addNewMenuItem() {
         name: menuItemName,
         category: menuItemAssignedCategory,
         price: menuItemPrice,
+        cost: menuItemCost, // Store cost
         description: menuItemDescription,
         ingredients: ingredientsData
     }));
@@ -1665,6 +1676,11 @@ function menuItem_tableRowClicked(dataRow, row) {
     // Remove "Php " from the price to get the numeric value
     const rawPrice = rowData.price.replace("Php ", "");
     document.getElementById('menu-item-price').value = rawPrice;
+
+    // Handle cost: if null, set the input to an empty string; otherwise, remove "Php " and set the value
+    const rawCost = rowData.cost ? rowData.cost.replace("Php ", "") : ''; // Check if cost is null
+    document.getElementById('menu-item-cost').value = rawCost; // Populate the cost input
+
     document.getElementById('menu-item-description').value = rowData.description;
 
     // Set the image source in the preview image element
@@ -1761,6 +1777,7 @@ function updateSelectedMenuItem() {
     const updatedMenuItemAssignedCategory_ComboBox = document.getElementById("menu-category-combobox");
     const updatedMenuItemAssignedCategory = updatedMenuItemAssignedCategory_ComboBox.options[updatedMenuItemAssignedCategory_ComboBox.selectedIndex].textContent;
     let updatedMenuItemPrice = document.getElementById('menu-item-price').value;
+    let updatedMenuItemCost = document.getElementById('menu-item-cost').value; // Gather cost from the form
     const updatedMenuItemDescription = document.getElementById('menu-item-description').value;
 
     // Validate price input
@@ -1774,6 +1791,16 @@ function updateSelectedMenuItem() {
 
     // Format the price to always show two decimal places and add "Php " prefix
     updatedMenuItemPrice = `Php ${updatedMenuItemPrice.toFixed(2)}`;
+
+    // Validate cost input
+    updatedMenuItemCost = parseFloat(updatedMenuItemCost); // Convert to a number (float)
+    
+    if (isNaN(updatedMenuItemCost) || updatedMenuItemCost <= 0) {
+        updatedMenuItemCost = null; // Set cost to null if invalid
+    } else {
+        // Format the cost to always show two decimal places and add "Php " prefix
+        updatedMenuItemCost = `Php ${updatedMenuItemCost.toFixed(2)}`;
+    }
 
     // Gather updated ingredients from the ingredient list table
     const ingredientsTable = document.getElementById('ingredient-list-table-body');
@@ -1836,6 +1863,7 @@ function updateSelectedMenuItem() {
       <td>[${updatedMenuItemId}] ${updatedMenuItemName}</td>
       <td>${updatedMenuItemAssignedCategory}</td>
       <td>${updatedMenuItemPrice}</td>
+      <td>${updatedMenuItemCost !== null ? updatedMenuItemCost : ''}</td> <!-- Add cost to the row, show '' if null -->
     `;
 
     // Update the data attribute for the selected row
@@ -1845,6 +1873,7 @@ function updateSelectedMenuItem() {
         name: updatedMenuItemName,
         category: updatedMenuItemAssignedCategory,
         price: updatedMenuItemPrice,
+        cost: updatedMenuItemCost, // Store cost
         description: updatedMenuItemDescription,
         ingredients: updatedIngredientsData  // Store the updated ingredient data including unit and main ingredient
     }));

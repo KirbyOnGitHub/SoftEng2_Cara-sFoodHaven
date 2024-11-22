@@ -365,9 +365,9 @@
           <!-- New Chart for Ingredient Usage Trends -->
           <div class="analytics-card">
             <h2>
-              <i class="fas fa-utensils"></i>
+              <i class="fas fa-carrot"></i>
               INGREDIENT USAGE TRENDS
-              <i class="fas fa-utensils"></i>
+              <i class="fas fa-carrot"></i>
             </h2>
             <br>
             <select id="ingredientUsage-yearSelect">
@@ -1263,6 +1263,7 @@
                 <th>[ID] MENU ITEM</th>
                 <th>MENU CATEGORY</th>
                 <th>PRICE</th>
+                <th>COST</th>
               </tr>
             </thead>
             <tbody id="menu-item-table-body">
@@ -1315,6 +1316,11 @@
   
             <label for="menu-item-price">Menu Item Price (Php):</label>
             <input type="number" id="menu-item-price" name="menu-item-price" placeholder="Enter the Menu Item's Price" required min="1">
+            
+            <br>
+  
+            <label for="menu-item-cost">Menu Item Production Cost (Php):</label>
+            <input type="number" id="menu-item-cost" name="menu-item-cost" placeholder="Enter the Menu Item's Cost Production" min="1">
             
             <br>
     
@@ -1836,6 +1842,48 @@
                 <th class="id-columns">ID</th>
                 <th>INGREDIENT UNIT</th>
               </tr> 
+            </thead>
+            <tbody id="ingredient-unit-table-body">
+            </tbody>
+          </table>
+        </div>
+
+        <!-- ============================== -->
+        
+      </div>
+
+      <!-- ============================================================ -->
+
+      <div class="container-right-side">
+
+        <!-- ============================== -->
+        
+        <h2>INGREDIENT UNIT FORM</h2>
+        
+        <div class="details-display-container">
+
+          <form id="ingredient-unit-form">
+   
+            <label for="ingredient-unit-name">Ingredient Unit Name:</label>
+            <div class="input-group"> 
+              <input type="number" id="ingredient-unit-id" name="ingredient-unit-id" placeholder="ID" min="1" tabindex="-1" disabled oninput="fillForm('ingredient-unit-id', 'ingredient-unit-table', 'ingredient-unit', 'ingredient-unit-form')">
+              <input type="text" id="ingredient-unit-name" name="ingredient-unit-name" placeholder="Enter the Ingredient Unit's Name" required>
+            </div> 
+            
+            <br>
+            <br>  
+            <span>====================================</span>
+            <br>
+
+            <div class="form-buttons-container">
+              <button class="addButtons" type="button" onclick="addNewIngredientUnit()">Add</button>
+              <button class="updateButtons" type="button" onclick="updateSelectedIngredientUnit()">Update</button>
+              <button class="deleteButtons" type="button" onclick="deleteSelectedIngredientUnit('ingredient-unit-table','ingredient-unit')">Delete</button>
+            </div>
+            
+            <br>
+
+          </form>
 
         </div>
 
