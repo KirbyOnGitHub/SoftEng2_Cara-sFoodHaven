@@ -210,6 +210,341 @@
     <!-- ============================================================ -->
     <!-- ============================================================ -->
 
+    <div class="container" id="analytics">
+      <div class="container-full">
+        
+        <!-- ============================== -->
+
+        <div class="analytics-card-info">
+        
+          <!-- ============================== -->
+          
+          <!-- New Chart for Total Paid Orders -->
+          <div class="analytics-card">
+            <h2>
+              <i class="fas fa-dollar-sign"></i>
+              TOTAL PAID ORDERS
+              <i class="fas fa-dollar-sign"></i>
+            </h2>
+            <br>
+            <label for="totalPaidOrders-yearSelect">Select Year:</label>
+            <select id="totalPaidOrders-yearSelect">
+              <option value="2024">2024</option>
+              <option value="2025">2025</option>
+              <option value="2026">2026</option>
+            </select>
+            <br>
+            <br>
+            <canvas id="ordersChart"></canvas>
+          </div>
+        
+          <!-- ============================== -->
+
+          <!-- New Chart for Sales by Order Type -->
+          <div class="analytics-card">
+            <h2>
+              <i class="fas fa-chart-pie"></i>
+              SALES BY ORDER TYPE
+              <i class="fas fa-chart-pie"></i>
+            </h2>
+            <br>
+            <select id="salesOrderType-yearSelect">
+              <option value="2024">2024</option>
+              <option value="2025">2025</option>
+              <option value="2026">2026</option>
+            </select>
+            <select id="salesOrderType-monthSelect">
+              <option value="0">January</option>
+              <option value="1">February</option>
+              <option value="2">March</option>
+              <option value="3">April</option>
+              <option value="4">May</option>
+              <option value="5">June</option>
+              <option value="6">July</option>
+              <option value="7">August</option>
+              <option value="8">September</option>
+              <option value="9">October</option>
+              <option value="10">November</option>
+              <option value="11">December</option>
+            </select>
+            <br>
+            <br>
+            <canvas id="orderTypeChart"></canvas>
+          </div>
+
+          <!-- ============================== -->
+
+          <!-- New Chart for Menu Item Orders -->
+          <div class="analytics-card">
+            <h2>
+              <i class="fas fa-utensils"></i>
+              MENU ITEM ORDERS
+              <i class="fas fa-utensils"></i>
+            </h2>
+            <br>
+            <select id="menuItemsOrdered-yearSelect">
+              <option value="2024">2024</option>
+              <option value="2025">2025</option>
+              <option value="2026">2026</option>
+            </select>
+            <select id="menuItemsOrdered-monthSelect">
+              <option value="0">January</option>
+              <option value="1">February</option>
+              <option value="2">March</option>
+              <option value="3">April</option>
+              <option value="4">May</option>
+              <option value="5">June</option>
+              <option value="6">July</option>
+              <option value="7">August</option>
+              <option value="8">September</option>
+              <option value="9">October</option>
+              <option value="10">November</option>
+              <option value="11">December</option>
+            </select>
+            <select id="menuItemsOrdered-categorySelect">
+              <option value="category1">Menu Category #1</option>
+              <option value="category2">Menu Category #2</option>
+              <option value="category3">Menu Category #3</option>
+            </select>
+            <br>
+            <br>
+            <canvas id="menuItemOrdersChart"></canvas>
+          </div>          
+        
+          <!-- ============================== -->
+
+          <!-- New Chart for Menu Item Profit Margin -->
+          <div class="analytics-card">
+            <h2>
+              <i class="fas fa-chart-line"></i>
+              MENU ITEM PROFIT MARGIN
+              <i class="fas fa-chart-line"></i>
+            </h2>
+            <br>
+            <select id="profitMargin-yearSelect">
+              <option value="2024">2024</option>
+              <option value="2025">2025</option>
+              <option value="2026">2026</option>
+            </select>
+            <select id="profitMargin-categorySelect">
+              <option value="category1">Menu Category #1</option>
+              <option value="category2">Menu Category #2</option>
+              <option value="category3">Menu Category #3</option>
+            </select>
+            <select id="profitMargin-itemSelect">
+              <!-- Options will be populated dynamically -->
+            </select>
+            <br>
+            <br>
+            <canvas id="profitMarginChart"></canvas>
+          </div>          
+        
+          <!-- ============================== -->
+
+          <!-- New Chart for Staff Orders -->
+          <div class="analytics-card">
+            <h2>
+                <i class="fas fa-user-tie"></i>
+                STAFF ORDERS ACCEPTED
+                <i class="fas fa-user-tie"></i>
+            </h2>
+            <br>
+            <label for="staffOrders-yearSelect">Select Year:</label>
+            <select id="staffOrders-yearSelect">
+                <option value="2024">2024</option>
+                <option value="2025">2025</option>
+                <option value="2026">2026</option>
+            </select>
+            <br>
+            <br>
+            <canvas id="staffOrdersChart"></canvas>
+          </div>
+
+          <!-- ============================== -->
+
+          <!-- New Chart for Ingredient Usage Trends -->
+          <div class="analytics-card">
+            <h2>
+              <i class="fas fa-utensils"></i>
+              INGREDIENT USAGE TRENDS
+              <i class="fas fa-utensils"></i>
+            </h2>
+            <br>
+            <select id="ingredientUsage-yearSelect">
+              <option value="2024">2024</option>
+              <option value="2025">2025</option>
+              <option value="2026">2026</option>
+            </select>
+            <select id="ingredientUsage-monthSelect">
+              <option value="0">January</option>
+              <option value="1">February</option>
+              <option value="2">March</option>
+              <option value="3">April</option>
+              <option value="4">May</option>
+              <option value="5">June</option>
+              <option value="6">July</option>
+              <option value="7">August</option>
+              <option value="8">September</option>
+              <option value="9">October</option>
+              <option value="10">November</option>
+              <option value="11">December</option>
+            </select>
+            <br>
+            <br>
+            <canvas id="ingredientUsageChart"></canvas>
+          </div>
+
+          <!-- ============================== -->
+
+          <!-- New Chart for Peak Hours and Days -->
+          <div class="analytics-card">
+            <h2>
+              <i class="fas fa-clock"></i>
+              PEAK HOURS AND DAYS
+              <i class="fas fa-clock"></i>
+            </h2>
+            <br>
+            <label for="peakHours-daySelect">Select Day:</label>
+            <select id="peakHours-daySelect">
+              <option value="Sunday">Sunday</option>
+              <option value="Monday">Monday</option>
+              <option value="Tuesday">Tuesday</option>
+              <option value="Wednesday">Wednesday</option>
+              <option value="Thursday">Thursday</option>
+              <option value="Friday">Friday</option>
+              <option value="Saturday">Saturday</option>
+            </select>
+            <br>
+            <br>
+            <canvas id="peakHoursChart"></canvas>
+          </div>
+
+          <!-- ============================== -->
+
+          <!-- New Chart for Order Status Times -->
+          <div class="analytics-card">
+            <h2>
+              <i class="fas fa-clock"></i>
+              AVERAGE ORDER STATUS TIMES
+              <i class="fas fa-clock"></i>
+            </h2>
+            <br>
+            <label for="timeFormat">Time Format:</label>
+            <p id="timeFormat" style="margin: 5px;">MM:SS (Minutes:Seconds)</p>
+            <br>
+            <select id="orderStatus-yearSelect">
+              <option value="2024">2024</option>
+              <option value="2025">2025</option>
+              <option value="2026">2026</option>
+            </select>
+            <select id="orderStatus-monthSelect">
+              <option value="0">January</option>
+              <option value="1">February</option>
+              <option value="2">March</option>
+              <option value="3">April</option>
+              <option value="4">May</option>
+              <option value="5">June</option>
+              <option value="6">July</option>
+              <option value="7">August</option>
+              <option value="8">September</option>
+              <option value="9">October</option>
+              <option value="10">November</option>
+              <option value="11">December</option>
+            </select>
+            <br>
+            <br>
+            <br>
+            <div class="status-chart">
+              <div class="status" style="background-color: orange;">
+                <i class="fas fa-hourglass-start"></i> <!-- Icon for Pending -->
+                <span>Pending</span>
+              </div>
+              <div class="arrow">
+                <span id="pendingToPreparing"></span> <!-- Average time will be displayed here -->
+              </div>
+              <div class="status" style="background-color: orangered;">
+                <i class="fas fa-fire"></i> <!-- Icon for Preparing -->
+                <span>Preparing</span>
+              </div>
+              <div class="arrow">
+                <span id="preparingToReady"></span> <!-- Average time will be displayed here -->
+              </div>
+              <div class="status" style="background-color: blue;">
+                <i class="fas fa-concierge-bell"></i> <!-- Icon for Ready For Pickup -->
+                <br>
+                <span class="single-line">Ready For Pickup</span>
+              </div>
+              <div class="arrow">
+                <span id="readyToComplete"></span> <!-- Average time will be displayed here -->
+              </div>
+              <div class="status" style="background-color: green;">
+                <i class="fas fa-check-circle"></i> <!-- Icon for Complete -->
+                <span>Complete</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- ============================== -->
+
+          <!-- New Chart for Popular Menu Pairings (Heat Map) -->
+          <div class="analytics-card">
+            <h2>
+                <i class="fas fa-network-wired"></i>
+                POPULAR MENU PAIRINGS HEATMAP
+                <i class="fas fa-network-wired"></i>
+            </h2>
+            <br>
+            <br>
+            <div class="heatmap-container">
+              <label>COLOR LEGEND</label>
+              <div class="heatmap-legend">
+                <span id="min-value">?</span> <!-- Minimum value span -->
+                <div id="legend-gradient"></div>
+                <span id="max-value">?</span> <!-- Maximum value span -->
+              </div>
+              <br>
+              <br>
+              <p>Each cell shows the frequency of two menu items being ordered together. Higher values indicate more common pairings.</p>
+              <br>
+              <br>
+              <div id="menu-pairings-heatmap"></div> <!-- Container for the heatmap -->
+            </div>
+          </div>
+
+          <!-- ============================== -->
+
+        </div>
+        
+        <!-- ============================== -->
+
+      </div>
+    </div>   
+    
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script src="analytics-graphs.js"></script>
+    
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+
+
+
+
+
+
+
+
+
+    
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+
     <div class="container" id="stock">
 
       <!-- ============================================================ -->
@@ -1500,49 +1835,7 @@
               <tr>
                 <th class="id-columns">ID</th>
                 <th>INGREDIENT UNIT</th>
-              </tr>
-            </thead>
-            <tbody id="ingredient-unit-table-body">
-            </tbody>
-          </table>
-        </div>
-
-        <!-- ============================== -->
-
-      </div>
-
-      <!-- ============================================================ -->
-
-      <div class="container-right-side">
-
-        <!-- ============================== -->
-        
-        <h2>INGREDIENT UNIT FORM</h2>
-        
-        <div class="details-display-container">
-
-          <form id="ingredient-unit-form">
-   
-            <label for="ingredient-unit-name">Ingredient Unit Name:</label>
-            <div class="input-group"> 
-              <input type="number" id="ingredient-unit-id" name="ingredient-unit-id" placeholder="ID" min="1" tabindex="-1" disabled oninput="fillForm('ingredient-unit-id', 'ingredient-unit-table', 'ingredient-unit', 'ingredient-unit-form')">
-              <input type="text" id="ingredient-unit-name" name="ingredient-unit-name" placeholder="Enter the Ingredient Unit's Name" required>
-            </div> 
-            
-            <br>
-            <br>  
-            <span>====================================</span>
-            <br>
-
-            <div class="form-buttons-container">
-              <button class="addButtons" type="button" onclick="addNewIngredientUnit()">Add</button>
-              <button class="updateButtons" type="button" onclick="updateSelectedIngredientUnit()">Update</button>
-              <button class="deleteButtons" type="button" onclick="deleteSelectedIngredientUnit('ingredient-unit-table','ingredient-unit')">Delete</button>
-            </div>
-            
-            <br>
-
-          </form>
+              </tr> 
 
         </div>
 

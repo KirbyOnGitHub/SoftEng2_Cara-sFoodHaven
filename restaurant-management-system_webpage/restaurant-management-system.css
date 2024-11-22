@@ -332,7 +332,6 @@ textarea {
     text-align: center;
     background-color: #232d35; /* Darker container background */
     color: #ecf0f1; /* Light text color */
-    /* border: 2px solid #16a085; */
 }
 
 .container-left-side {
@@ -859,6 +858,10 @@ td.status-cell {
 
 
 
+
+
+
+
 .filter-bar {
     position: sticky;
     top: -28.5px;
@@ -1176,4 +1179,129 @@ td.status-cell {
 
 .input-group input:first-child {
     width: 50px;
+}
+
+
+
+
+
+
+
+  
+.analytics-card-info {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 30px 150px;
+}
+
+.analytics-card {
+    padding: 30px;
+    background-color: #172534;  
+    border: 3px solid #16a085;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    margin: 30px 0;
+}
+
+.analytics-card select {
+    width: fit-content;
+}
+
+#orderTypeChart {
+    max-width: 100%;
+    max-height: 75%;
+}
+
+.status-chart {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: rgba(75, 192, 192, 0.2); /* Match your background */
+    padding: 10px;
+    border-radius: 10px;
+  }
+  
+.status {
+    text-align: center;
+    font-size: 14px;
+    background: #1e2b37;
+    color: white;
+    border: 2px solid white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    display: inline-block;
+}
+
+.single-line {
+    white-space: nowrap; /* Prevents text from wrapping onto multiple lines */
+    display: inline-block; /* Ensures the span stays inline */
+    text-align: center; /* Centers the text horizontally */
+  }
+
+.arrow {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    width: 100px; /* Adjust the arrow width */
+    height: 45px; /* Total height of the arrow */
+    background-color: #06192c; /* arrow button */
+    color: white; /* Text color */
+    font-weight: bold;
+    clip-path: polygon(
+      100% 50%,    /* Tip of the arrowhead */
+      80% 0,       /* Top of the rectangle */
+      0 0,         /* Top-left corner */
+      0 100%,      /* Bottom-left corner */
+      80% 100%,    /* Bottom of the rectangle */
+      100% 50%     /* Back to the arrowhead tip */
+    );
+    margin: 0 10px; /* Space around arrows */
+}
+
+.arrow span {
+    position: absolute;
+    text-align: center;
+    font-size: 14px; /* Adjust text size */
+    color: white;
+    margin-left: -10px;
+}
+
+
+.heatmap-table {
+    border-collapse: collapse;
+    width: 100%;
+}
+.heatmap-table th, .heatmap-table td {
+    border: 1px solid #ddd;
+    text-align: center;
+    padding: 10px;
+    color: black;
+}
+.heatmap-table th {
+    background: #1e2b37;
+    color: white;
+}
+
+/* Styling for the legend */
+.heatmap-legend {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+/* Styling for legend labels */
+.heatmap-legend span {
+    font-size: 14px;
+    margin: 0 5px;
+}
+
+/* Styling for the gradient bar */
+#legend-gradient {
+    width: 200px;
+    height: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
 }
