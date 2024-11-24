@@ -5,6 +5,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+      <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
       <link rel="stylesheet" href="restaurant-management-system.css">
       <title> Mgmt. System | Cara's Food Haven </title>
       <link rel="shortcut icon" type="x-icon" href="../RestaurantLogo-Cut.png">
@@ -209,6 +210,37 @@
             <button id="confirmCancel" class="action-btn">Yes, Cancel</button>
           </div>
         </div>
+
+      </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+
+    <div id="wasted-ingredients-modal" class="modal">
+      <div id="wasted-ingredients-modal-content" class="modal-content">
+  
+        <br>
+        <h2>WASTED INGREDIENTS</h2>
+        <br>
+        <table id="wasted-ingredients-table">
+          <thead>
+            <tr>
+              <th colspan="2" id="menu-item-label-row" class="menu-item-label" style="font-size: 180%;">Menu Item Name</th>
+            </tr>
+            <tr>
+              <th>[ID] INGREDIENT</th>
+              <th>QUANTITY<br>WASTED</th>
+            </tr>
+          </thead>
+          <tbody id="wasted-ingredients-table-body">
+            <tr>
+              <td colspan="2">No data available</td>
+            </tr>
+          </tbody>
+        </table>
+        <button id="confirm-wasted-ingredients" onclick="confirmWastedIngredientsData()">Confirm Data</button>
 
       </div>
     </div>

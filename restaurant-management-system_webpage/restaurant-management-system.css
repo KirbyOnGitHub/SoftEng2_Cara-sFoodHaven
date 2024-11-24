@@ -535,7 +535,7 @@ table tbody tr {
     transition: background-color 0.3s ease, color 0.3s ease; /* Add transition for smooth animation */
 }
 
-table tbody tr:hover:not(#ingredient-list-table tr):not(#stock-in-n-out-table tr):not(.order-table tr):not(#order-card-details tr) {
+table tbody tr:hover:not(#ingredient-list-table tr):not(#stock-in-n-out-table tr):not(.order-table tr):not(#order-card-details tr):not(#wasted-ingredients-table tr) {
     /* background-color: #14997e; */
     background-color: #2980b9 !important; /* Active button color */
     border-color: #2980b9;
@@ -808,7 +808,7 @@ td.status-cell {
 
 
 
-#cancel-order-modal {
+/* #cancel-order-modal {
     all: unset;
     display: none;
     position: fixed;
@@ -820,6 +820,33 @@ td.status-cell {
     z-index: 999;
     justify-content: center;
     align-items: center;
+} */
+
+#wasted-ingredients-modal-content {
+    width: fit-content;
+}
+
+#wasted-ingredients-table-body {
+    width: fit-content; /* Set the table width to fit its content */
+    margin: auto; /* Center the table if needed */
+}
+
+#wasted-ingredients-table {
+    width: fit-content; /* Ensure the table itself is also set to fit-content */
+    border-collapse: collapse; /* Optional: collapse borders for a cleaner look */
+}
+
+#wasted-ingredients-table th,
+#wasted-ingredients-table td {
+    padding-left: 50px;
+    padding-right: 50px;
+}
+
+#wasted-ingredients-table td input[type="number"] {
+    width: 70px; 
+    padding: 8px;
+    margin: 0;
+    box-sizing: border-box;
 }
 
 #cancel-order-modal-content {
@@ -1208,16 +1235,22 @@ td.status-cell {
     background-color: blue;
     color: white; 
 }
+
+.waste-icon i {
+    background-color: white;
+    color: rgb(175, 175, 175); 
+    border: 2px solid grey;
+}
   
 .tooltip {
     visibility: hidden;
     font-size: 10px;
-    width: 180px; /* Adjust the width as needed */
+    width: fit-content; /* Adjust the width as needed */
     background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent black background */
     color: #fff; /* Tooltip text color */
     text-align: center; /* Centered text */
     border-radius: 6px; /* Rounded corners */
-    padding: 5px 0; /* Padding around text */
+    padding: 5px 10px; /* Padding around text */
     position: absolute; /* Position relative to the icon */
     z-index: 1; /* Display above other elements */
     bottom: 125%; /* Position above the icon */

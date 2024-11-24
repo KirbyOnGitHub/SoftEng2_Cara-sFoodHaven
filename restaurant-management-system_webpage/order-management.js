@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Sample menu items for the order with clickable icon
       const menuItems = orderData.menuItems.map(item => `
-        <tr class="menu-item-row" onclick="toggleIcon(event)" style="cursor: ${orderData.status === 'PREPARING' ? 'pointer' : 'default'};">
+        <tr class="menu-item-row" onclick="toggleIcon(event)" style="cursor: ${['PREPARING', 'COMPLETE', 'CANCELED'].includes(orderData.status) ? 'pointer' : 'default'};" data-wasted-ingredients="">
           <td>
             <div class="icon-container">
               <span class="icon hourglass-icon" data-state="hourglass" style="display:${orderData.status === 'PREPARING' ? 'inline-block' : 'none'};">
@@ -35,6 +35,10 @@ document.addEventListener('DOMContentLoaded', () => {
               <span class="icon bell-icon" data-state="bell" style="display:none;">
                 <i class="fas fa-concierge-bell"></i>
                 <span class="tooltip">Click to change status of menu item</span>
+              </span>
+              <span class="icon waste-icon" data-state="waste" style="display:${orderData.status === 'COMPLETE' || orderData.status === 'CANCELED' ? 'inline' : 'none'};">
+                <i class="fas fa-trash-alt"></i>
+                <span class="tooltip">Click to assign wasted ingredients (if any)</span>
               </span>
               ${item.name}
             </div>
@@ -121,7 +125,7 @@ document.addEventListener('DOMContentLoaded', () => {
       rearrangeOrderCards();
     }
   
-    /*============================================================*/
+    /*==============================*/
 
     // Function to rearrange order cards in descending order by ID
     function rearrangeOrderCards() {
@@ -140,14 +144,30 @@ document.addEventListener('DOMContentLoaded', () => {
         orderCards.forEach(card => ordersContainer.appendChild(card)); // Append sorted cards
     }
   
-    /*============================================================*/
+    /*==============================*/
 
     function toggleIcon(event) {
+      const card = event.currentTarget.closest('.order-card'); // Get the card
+      const status = card.getAttribute('data-status'); // Get the status of the card
+    
+      // Check if the status is COMPLETE or CANCELED
+      if (status === 'COMPLETE' || status === 'CANCELED') {
+        // Remove 'clicked-menu-item-row' class from all menu item rows
+        const allMenuItemRows = document.querySelectorAll('.menu-item-row');
+        allMenuItemRows.forEach(row => row.classList.remove('clicked-menu-item-row'));
+
+        // Add 'clicked-menu-item-row' class to the current row
+        const currentRow = event.currentTarget.closest('tr'); // Assuming the row is a <tr>
+        currentRow.classList.add('clicked-menu-item-row');
+
+        showWastedIngredientsModal(); // Show the modal for wasted ingredients
+        return; // Exit the function to prevent further icon toggling
+      }
+
       const icons = event.currentTarget.querySelectorAll('.icon');
       const questionIcon = icons[0]; // Question icon
       const fireIcon = icons[1];      // Fire icon
       const bellIcon = icons[2];      // Bell icon
-      const card = event.currentTarget.closest('.order-card'); // Get the card
 
       // Check which icon is currently displayed and toggle accordingly
       if (questionIcon.style.display !== 'none') {
@@ -166,6 +186,175 @@ document.addEventListener('DOMContentLoaded', () => {
 
       updateUpdateButtonState(card); // Call update function for this card
     }
+  
+    /*==============================*/
+
+    // Function to show the modal for wasted ingredients
+    function showWastedIngredientsModal() {
+      const modal = document.getElementById('wasted-ingredients-modal'); // Get the modal
+      const tableBody = document.getElementById('wasted-ingredients-table-body'); // Get the table body
+
+      // Clear existing rows in the modal table
+      tableBody.innerHTML = '';
+
+      // Get all rows from the ingredient table
+      const ingredientTable = document.getElementById('ingredient-table');
+      const ingredientRows = ingredientTable.querySelectorAll('tbody tr');
+
+      // Get the clicked menu item row to check for existing data
+      const clickedRow = document.querySelector('.clicked-menu-item-row'); // Use the new class
+      let wastedIngredientsData = {};
+
+      // Get the menu item name from the clicked row
+      const menuItemName = clickedRow ? clickedRow.querySelector('.icon-container').lastChild.textContent.trim().toUpperCase() : 'MENU ITEM'; // Adjusted to use lastChild
+    
+      // Update the modal header
+      const menuItemLabelRow = document.getElementById('menu-item-label-row');
+      menuItemLabelRow.innerHTML = menuItemName; // Set the new header
+
+      if (clickedRow) {
+          const existingData = clickedRow.getAttribute('data-wasted-ingredients');
+          if (existingData) {
+              wastedIngredientsData = JSON.parse(existingData); // Parse existing data
+          } else {
+              // Initialize to empty if no data exists
+              wastedIngredientsData = {};
+          }
+      }
+
+      // Loop through each ingredient row to populate the modal
+      ingredientRows.forEach(row => {
+          const ingredientData = JSON.parse(row.getAttribute('data-ingredient')); // Get ingredient data
+          const ingredientID = ingredientData.id; // Get ingredient ID
+          const ingredientName = ingredientData.name; // Get ingredient name
+          const ingredientUnit = ingredientData.unit; // Get ingredient unit
+
+          // Get the quantity consumed from the ingredient list table
+          const ingredientListTableBody = document.getElementById('ingredient-list-table-body');
+          const ingredientListRows = ingredientListTableBody.querySelectorAll('tr');
+
+          let quantityConsumed = 0; // Initialize quantity consumed
+
+          ingredientListRows.forEach(listRow => {
+              const listData = JSON.parse(listRow.getAttribute('data-ingredient')); // Get ingredient list data
+              if (listData.ingredientID === ingredientID) {
+                  quantityConsumed = listData.quantityConsumed; // Get the quantity consumed
+              }
+          });
+
+          // Create a new row for the modal table
+          const newRow = document.createElement('tr');
+          newRow.innerHTML = `
+              <td>[${ingredientID}] ${ingredientName}<br><small>(${ingredientUnit})</small></td>
+              <td>
+                  <input type="number" min="0" placeholder="Qty" value="${wastedIngredientsData[ingredientID] || quantityConsumed}" />
+                  <br>
+                  <span>${ingredientUnit}</span>
+              </td>
+          `;
+          tableBody.appendChild(newRow); // Append the new row to the table body
+      });
+
+      modal.style.display = 'flex'; // Show the modal
+
+      // Add event listener to close the modal when clicking outside of it
+      window.onclick = function(event) {
+          if (event.target === modal) {
+              modal.style.display = 'none'; // Close the modal
+          }
+      };
+
+      document.getElementById('confirm-wasted-ingredients').addEventListener('click', confirmWastedIngredientsData);
+    }
+  
+    /*==============================*/
+
+    function confirmWastedIngredientsData() {
+      const tableBody = document.getElementById('wasted-ingredients-table-body');
+      const rows = tableBody.querySelectorAll('tr');
+      
+      // Create an object to hold wasted ingredients data
+      const wastedIngredientsData = {};
+  
+      rows.forEach(row => {
+          const ingredientCell = row.cells[0]; // First cell contains ingredient info
+          const quantityInput = row.cells[1].querySelector('input[type="number"]'); // Quantity input
+  
+          if (ingredientCell && quantityInput) {
+              const ingredientIDMatch = ingredientCell.textContent.match(/\[(\d+)\]/); // Extract ID from the text
+              if (ingredientIDMatch) {
+                  const ingredientID = ingredientIDMatch[1]; // Get the ingredient ID
+                  const quantityWasted = parseFloat(quantityInput.value); // Get the quantity wasted
+  
+                  // Store the data in the object
+                  wastedIngredientsData[ingredientID] = quantityWasted;
+              }
+          }
+      });
+  
+      // Assign the data to the clicked menu item row
+      const clickedRow = document.querySelector('.clicked-menu-item-row'); // Get the clicked row
+      if (clickedRow) {
+          const previousData = JSON.parse(clickedRow.getAttribute('data-wasted-ingredients') || '{}');
+          const newData = wastedIngredientsData;
+  
+          const hadWastedIngredients = Object.values(previousData).some(value => parseFloat(value) > 0);
+          const hasWastedIngredients = Object.values(newData).some(value => parseFloat(value) > 0);
+  
+          // Extract the menu item name
+          const menuItemName = clickedRow.querySelector('.icon-container').lastChild.textContent.trim();
+  
+          // Notification for having some ingredients wasted
+          if (hasWastedIngredients && !hadWastedIngredients) {
+              showNotification(`Successfully assigned some wasted ingredients on "${menuItemName}".`);
+          }
+  
+          // Notification for resetting all wasted ingredients to zero
+          if (!hasWastedIngredients && hadWastedIngredients) {
+              showNotification(`Successfully reset wasted ingredients for "${menuItemName}" to none.`);
+          }
+  
+          // Store as JSON string
+          clickedRow.setAttribute('data-wasted-ingredients', JSON.stringify(wastedIngredientsData)); 
+      }
+  
+      updateWasteIconStyles(); // Update styles after confirming
+  
+      // Close the modal after confirming
+      const modal = document.getElementById('wasted-ingredients-modal');
+      modal.style.display = 'none';
+  }
+  
+    /*==============================*/
+
+    function updateWasteIconStyles() {
+      const menuItemRows = document.querySelectorAll('.menu-item-row');
+      menuItemRows.forEach(row => {
+        const wasteIcon = row.querySelector('.waste-icon i');
+        const wastedIngredientsData = row.getAttribute('data-wasted-ingredients');
+        
+        if (wastedIngredientsData) {
+          const data = JSON.parse(wastedIngredientsData);
+          const hasWastedIngredients = Object.values(data).some(value => parseFloat(value) > 0);
+    
+          if (hasWastedIngredients) {
+            wasteIcon.style.border = '2px solid red';
+            wasteIcon.style.color = 'red';
+            wasteIcon.style.backgroundColor = 'rgb(255, 157, 157)'
+          } else {
+            wasteIcon.style.border = '';
+            wasteIcon.style.color = '';
+            wasteIcon.style.backgroundColor = '';
+          }
+        } else {
+          wasteIcon.style.border = '';
+          wasteIcon.style.color = '';
+          wasteIcon.style.backgroundColor = '';
+        }
+      });
+    }
+  
+    /*==============================*/
 
     // Function to determine button text and class based on order status
     function getButtonText(status) {
@@ -180,6 +369,8 @@ document.addEventListener('DOMContentLoaded', () => {
           return '';
       }
     }
+  
+    /*==============================*/
 
     // Function to get the class corresponding to the next status
     function getButtonClassForStatus(status) {
@@ -194,6 +385,8 @@ document.addEventListener('DOMContentLoaded', () => {
           return '';
       }
     }
+  
+    /*==============================*/
 
     function getNextStatusClass(currentStatus) {
       switch (currentStatus) {
@@ -207,6 +400,8 @@ document.addEventListener('DOMContentLoaded', () => {
           return ''; // No further transitions for COMPLETE or CANCELED
       }
     }
+  
+    /*==============================*/
 
     // Function to add the "Revert" button with status-based class
     function getRevertButton(status) {
@@ -232,6 +427,8 @@ document.addEventListener('DOMContentLoaded', () => {
         </button>
       `;
     }
+  
+    /*==============================*/
 
     function reapplyCurrentFilter() {
       const activeButton = document.querySelector('.filter-btn.active');
@@ -244,6 +441,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
       }
     }
+  
+    /*==============================*/
 
     const ordersContainer = document.querySelector('.orders');
     const filterButtons = document.querySelectorAll('.filter-btn');
@@ -256,6 +455,8 @@ document.addEventListener('DOMContentLoaded', () => {
     filterButtons.forEach(button => {
       button.addEventListener('click', () => filterOrders(button));
     });
+  
+    /*==============================*/
 
     // Function to handle the revert button click
     function handleRevert(event) {
@@ -263,45 +464,55 @@ document.addEventListener('DOMContentLoaded', () => {
       if (button.classList.contains('revert')) {
         const newStatus = button.getAttribute('data-revert-to'); // Get the status to revert to
         const card = button.closest('.order-card'); // Get the associated order card
-        updateOrderStatus(card, newStatus, newStatus.replace('_', ' '), getButtonText(newStatus)); // Update status
+        const orderId = card.querySelector('.order-header h2').textContent.match(/\d+/)[0]; // Extract order ID
+        
+        // Convert status to title case
+        const formattedStatus = newStatus.toLowerCase().replace(/(^|\s)\S/g, letter => letter.toUpperCase());
+      
+        updateOrderStatus(card, newStatus, formattedStatus, getButtonText(newStatus)); // Update status
+        showNotification(`Order ID #${orderId} has been reverted to "${formattedStatus}".`); // Notify user
       }
     }
+  
+    /*==============================*/
 
     // Function to handle the update button click
     function handleUpdate(card) {
-      // const updateButton = card.querySelector('.action-btn.update.ready-for-pickup');
-      
-      // // Check if the update button is disabled
-      // if (updateButton.disabled) {
-      //   showNotification('Please ensure all menu items are marked as ready before proceeding.'); 
-      //   return; // Exit function if button is disabled
-      // }
-      // // Check if all menu items have the bell icon displayed
-      // if (!areAllIconsBell(card)) {
-      //     showNotification('Please ensure all menu items are marked as ready before proceeding.'); 
-      //     return; // Exit function if not all icons are bell
-      // }
+      const updateButton = card.querySelector('.action-btn.update.ready-for-pickup');
 
       const status = card.getAttribute('data-status');
       
+      // Use areAllIconsBell to check if all icons are bell icons
+      if (!areAllIconsBell(card) && status === 'PREPARING') {
+          showNotification('Please ensure all menu items are marked as "Ready For Pickup" before proceeding.');
+          return; // Exit function if not all icons are bell icons
+      }
+      
+      const orderId = card.querySelector('.order-header h2').textContent.match(/\d+/)[0]; // Extract order ID
+
       switch (status) {
-        case 'PENDING':
-          updateOrderStatus(card, 'PREPARING', 'Preparing', 'Mark Ready');
-          break;
-        case 'PREPARING':
-          // Check if all menu items have the bell icon displayed
-          if (areAllIconsBell(card)) {
-            updateOrderStatus(card, 'READY FOR PICKUP', 'Ready for Pickup', 'Mark Complete');
-          }
-          break;
-        case 'READY FOR PICKUP':
-          updateOrderStatus(card, 'COMPLETE', 'Complete', null);
-          break;
-        default:
-          console.warn('Unexpected status:', status);
-          break;
+          case 'PENDING':
+              updateOrderStatus(card, 'PREPARING', 'Preparing', 'Mark Ready');
+              showNotification(`Order ID #${orderId} has been updated to "Preparing".`);
+              break;
+          case 'PREPARING':
+              // Check if all menu items have the bell icon displayed
+              if (areAllIconsBell(card)) {
+                  updateOrderStatus(card, 'READY FOR PICKUP', 'Ready for Pickup', 'Mark Complete');
+                  showNotification(`Order ID #${orderId} has been updated to "Ready for Pickup".`);
+              }
+              break;
+          case 'READY FOR PICKUP':
+              updateOrderStatus(card, 'COMPLETE', 'Complete', null);
+              showNotification(`Order ID #${orderId} has been updated to "Complete".`);
+              break;
+          default:
+              console.warn('Unexpected status:', status);
+              break;
       }
     }
+  
+    /*==============================*/
 
     // Function to check if all icons are the bell icon
     function areAllIconsBell(card) {
@@ -311,54 +522,64 @@ document.addEventListener('DOMContentLoaded', () => {
         return icons[2].style.display === 'inline'; // Check if the bell icon is displayed
       });
     }
+  
+    /*==============================*/
 
     // Update the update button state based on icons
     function updateUpdateButtonState(card) {
       const updateButton = card.querySelector('.action-btn.update.ready-for-pickup');
       if (updateButton) {
-        if (areAllIconsBell(card)) {
-          updateButton.disabled = false;
-          updateButton.style.filter = 'none'; // Reset filter to normal
-        } else {
-          updateButton.disabled = true;
-          updateButton.style.filter = 'brightness(0.5)'; // Lower brightness
-        }
+          if (areAllIconsBell(card)) {
+              updateButton.style.filter = 'none'; // Reset filter to normal
+              const orderId = card.querySelector('.order-header h2').textContent.match(/\d+/)[0]; // Extract order ID
+              showNotification(`Order ID #${orderId} is ready to be marked as "Ready for Pickup".`); // Notify user
+          } else {
+              updateButton.style.filter = 'brightness(0.5)'; // Lower brightness
+          }
       }
     }
+  
+    /*==============================*/
 
     // Function to handle the cancel button click
     function handleCancel(card) {
-        // Show the modal
-        const modal = document.getElementById('cancel-order-modal');
-        modal.style.display = 'flex';
-  
-        // Get the confirm and close buttons
-        const confirmCancelButton = document.getElementById('confirmCancel');
-        const closeModalButton = document.getElementById('closeModal');
-  
-        // Confirm cancel action
-        confirmCancelButton.onclick = function() {
+      // Show the modal
+      const modal = document.getElementById('cancel-order-modal');
+      modal.style.display = 'flex';
+
+      // Get the confirm and close buttons
+      const confirmCancelButton = document.getElementById('confirmCancel');
+      const closeModalButton = document.getElementById('closeModal');
+
+      // Confirm cancel action
+      confirmCancelButton.onclick = function() {
           updateOrderStatus(card, 'CANCELED', 'Canceled', null);
           modal.style.display = 'none'; // Close the modal
-        };
-  
-        // Close modal without action
-        closeModalButton.onclick = function() {
+
+          const orderId = card.querySelector('.order-header h2').textContent.match(/\d+/)[0]; // Extract order ID
+          showNotification(`Order ID #${orderId} has been canceled.`); // Notify user
+      };
+
+      // Close modal without action
+      closeModalButton.onclick = function() {
           modal.style.display = 'none'; // Close the modal
-        };
+      };
     }
+  
+    /*==============================*/
 
     function attachEventListeners(card) {
       const revertButton = card.querySelector('.action-btn.revert'); 
       const updateButton = card.querySelector('.action-btn.update');
       const cancelButton = card.querySelector('.action-btn.cancel');
       
-      // Add click event listener to menu item rows if the status is PREPARING
-      if (card.getAttribute('data-status') === 'PREPARING') {
-        const menuItemRows = card.querySelectorAll('.menu-item-row');
-        menuItemRows.forEach(row => {
-          row.addEventListener('click', toggleIcon);
-        });
+      // Add click event listener to menu item rows if the status is PREPARING, COMPLETE, or CANCELED
+      const status = card.getAttribute('data-status');
+      if (status === 'PREPARING' || status === 'COMPLETE' || status === 'CANCELED') {
+          const menuItemRows = card.querySelectorAll('.menu-item-row');
+          menuItemRows.forEach(row => {
+              row.addEventListener('click', toggleIcon);
+          });
       }
 
       if (revertButton) {
@@ -373,6 +594,8 @@ document.addEventListener('DOMContentLoaded', () => {
         cancelButton.addEventListener('click', () => handleCancel(card));
       }
     }
+  
+    /*==============================*/
 
     function updateOrderStatus(card, newStatus, newStatusText, newButtonText) {
       card.setAttribute('data-status', newStatus);
@@ -432,10 +655,10 @@ document.addEventListener('DOMContentLoaded', () => {
       // Re-attach event listeners to the new buttons
       attachEventListeners(card);
 
-      // Check if the new status is not 'PREPARING'
-      if (newStatus !== 'PREPARING') {
+      const menuItemRows = card.querySelectorAll('.menu-item-row');
+
+      if (newStatus !== 'PREPARING' && newStatus !== 'COMPLETE' && newStatus !== 'CANCELED') {
         // Hide icons and remove clickability from menu item rows
-        const menuItemRows = card.querySelectorAll('.menu-item-row');
         menuItemRows.forEach(row => {
           const icons = row.querySelectorAll('.icon');
           icons.forEach(icon => {
@@ -444,15 +667,23 @@ document.addEventListener('DOMContentLoaded', () => {
           row.style.cursor = 'default'; // Change cursor to default
           row.removeEventListener('click', toggleIcon); // Remove click event listener
         });
-      } else {
+      } else if (newStatus === 'PREPARING') {
         // If status is 'PREPARING', show the first icon and attach click event listeners
-        const menuItemRows = card.querySelectorAll('.menu-item-row');
         menuItemRows.forEach(row => {
           const icons = row.querySelectorAll('.icon');
           // Show the question icon and hide others
           icons[0].style.display = 'inline'; // Show the question icon
           icons[1].style.display = 'none';   // Hide the fire icon
           icons[2].style.display = 'none';   // Hide the bell icon
+          row.style.cursor = 'pointer'; // Change cursor to pointer
+          row.addEventListener('click', toggleIcon); // Reattach click event listener
+        });
+      } else {
+        // If status is 'COMPLETE' or 'CANCELED', show all waste icons
+        menuItemRows.forEach(row => {
+          const icons = row.querySelectorAll('.icon');
+          // Show the waste icon and hide others
+          icons[3].style.display = 'inline'; // Show the waste icon
           row.style.cursor = 'pointer'; // Change cursor to pointer
           row.addEventListener('click', toggleIcon); // Reattach click event listener
         });
@@ -464,6 +695,8 @@ document.addEventListener('DOMContentLoaded', () => {
       // Update the update button state based on icons
       updateUpdateButtonState(card);
     }
+  
+    /*==============================*/
 
     function updateCounts() {
       const statuses = ['ALL', 'PENDING', 'PREPARING', 'READY FOR PICKUP', 'COMPLETE', 'CANCELED'];
@@ -474,6 +707,8 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById(`count-${status}`).textContent = count;
       });
     }
+  
+    /*==============================*/
 
     function filterOrders(button) {
       const status = button.getAttribute('data-status');
@@ -485,6 +720,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       });
     }
+  
+    /*==============================*/
 
     // Initial count update
     updateCounts();
