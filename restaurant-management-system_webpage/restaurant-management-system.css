@@ -806,6 +806,63 @@ td.status-cell {
     font-weight: bold;
 }
 
+
+
+#cancel-order-modal {
+    all: unset;
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    z-index: 999;
+    justify-content: center;
+    align-items: center;
+}
+
+#cancel-order-modal-content {
+    all: unset;
+    background-color: #fefefe !important;  
+    max-width: 450px;
+    max-height: 80%;
+    width: 100%;
+    height: auto;
+    margin: 20px;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    overflow: auto; /* Enable scroll if needed */
+}
+
+.action-btn {
+    padding: 10px 15px !important; /* Add padding for better touch targets */
+    border: none; /* Remove default border */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    font-size: 16px !important; /* Font size */
+    transition: background-color 0.3s, color 0.3s; /* Smooth transition for hover effects */
+}
+
+#confirmCancel {
+    background-color: #dc3545; 
+    color: white; 
+}
+
+#confirmCancel:hover {
+    background-color: #c82333; 
+}
+
+#closeModal {
+    background-color: #e2e2e2; 
+    color: black; 
+}
+
+#closeModal:hover {
+    background-color: #c5c5c5; 
+}
+
 #notification-container {
     position: fixed;
     top: 10px;
@@ -815,6 +872,9 @@ td.status-cell {
     gap: 10px;
     z-index: 9999;
 }
+
+
+
 
 .notification {
     border: 2px solid #ff6600;
@@ -874,7 +934,6 @@ td.status-cell {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.8);
     z-index: 10;
     box-sizing: border-box;
-    overflow: hidden;
 }
 
 .current-date-time {
@@ -1050,7 +1109,7 @@ td.status-cell {
 
 .total-label, .discount-label {
     text-align: right !important;
-  }
+}
 
 .action-buttons {
   display: flex;
@@ -1060,7 +1119,16 @@ td.status-cell {
 
 .right-buttons {
     margin-left: auto; /* Push the right buttons to the right */
-  }
+}
+
+.status-update-time {
+    margin-top: 20px; /* Set the top margin */
+    border-collapse: collapse; /* Collapse borders */
+    width: 50%; /* Set the table width to 50% */
+    margin-left: auto; /* Center the table */
+    margin-right: auto; /* Center the table */
+    background-color: #34495e !important; /* Set the background color */
+}
 
 .order-card h2 {
     margin: 0 0 10px;   
@@ -1072,8 +1140,8 @@ td.status-cell {
     border-radius: 5px;
     color: white;
     font-weight: bold;
-    font-size: larger;
-    border: 3px solid #ecf0f1; 
+    font-size: larger !important;
+    border: 3px solid #ecf0f1 !important; 
     text-transform: uppercase;
 }
 
@@ -1123,18 +1191,17 @@ td.status-cell {
     font-weight: bold; 
     margin: 0 5px; 
     font-size: 0.9rem; 
+    border: 2px solid black;
 }
 
-.question-icon i {
-    background-color: #f0f0f0; 
-    color: #333; 
-    font-weight: bold; 
+.hourglass-icon i {
+    background-color: orange; 
+    color: white; 
 }
 
 .fire-icon i {
     background-color: orangered; 
     color: white; 
-    font-weight: bold; 
 }
 
 .bell-icon i {
@@ -1220,17 +1287,17 @@ td.status-cell {
     background-color: rgba(75, 192, 192, 0.2); /* Match your background */
     padding: 10px;
     border-radius: 10px;
-  }
-  
-.status {
-    text-align: center;
-    font-size: 14px;
-    background: #1e2b37;
-    color: white;
-    border: 2px solid white;
+}
+
+.order-status-avg-time-label {
+    display: inline-block;
     padding: 10px 20px;
     border-radius: 5px;
-    display: inline-block;
+    color: white;
+    font-weight: bold;
+    border: 3px solid #ecf0f1 !important; 
+    text-transform: uppercase;
+    font-size: 14px !important;
 }
 
 .single-line {
