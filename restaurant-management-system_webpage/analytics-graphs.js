@@ -631,6 +631,9 @@ document.addEventListener("DOMContentLoaded", function() {
     let minValue = Infinity;
     let maxValue = -Infinity;
 
+    // Create a matrix to store pairing values
+    const pairingMatrix = Array.from({ length: menuItems.length }, () => Array(menuItems.length).fill(null));
+
     // Function to create and populate the heatmap
     function createHeatmap() {
         const heatmapContainer = document.getElementById('menu-pairings-heatmap');
@@ -657,20 +660,29 @@ document.addEventListener("DOMContentLoaded", function() {
             menuItems.forEach((colItem, colIndex) => {
                 const cell = document.createElement('td');
                 if (rowIndex !== colIndex) { // Avoid self-pairing
-                    const value = Math.floor(Math.random() * 301); // Replace with actual data
-
+                    let value;
+                    if (pairingMatrix[rowIndex][colIndex] === null) {
+                        // Generate a new random value and store it symmetrically
+                        value = Math.floor(Math.random() * 301);
+                        pairingMatrix[rowIndex][colIndex] = value;
+                        pairingMatrix[colIndex][rowIndex] = value;
+                    } else {
+                        // Use the existing symmetric value
+                        value = pairingMatrix[rowIndex][colIndex];
+                    }
+    
                     minValue = Math.min(minValue, value); // Update min value
                     maxValue = Math.max(maxValue, value); // Update max value
-
+    
                     document.getElementById('min-value').textContent = '(Lowest) ' + minValue;
                     document.getElementById('max-value').textContent = maxValue + ' (Highest)';
-
+    
                     // Set a timeout to delay the color setting
                     setTimeout(() => {
                         setCellColor(cell, value); // Set cell color based on value
                         cell.textContent = value; // Optional: Show the value in the cell
                     }, 1000); // 1000 milliseconds = 1 second
-
+    
                     // Add tooltip with custom theme
                     tippy(cell, {
                         content: `<strong>${rowItem}</strong> & <strong>${colItem}</strong><br>Pairings: ${value}`,
