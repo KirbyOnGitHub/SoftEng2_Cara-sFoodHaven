@@ -1238,7 +1238,7 @@ td.status-cell {
 
 .waste-icon i {
     background-color: white;
-    color: rgb(175, 175, 175); 
+    color: grey; 
     border: 2px solid grey;
 }
   
@@ -1404,4 +1404,16 @@ td.status-cell {
     height: 20px;
     border: 1px solid #ddd;
     border-radius: 5px;
+}
+
+.tippy-box[data-theme~='custom'] {
+    background-color: black; 
+    color: white; /* White text for contrast */
+    border-radius: 4px; /* Rounded corners */
+    padding: 8px; /* Padding for content */
+    font-size: 0.9em; /* Slightly smaller font size */
+}
+
+.tippy-box[data-theme~='custom'] .tippy-arrow {
+    color: black; /* Match arrow color with background */
 }

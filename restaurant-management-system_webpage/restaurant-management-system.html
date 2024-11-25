@@ -332,6 +332,59 @@
 
           <!-- ============================== -->
 
+          <!-- New Chart for Peak Hours and Days -->
+          <div class="analytics-card">
+            <h2>
+              <i class="fas fa-clock"></i>
+              PEAK HOURS AND DAYS
+              <i class="fas fa-clock"></i>
+            </h2>
+            <br>
+            <label for="peakHours-daySelect">Select Day:</label>
+            <select id="peakHours-daySelect">
+              <option value="Sunday">Sunday</option>
+              <option value="Monday">Monday</option>
+              <option value="Tuesday">Tuesday</option>
+              <option value="Wednesday">Wednesday</option>
+              <option value="Thursday">Thursday</option>
+              <option value="Friday">Friday</option>
+              <option value="Saturday">Saturday</option>
+            </select>
+            <br>
+            <br>
+            <canvas id="peakHoursChart"></canvas>
+          </div>
+
+          <!-- ============================== -->
+
+          <!-- New Chart for Menu Item Profit Margin -->
+          <div class="analytics-card">
+            <h2>
+              <i class="fas fa-chart-line"></i>
+              MENU ITEM PROFIT MARGIN
+              <i class="fas fa-chart-line"></i>
+            </h2>
+            <br>
+            <select id="profitMargin-yearSelect">
+              <option value="2024">2024</option>
+              <option value="2025">2025</option>
+              <option value="2026">2026</option>
+            </select>
+            <select id="profitMargin-categorySelect">
+              <option value="category1">Menu Category #1</option>
+              <option value="category2">Menu Category #2</option>
+              <option value="category3">Menu Category #3</option>
+            </select>
+            <select id="profitMargin-itemSelect">
+              <!-- Options will be populated dynamically -->
+            </select>
+            <br>
+            <br>
+            <canvas id="profitMarginChart"></canvas>
+          </div>          
+        
+          <!-- ============================== -->
+
           <!-- New Chart for Menu Item Orders -->
           <div class="analytics-card">
             <h2>
@@ -371,55 +424,6 @@
         
           <!-- ============================== -->
 
-          <!-- New Chart for Menu Item Profit Margin -->
-          <div class="analytics-card">
-            <h2>
-              <i class="fas fa-chart-line"></i>
-              MENU ITEM PROFIT MARGIN
-              <i class="fas fa-chart-line"></i>
-            </h2>
-            <br>
-            <select id="profitMargin-yearSelect">
-              <option value="2024">2024</option>
-              <option value="2025">2025</option>
-              <option value="2026">2026</option>
-            </select>
-            <select id="profitMargin-categorySelect">
-              <option value="category1">Menu Category #1</option>
-              <option value="category2">Menu Category #2</option>
-              <option value="category3">Menu Category #3</option>
-            </select>
-            <select id="profitMargin-itemSelect">
-              <!-- Options will be populated dynamically -->
-            </select>
-            <br>
-            <br>
-            <canvas id="profitMarginChart"></canvas>
-          </div>          
-        
-          <!-- ============================== -->
-
-          <!-- New Chart for Staff Orders -->
-          <div class="analytics-card">
-            <h2>
-                <i class="fas fa-user-tie"></i>
-                STAFF ORDERS ACCEPTED
-                <i class="fas fa-user-tie"></i>
-            </h2>
-            <br>
-            <label for="staffOrders-yearSelect">Select Year:</label>
-            <select id="staffOrders-yearSelect">
-                <option value="2024">2024</option>
-                <option value="2025">2025</option>
-                <option value="2026">2026</option>
-            </select>
-            <br>
-            <br>
-            <canvas id="staffOrdersChart"></canvas>
-          </div>
-
-          <!-- ============================== -->
-
           <!-- New Chart for Ingredient Usage Trends -->
           <div class="analytics-card">
             <h2>
@@ -453,28 +457,45 @@
           </div>
 
           <!-- ============================== -->
-
-          <!-- New Chart for Peak Hours and Days -->
+        
+          <!-- New Chart for Ingredient Waste -->
           <div class="analytics-card">
             <h2>
-              <i class="fas fa-clock"></i>
-              PEAK HOURS AND DAYS
-              <i class="fas fa-clock"></i>
+              <i class="fas fa-trash-alt"></i>
+              INGREDIENT WASTE ANALYSIS
+              <i class="fas fa-trash-alt"></i>
             </h2>
             <br>
-            <label for="peakHours-daySelect">Select Day:</label>
-            <select id="peakHours-daySelect">
-              <option value="Sunday">Sunday</option>
-              <option value="Monday">Monday</option>
-              <option value="Tuesday">Tuesday</option>
-              <option value="Wednesday">Wednesday</option>
-              <option value="Thursday">Thursday</option>
-              <option value="Friday">Friday</option>
-              <option value="Saturday">Saturday</option>
+            <select id="ingredientWaste-yearSelect">
+              <option value="2024">2024</option>
+              <option value="2025">2025</option>
+              <option value="2026">2026</option>
+            </select>
+            <select id="ingredientWaste-monthSelect">
+              <option value="0">January</option>
+              <option value="1">February</option>
+              <option value="2">March</option>
+              <option value="3">April</option>
+              <option value="4">May</option>
+              <option value="5">June</option>
+              <option value="6">July</option>
+              <option value="7">August</option>
+              <option value="8">September</option>
+              <option value="9">October</option>
+              <option value="10">November</option>
+              <option value="11">December</option>
+            </select>
+            <select id="ingredientWaste-categorySelect">
+              <option value="category1">Menu Category #1</option>
+              <option value="category2">Menu Category #2</option>
+              <option value="category3">Menu Category #3</option>
+            </select>
+            <select id="ingredientWaste-itemSelect">
+              <!-- Dynamically populated based on category -->
             </select>
             <br>
             <br>
-            <canvas id="peakHoursChart"></canvas>
+            <canvas id="ingredientWasteChart"></canvas>
           </div>
 
           <!-- ============================== -->
@@ -544,6 +565,27 @@
 
           <!-- ============================== -->
 
+          <!-- New Chart for Staff Orders -->
+          <div class="analytics-card">
+            <h2>
+                <i class="fas fa-user-tie"></i>
+                STAFF ORDERS ACCEPTED
+                <i class="fas fa-user-tie"></i>
+            </h2>
+            <br>
+            <label for="staffOrders-yearSelect">Select Year:</label>
+            <select id="staffOrders-yearSelect">
+                <option value="2024">2024</option>
+                <option value="2025">2025</option>
+                <option value="2026">2026</option>
+            </select>
+            <br>
+            <br>
+            <canvas id="staffOrdersChart"></canvas>
+          </div>
+
+          <!-- ============================== -->
+
           <!-- New Chart for Popular Menu Pairings (Heat Map) -->
           <div class="analytics-card">
             <h2>
@@ -583,6 +625,10 @@
     <!-- ============================================================ -->
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/tippy.css">
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script src="https://unpkg.com/tippy.js@6"></script>
 
     <script src="analytics-graphs.js"></script>
     

@@ -167,54 +167,90 @@ document.addEventListener("DOMContentLoaded", function() {
     //=============================================
     //=============================================
 
-    // Initialize the Menu Item Orders Chart
-    const ctxMenuItems = document.getElementById('menuItemOrdersChart').getContext('2d');
-    const menuItemsData = {
+    // Function to convert 24h to 12h format
+    function convertTo12Hour(hour) {
+        const ampm = hour < 12 ? 'AM' : 'PM';
+        const displayHour = hour === 0 ? 12 : (hour > 12 ? hour - 12 : hour);
+        return `${displayHour}:00 ${ampm}`;
+    }
+
+    // Initialize the Peak Hours and Days Chart
+    const ctxPeakHours = document.getElementById('peakHoursChart').getContext('2d');
+    const peakHoursData = {
+        labels: Array.from({ length: 24 }, (_, i) => `${i + 1}h`), // Keep original 1h-24h format
         datasets: [{
-            label: 'Menu Item Orders for 2024',
-            backgroundColor: 'rgba(153, 102, 255, 0.2)', // Specific background color
-            borderColor: 'rgba(153, 102, 255, 1)', // Specific border color
-            borderWidth: 1
+            label: 'Orders for Sunday',
+            data: generateRandomOrdersData(),
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 1,
+            fill: true
         }]
     };
 
-    // Create the Menu Item Orders Chart
-    const menuItemOrdersChart = createChart(ctxMenuItems, 'bar', menuItemsData);
-
-    // Update chart data based on selected year, month, and category
-    document.getElementById('menuItemsOrdered-yearSelect').addEventListener('change', updateMenuItemChart);
-    document.getElementById('menuItemsOrdered-monthSelect').addEventListener('change', updateMenuItemChart);
-    document.getElementById('menuItemsOrdered-categorySelect').addEventListener('change', updateMenuItemChart);
-
-    function updateMenuItemChart() {
-        const selectedYear = document.getElementById('menuItemsOrdered-yearSelect').value;
-        const selectedMonth = document.getElementById('menuItemsOrdered-monthSelect').value;
-        const selectedCategory = document.getElementById('menuItemsOrdered-categorySelect').value;
-
-        let labels = [];
-        let data = [];
-
-        // Set labels and data based on selected category
-        if (selectedCategory === 'category1') {
-            labels = ['Item #1', 'Item #2', 'Item #3', 'Item #4', 'Item #5', 'Item #6', 'Item #7', 'Item #8'];
-            data = generateRandomData(labels.length); // Generate random data based on the number of labels
-        } else if (selectedCategory === 'category2') {
-            labels = ['Item #9', 'Item #10', 'Item #11', 'Item #12', 'Item #13', 'Item #14', 'Item #15', 'Item #16'];
-            data = generateRandomData(labels.length); // Generate random data based on the number of labels
-        } else if (selectedCategory === 'category3') {
-            labels = ['Item #17', 'Item #18', 'Item #19', 'Item #20', 'Item #21', 'Item #22', 'Item #23', 'Item #24'];
-            data = generateRandomData(labels.length); // Generate random data based on the number of labels
+    // Create the Peak Hours and Days Chart with custom tooltip
+    const peakHoursChart = new Chart(ctxPeakHours, {
+        type: 'line',
+        data: peakHoursData,
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        color: 'white'
+                    },
+                    grid: {
+                        color: 'rgba(47, 79, 79, 0.8)'
+                    }
+                },
+                x: {
+                    ticks: {
+                        color: 'white'
+                    },
+                    grid: {
+                        color: 'rgba(47, 79, 79, 0.8)'
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    labels: {
+                        color: 'white'
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        title: function(tooltipItems) {
+                            const hour = parseInt(tooltipItems[0].label.replace('h', ''));
+                            return convertTo12Hour(hour);
+                        },
+                        label: function(context) {
+                            return `Orders: ${context.raw}`;
+                        }
+                    }
+                }
+            }
         }
+    });
 
-        // Update the chart with new labels and data
-        menuItemOrdersChart.data.labels = labels;
-        menuItemOrdersChart.data.datasets[0].data = data;
-        menuItemOrdersChart.data.datasets[0].label = `Menu Item Orders for ${selectedYear} - ${document.getElementById('menuItemsOrdered-monthSelect').options[selectedMonth].text}`;
-        menuItemOrdersChart.update();
+    // Add event listener for the day select element
+    document.getElementById('peakHours-daySelect').addEventListener('change', updatePeakHoursChart);
+
+    // Function to generate random orders data for 24 hours
+    function generateRandomOrdersData() {
+        return Array.from({ length: 24 }, () => Math.floor(Math.random() * 100) + 1);
     }
 
-    // Initial update for the menu item chart
-    updateMenuItemChart();
+    // Function to update the Peak Hours and Days Chart
+    function updatePeakHoursChart() {
+        const newData = generateRandomOrdersData();
+        peakHoursChart.data.datasets[0].data = newData;
+        peakHoursChart.data.datasets[0].label = `Orders for ${document.getElementById('peakHours-daySelect').value}`;
+        peakHoursChart.update();
+    }
+
+    // Initial update for the peak hours chart
+    updatePeakHoursChart();
     
     //=============================================
     //=============================================
@@ -260,7 +296,7 @@ document.addEventListener("DOMContentLoaded", function() {
             const totalProfits = [];
             
             for (let month = 0; month < 12; month++) {
-                const cost = Math.floor(Math.random() * 100); // Random cost between 0 and 99
+                const cost = Math.floor(Math.random() * 100) + 1; // Random cost between 0 and 100
                 const sellingPrice = cost + Math.floor(Math.random() * 201) + 50; // Selling price between cost + 50 and cost + 250
                 const profitPerOrder = sellingPrice - cost; // Profit per order
                 const numberOfOrders = Math.floor(Math.random() * 100) + 1; // Random number of orders between 1 and 100
@@ -327,59 +363,54 @@ document.addEventListener("DOMContentLoaded", function() {
     //=============================================
     //=============================================
 
-    // Define the number of staff members
-    const NUMBER_OF_STAFF = 5; // Change this value to adjust the number of staff members
+    // Initialize the Menu Item Orders Chart
+    const ctxMenuItems = document.getElementById('menuItemOrdersChart').getContext('2d');
+    const menuItemsData = {
+        datasets: [{
+            label: 'Menu Item Orders for 2024',
+            backgroundColor: 'rgba(153, 102, 255, 0.2)', // Specific background color
+            borderColor: 'rgba(153, 102, 255, 1)', // Specific border color
+            borderWidth: 1
+        }]
+    };
 
-    // Function to initialize the Staff Orders Chart
-    function initializeStaffOrdersChart() {
-        const ctxStaffOrders = document.getElementById('staffOrdersChart').getContext('2d');
-        const staffOrdersData = {
-            labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-            datasets: []
-        };
+    // Create the Menu Item Orders Chart
+    const menuItemOrdersChart = createChart(ctxMenuItems, 'bar', menuItemsData);
 
-        // Create datasets for the defined number of staff members
-        for (let i = 1; i <= NUMBER_OF_STAFF; i++) {
-            staffOrdersData.datasets.push({
-                label: `Staff Member ${i}`,
-                data: [], // Will be filled with random order counts
-                borderColor: `rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, 1)`, // Random color for each staff member
-                borderWidth: 2,
-                fill: false // No fill for line chart
-            });
+    // Update chart data based on selected year, month, and category
+    document.getElementById('menuItemsOrdered-yearSelect').addEventListener('change', updateMenuItemChart);
+    document.getElementById('menuItemsOrdered-monthSelect').addEventListener('change', updateMenuItemChart);
+    document.getElementById('menuItemsOrdered-categorySelect').addEventListener('change', updateMenuItemChart);
+
+    function updateMenuItemChart() {
+        const selectedYear = document.getElementById('menuItemsOrdered-yearSelect').value;
+        const selectedMonth = document.getElementById('menuItemsOrdered-monthSelect').value;
+        const selectedCategory = document.getElementById('menuItemsOrdered-categorySelect').value;
+
+        let labels = [];
+        let data = [];
+
+        // Set labels and data based on selected category
+        if (selectedCategory === 'category1') {
+            labels = ['Item #1', 'Item #2', 'Item #3', 'Item #4', 'Item #5', 'Item #6', 'Item #7', 'Item #8'];
+            data = generateRandomData(labels.length); // Generate random data based on the number of labels
+        } else if (selectedCategory === 'category2') {
+            labels = ['Item #9', 'Item #10', 'Item #11', 'Item #12', 'Item #13', 'Item #14', 'Item #15', 'Item #16'];
+            data = generateRandomData(labels.length); // Generate random data based on the number of labels
+        } else if (selectedCategory === 'category3') {
+            labels = ['Item #17', 'Item #18', 'Item #19', 'Item #20', 'Item #21', 'Item #22', 'Item #23', 'Item #24'];
+            data = generateRandomData(labels.length); // Generate random data based on the number of labels
         }
 
-        // Create the Staff Orders Chart
-        const staffOrdersChart = createChart(ctxStaffOrders, 'line', staffOrdersData);
-
-        // Update chart data based on selected year
-        document.getElementById('staffOrders-yearSelect').addEventListener('change', updateStaffOrdersChart);
-
-        function updateStaffOrdersChart() {
-            const selectedYear = document.getElementById('staffOrders-yearSelect').value;
-
-            // Generate random order counts for each staff member for each month
-            const staffOrdersCounts = Array.from({ length: NUMBER_OF_STAFF }, () => []); // Array to hold counts for the defined number of staff members
-            for (let month = 0; month < 12; month++) {
-                for (let staffIndex = 0; staffIndex < NUMBER_OF_STAFF; staffIndex++) {
-                    const randomOrders = Math.floor(Math.random() * 50); // Random orders between 0 and 49
-                    staffOrdersCounts[staffIndex].push(randomOrders);
-                }
-            }
-
-            // Update the chart with new data
-            staffOrdersCounts.forEach((counts, index) => {
-                staffOrdersChart.data.datasets[index].data = counts; // Update each staff member's data
-            });
-            staffOrdersChart.update();
-        }
-
-        // Initial update for the staff orders chart
-        updateStaffOrdersChart();
+        // Update the chart with new labels and data
+        menuItemOrdersChart.data.labels = labels;
+        menuItemOrdersChart.data.datasets[0].data = data;
+        menuItemOrdersChart.data.datasets[0].label = `Menu Item Orders for ${selectedYear} - ${document.getElementById('menuItemsOrdered-monthSelect').options[selectedMonth].text}`;
+        menuItemOrdersChart.update();
     }
 
-    // Call the function to initialize the Staff Orders Chart
-    initializeStaffOrdersChart();
+    // Initial update for the menu item chart
+    updateMenuItemChart();
     
     //=============================================
     //=============================================
@@ -428,41 +459,73 @@ document.addEventListener("DOMContentLoaded", function() {
     //=============================================
     //=============================================
 
-    // Initialize the Peak Hours and Days Chart
-    const ctxPeakHours = document.getElementById('peakHoursChart').getContext('2d');
-    const peakHoursData = {
-        labels: Array.from({ length: 24 }, (_, i) => `${i + 1}h`), // Labels for 1-24 hours
+    // Initialize the Ingredient Waste Chart
+    const ctxIngredientWaste = document.getElementById('ingredientWasteChart').getContext('2d');
+    const ingredientWasteData = {
+        labels: Array.from({ length: 18 }, (_, i) => `Ing. #${i + 1}`),
         datasets: [{
-            label: 'Orders for Sunday', // Default label
-            data: generateRandomOrdersData(), // Generate initial random data
-            backgroundColor: 'rgba(75, 192, 192, 0.2)', // Background color
-            borderColor: 'rgba(75, 192, 192, 1)', // Border color
-            borderWidth: 1,
-            fill: true // Fill under the line
+            label: 'Ingredient Waste for 2024',
+            backgroundColor: 'rgba(255, 99, 132, 0.2)', // Light red for waste
+            borderColor: 'rgba(255, 99, 132, 1)',
+            borderWidth: 1
         }]
     };
 
-    // Create the Peak Hours and Days Chart
-    const peakHoursChart = createChart(ctxPeakHours, 'line', peakHoursData);
+    // Create the Ingredient Waste Chart
+    const ingredientWasteChart = createChart(ctxIngredientWaste, 'bar', ingredientWasteData);
 
-    // Add event listener for the day select element
-    document.getElementById('peakHours-daySelect').addEventListener('change', updatePeakHoursChart);
+    // Add event listeners for all select elements
+    document.getElementById('ingredientWaste-yearSelect').addEventListener('change', updateIngredientWasteChart);
+    document.getElementById('ingredientWaste-monthSelect').addEventListener('change', updateIngredientWasteChart);
+    document.getElementById('ingredientWaste-categorySelect').addEventListener('change', updateIngredientWasteOptions);
+    document.getElementById('ingredientWaste-itemSelect').addEventListener('change', updateIngredientWasteChart);
 
-    // Function to generate random orders data for 24 hours
-    function generateRandomOrdersData() {
-        return Array.from({ length: 24 }, () => Math.floor(Math.random() * 100)); // Random values between 0 and 99 for each hour
+    function updateIngredientWasteOptions() {
+        const categorySelect = document.getElementById('ingredientWaste-categorySelect');
+        const itemSelect = document.getElementById('ingredientWaste-itemSelect');
+        const selectedCategory = categorySelect.value;
+        let items = [];
+
+        // Set items based on selected category
+        if (selectedCategory === 'category1') {
+            items = ['Item #1', 'Item #2', 'Item #3', 'Item #4', 'Item #5', 'Item #6', 'Item #7', 'Item #8'];
+        } else if (selectedCategory === 'category2') {
+            items = ['Item #9', 'Item #10', 'Item #11', 'Item #12', 'Item #13', 'Item #14', 'Item #15', 'Item #16'];
+        } else if (selectedCategory === 'category3') {
+            items = ['Item #17', 'Item #18', 'Item #19', 'Item #20', 'Item #21', 'Item #22', 'Item #23', 'Item #24'];
+        }
+
+        // Clear and populate item select
+        itemSelect.innerHTML = '';
+        items.forEach(item => {
+            const option = document.createElement('option');
+            option.value = item;
+            option.textContent = item;
+            itemSelect.appendChild(option);
+        });
+
+        // Update chart after changing options
+        updateIngredientWasteChart();
     }
 
-    // Function to update the Peak Hours and Days Chart
-    function updatePeakHoursChart() {
-        const newData = generateRandomOrdersData(); // Generate new random data
-        peakHoursChart.data.datasets[0].data = newData; // Update the chart data
-        peakHoursChart.data.datasets[0].label = `Orders for ${document.getElementById('peakHours-daySelect').value}`; // Update label
-        peakHoursChart.update(); // Refresh the chart
+    function updateIngredientWasteChart() {
+        const selectedYear = document.getElementById('ingredientWaste-yearSelect').value;
+        const selectedMonth = document.getElementById('ingredientWaste-monthSelect').value;
+        const selectedCategory = document.getElementById('ingredientWaste-categorySelect').value;
+        const selectedItem = document.getElementById('ingredientWaste-itemSelect').value;
+
+        // Generate random waste data for each ingredient (0-10 units wasted)
+        const wasteData = Array.from({ length: 18 }, () => Math.floor(Math.random() * 101));
+
+        // Update the chart
+        ingredientWasteChart.data.datasets[0].data = wasteData;
+        ingredientWasteChart.data.datasets[0].label = `Ingredient Waste for ${selectedYear} - ${document.getElementById('ingredientWaste-monthSelect').options[selectedMonth].text} - ${selectedItem}`;
+        ingredientWasteChart.update();
     }
 
-    // Initial update for the peak hours chart
-    updatePeakHoursChart();
+    // Initial updates
+    updateIngredientWasteOptions();
+    updateIngredientWasteChart();
     
     //=============================================
     //=============================================
@@ -503,6 +566,64 @@ document.addEventListener("DOMContentLoaded", function() {
     //=============================================
     //=============================================
 
+    // Define the number of staff members
+    const NUMBER_OF_STAFF = 5; // Change this value to adjust the number of staff members
+
+    // Function to initialize the Staff Orders Chart
+    function initializeStaffOrdersChart() {
+        const ctxStaffOrders = document.getElementById('staffOrdersChart').getContext('2d');
+        const staffOrdersData = {
+            labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+            datasets: []
+        };
+
+        // Create datasets for the defined number of staff members
+        for (let i = 1; i <= NUMBER_OF_STAFF; i++) {
+            staffOrdersData.datasets.push({
+                label: `Staff Member #${i}`,
+                data: [], // Will be filled with random order counts
+                borderColor: `rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, 1)`, // Random color for each staff member
+                borderWidth: 2,
+                fill: false // No fill for line chart
+            });
+        }
+
+        // Create the Staff Orders Chart
+        const staffOrdersChart = createChart(ctxStaffOrders, 'line', staffOrdersData);
+
+        // Update chart data based on selected year
+        document.getElementById('staffOrders-yearSelect').addEventListener('change', updateStaffOrdersChart);
+
+        function updateStaffOrdersChart() {
+            const selectedYear = document.getElementById('staffOrders-yearSelect').value;
+
+            // Generate random order counts for each staff member for each month
+            const staffOrdersCounts = Array.from({ length: NUMBER_OF_STAFF }, () => []); // Array to hold counts for the defined number of staff members
+            for (let month = 0; month < 12; month++) {
+                for (let staffIndex = 0; staffIndex < NUMBER_OF_STAFF; staffIndex++) {
+                    const randomOrders = Math.floor(Math.random() * 50); // Random orders between 0 and 49
+                    staffOrdersCounts[staffIndex].push(randomOrders);
+                }
+            }
+
+            // Update the chart with new data
+            staffOrdersCounts.forEach((counts, index) => {
+                staffOrdersChart.data.datasets[index].data = counts; // Update each staff member's data
+            });
+            staffOrdersChart.update();
+        }
+
+        // Initial update for the staff orders chart
+        updateStaffOrdersChart();
+    }
+
+    // Call the function to initialize the Staff Orders Chart
+    initializeStaffOrdersChart();
+    
+    //=============================================
+    //=============================================
+    //=============================================
+
     // Example menu items (replace with your actual menu items)
     const menuItems = ['Item #1', 'Item #2', 'Item #3', 'Item #4', 'Item #5', 'Item #6', 'Item #7', 'Item #8', 'Item #9', 'Item #10'];
 
@@ -536,19 +657,26 @@ document.addEventListener("DOMContentLoaded", function() {
             menuItems.forEach((colItem, colIndex) => {
                 const cell = document.createElement('td');
                 if (rowIndex !== colIndex) { // Avoid self-pairing
-                    const value = Math.floor(Math.random() * 100); // Replace with actual data
+                    const value = Math.floor(Math.random() * 301); // Replace with actual data
 
                     minValue = Math.min(minValue, value); // Update min value
                     maxValue = Math.max(maxValue, value); // Update max value
 
                     document.getElementById('min-value').textContent = '(Lowest) ' + minValue;
                     document.getElementById('max-value').textContent = maxValue + ' (Highest)';
-            
+
                     // Set a timeout to delay the color setting
                     setTimeout(() => {
                         setCellColor(cell, value); // Set cell color based on value
                         cell.textContent = value; // Optional: Show the value in the cell
                     }, 1000); // 1000 milliseconds = 1 second
+
+                    // Add tooltip with custom theme
+                    tippy(cell, {
+                        content: `<strong>${rowItem}</strong> & <strong>${colItem}</strong><br>Pairings: ${value}`,
+                        theme: 'custom',
+                        allowHTML: true, // Enable HTML parsing
+                    });
                 }
                 row.appendChild(cell);
             });
@@ -586,7 +714,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
         for (let i = 0; i <= gradientSteps; i++) {
             const ratio = i / gradientSteps; // Normalize between 0 and 1
-            const value = ratio * 100; // Convert ratio to the range [0, 100]
+            const value = minValue + ratio * (maxValue - minValue); // Dynamic range based on minValue and maxValue
             const color = valueToColor(value, minValue, maxValue); // Use the same color function for heatmap
             colorStops.push(`${color} ${(i / gradientSteps) * 100}%`);
         }
