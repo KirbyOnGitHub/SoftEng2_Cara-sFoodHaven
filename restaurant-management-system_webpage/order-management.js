@@ -275,50 +275,38 @@ document.addEventListener('DOMContentLoaded', () => {
       
       // Create an object to hold wasted ingredients data
       const wastedIngredientsData = {};
-  
+
       rows.forEach(row => {
-          const ingredientCell = row.cells[0]; // First cell contains ingredient info
-          const quantityInput = row.cells[1].querySelector('input[type="number"]'); // Quantity input
+          const ingredientCell = row.cells[0];
+          const quantityInput = row.cells[1].querySelector('input[type="number"]');
   
           if (ingredientCell && quantityInput) {
-              const ingredientIDMatch = ingredientCell.textContent.match(/\[(\d+)\]/); // Extract ID from the text
+              const ingredientIDMatch = ingredientCell.textContent.match(/\[(\d+)\]/);
               if (ingredientIDMatch) {
-                  const ingredientID = ingredientIDMatch[1]; // Get the ingredient ID
-                  const quantityWasted = parseFloat(quantityInput.value); // Get the quantity wasted
-  
-                  // Store the data in the object
+                  const ingredientID = ingredientIDMatch[1];
+                  const quantityWasted = parseFloat(quantityInput.value);
                   wastedIngredientsData[ingredientID] = quantityWasted;
               }
           }
       });
   
-      // Assign the data to the clicked menu item row
-      const clickedRow = document.querySelector('.clicked-menu-item-row'); // Get the clicked row
+      const clickedRow = document.querySelector('.clicked-menu-item-row');
       if (clickedRow) {
-          const previousData = JSON.parse(clickedRow.getAttribute('data-wasted-ingredients') || '{}');
-          const newData = wastedIngredientsData;
-  
-          const hadWastedIngredients = Object.values(previousData).some(value => parseFloat(value) > 0);
-          const hasWastedIngredients = Object.values(newData).some(value => parseFloat(value) > 0);
-  
-          // Extract the menu item name
           const menuItemName = clickedRow.querySelector('.icon-container').lastChild.textContent.trim();
+          const hasWastedIngredients = Object.values(wastedIngredientsData).some(value => parseFloat(value) > 0);
   
-          // Notification for having some ingredients wasted
-          if (hasWastedIngredients && !hadWastedIngredients) {
+          // Show appropriate notification based on whether there are wasted ingredients
+          if (hasWastedIngredients) {
               showNotification(`Successfully assigned some wasted ingredients on "${menuItemName}".`);
-          }
-  
-          // Notification for resetting all wasted ingredients to zero
-          if (!hasWastedIngredients && hadWastedIngredients) {
+          } else {
               showNotification(`Successfully reset wasted ingredients for "${menuItemName}" to none.`);
           }
   
           // Store as JSON string
-          clickedRow.setAttribute('data-wasted-ingredients', JSON.stringify(wastedIngredientsData)); 
+          clickedRow.setAttribute('data-wasted-ingredients', JSON.stringify(wastedIngredientsData));
       }
   
-      updateWasteIconStyles(); // Update styles after confirming
+      updateWasteIconStyles();
   
       // Close the modal after confirming
       const modal = document.getElementById('wasted-ingredients-modal');
