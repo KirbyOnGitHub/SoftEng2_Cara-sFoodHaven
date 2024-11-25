@@ -319,7 +319,6 @@ function menuItem_tableRowClicked(dataRow, row) {
         // Add the unit below the quantity input
         const unitSpan = document.createElement("span");
         unitSpan.textContent = ingredientUnit;
-        qtyCell.appendChild(document.createElement("br")); // Line break for better layout
         qtyCell.appendChild(unitSpan);
 
         // Set the 3rd column with just the [ID] INGREDIENT
