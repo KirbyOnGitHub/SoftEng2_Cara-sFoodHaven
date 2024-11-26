@@ -62,26 +62,26 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
 
         <table id="order-card-details">
-          ${orderData.orderDateTime ? `
           <tr>
             <td>Order Date & Time:</td>
-            <td>${orderData.orderDateTime}</td>
-          </tr>` : ''}
-          ${orderData.orderType ? `
+            <td>${orderData.orderDateTime || 'N/A'}</td>
+          </tr>
           <tr>
             <td>Order Type:</td>
-            <td>${orderData.orderType}</td>
-          </tr>` : ''}
-          ${orderData.orderTableNum ? `
+            <td>${orderData.orderType || 'N/A'}</td>
+          </tr>
           <tr>
             <td>Table Number:</td>
-            <td>${orderData.orderTableNum}</td>
-          </tr>` : ''}
-          ${orderData.addressLine ? `
+            <td>${orderData.orderTableNum || 'N/A'}</td>
+          </tr>
           <tr>
             <td>Address:</td>
-            <td>${orderData.addressLine}</td>
-          </tr>` : ''}
+            <td>${orderData.addressLine || 'N/A'}</td>
+          </tr>
+          <tr>
+            <td>Contact Number:</td>
+            <td>${orderData.contactNum || 'N/A'}</td>
+          </tr>
         </table>
 
         <table class="order-table">
@@ -102,7 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
           </tr>
         </table>
         <button class="action-btn cancel" 
-          ${orderData.status === 'COMPLETE' || orderData.status === 'CANCELED' ? 'style="display:none;"' : ''}>
+          ${orderData.status === 'PREPARING' || orderData.status === 'READY FOR PICKUP' || orderData.status === 'COMPLETE' || orderData.status === 'CANCELED' ? 'style="display:none;"' : ''}>
           CANCEL ORDER
         </button>
       `;
