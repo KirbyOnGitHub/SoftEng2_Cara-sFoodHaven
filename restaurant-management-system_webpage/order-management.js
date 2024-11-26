@@ -802,21 +802,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /*============================================================*/
 
-    // Fetch orders from the server
-    fetch('management.php?action=get_orders')
-      .then(response => response.json())
-      .then(data => {
-          if (data.success) {
-              // Add each order card using the formatted data from the server
-              data.orders.forEach(orderData => {
-                  addNewOrderCard(orderData);
-              });
-          } else {
-              console.error('Failed to load orders:', data.message);
-          }
-      })
-      .catch(error => console.error('Error loading orders:', error));
-
-    /*============================================================*/
-
   });

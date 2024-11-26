@@ -57,66 +57,71 @@ function sanitizeInput($data, $conn) {
 
 /////// ORDER MANAGEMENT FUNCTIONALITY BY SEAN///////////
 
-// Add this function after your database query
-function formatOrderData($row) {
-    // Format menu items from the database results
-    $menuItems = [];
-    if (isset($row['menu_items'])) {
-        foreach ($row['menu_items'] as $item) {
-            $menuItems[] = [
-                'name' => $item['name'],
-                'price' => floatval($item['price']),
-                'quantity' => intval($item['quantity'])
-            ];
-        }
-    }
 
-    // Create the formatted order data structure
-    return [
-        'id' => intval($row['ID']),
-        'status' => $row['order_status'],
-        'statusText' => ucwords(strtolower(str_replace('_', ' ', $row['order_status']))),
-        'orderDateTime' => $row['date_ordered'],
-        'orderType' => $row['order_type'],
-        'orderTableNum' => $row['order_type'] === 'DINE_IN' ? $row['table_number'] : null,
-        'addressLine' => $row['order_type'] === 'DELIVERY' ? $row['address'] : null,
-        'contactNum' => isset($row['contact_number']) ? $row['contact_number'] : null,
-        'menuItems' => $menuItems,
-        'discountCode' => $row['discount_code'] ?? null
-    ];
-}
-
-// Fetch orders from the server
-fetch('management.php?action=get_orders')
-  .then(response => response.json())
-  .then(data => {
-      if (data.success) {
-          // Add each order card using the formatted data from the server
-          data.orders.forEach(orderData => {
-              addNewOrderCard(orderData);
-          });
-      } else {
-          console.error('Failed to load orders:', data.message);
-      }
-  })
-  .catch(error => console.error('Error loading orders:', error));
-
-/*============================================================*/
-
-// Modify your existing database fetch code
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['action'] === 'get_orders') {
     try {
-        // ... your existing database query code ...
-
+        // When inserting into order_items
+        $pendingStatusId = 1; // Assuming 'PENDING' has ID 1
+        $insertOrderItemsSql = "INSERT INTO order_items (order_ID, menu_item_ID, quantity, price_at_time, status_id) VALUES (?, ?, ?, ?, ?)";
+        $stmt = $conn->prepare($insertOrderItemsSql);
+        $stmt->bind_param('iiidi', $orderId, $menuItemId, $quantity, $priceAtTime, $pendingStatusId);
+        $status = isset($_GET['status']) ? sanitizeInput($_GET['status'], $conn) : 'PENDING';
+        $statusCondition = $status === 'ALL' ? '' : 'WHERE o.order_status = ?';
+        
+        $sql = "SELECT o.*, c.firstName, c.lastName, c.contactNumber, c.email,
+               mi.ID as menu_item_id, mi.name as item_name, mi.price, oi.quantity,
+               mis.status_name as menu_item_status
+        FROM `order` o
+        LEFT JOIN customer c ON o.customer_ID = c.ID
+        LEFT JOIN order_items oi ON o.ID = oi.order_ID
+        LEFT JOIN menu_item mi ON oi.menu_item_ID = mi.ID
+        LEFT JOIN menu_item_status mis ON oi.status_id = mis.ID
+        $statusCondition
+        ORDER BY o.date_ordered DESC";
+        
+        $stmt = $conn->prepare($sql);
+        if ($status !== 'ALL') {
+            $stmt->bind_param('s', $status);
+        }
+        $stmt->execute();
+        $result = $stmt->get_result();
+        
         $orders = [];
         while ($row = $result->fetch_assoc()) {
-            // Format the order data
-            $formattedOrder = formatOrderData($row);
-            $orders[] = $formattedOrder;
+            if (!isset($orders[$row['ID']])) {
+                $orders[$row['ID']] = [
+                    'id' => $row['ID'],
+                    'status' => $row['order_status'], // Add this line
+                    'order_status' => $row['order_status'],
+                    'order_type' => $row['order_type'],
+                    'date_ordered' => $row['date_ordered'],
+                    'total_price' => $row['total_price'],
+                    'discount_code' => $row['discount_code'],
+                    'customerName' => $row['firstName'] && $row['lastName'] 
+                        ? $row['firstName'] . ' ' . $row['lastName']
+                        : 'Guest Customer',
+                    'contactInfo' => [
+                        'phone' => $row['contactNumber'] ?? 'N/A',
+                        'email' => $row['email'] ?? 'N/A',
+                        'address' => $row['address'] ?? 'N/A'
+                    ],
+                    'menuItems' => []
+                ];
+            }
+            
+            if ($row['menu_item_id']) {
+                $orders[$row['ID']]['menuItems'][] = [
+                    'id' => $row['menu_item_id'],
+                    'name' => $row['item_name'],
+                    'price' => $row['price'],
+                    'quantity' => $row['quantity'],
+                    'menu_item_status' => $row['menu_item_status'] ?? 'PENDING'
+                ];
+            }
         }
-
-        // Send the formatted orders back to JavaScript
-        sendJsonResponse(['success' => true, 'orders' => $orders]);
+        
+        sendJsonResponse(['success' => true, 'orders' => array_values($orders)]);
+        
     } catch (Exception $e) {
         sendJsonResponse(['success' => false, 'message' => $e->getMessage()], 500);
     }
@@ -5030,165 +5035,12 @@ function loadOrders(status = 'PENDING') {
         .catch(error => console.error('Error loading orders:', error));
 }
 
-/**
- * Updates the order counts in the filter buttons.
- * @param {Array} orders - The array of order objects.
- */
-
- function updateOrderCounts(orders) {
-    // Declare counts at the top
-    let counts = {
-        'ALL': 0,
-        'PENDING': 0,
-        'PREPARING': 0,
-        'READY_FOR_PICKUP': 0,
-        'COMPLETE': 0,
-        'CANCELED': 0
-    };
-
-    if (!orders || !Array.isArray(orders)) {
-        // If orders are not provided, fetch counts from the server
-        fetch('management.php?action=get_order_counts')
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    counts = data.counts;
-                    updateCountsDisplay(counts);
-                } else {
-                    console.error('Failed to load order counts:', data.message);
-                }
-            })
-            .catch(error => console.error('Error fetching counts:', error));
-        return;
-    }
-
-    // If orders are provided, calculate counts
-    counts['ALL'] = orders.length;
-
-    orders.forEach(order => {
-        if (counts.hasOwnProperty(order.status)) {
-            counts[order.status]++;
-        }
-    });
-
-    // Update the counts in the filter buttons
-    updateCountsDisplay(counts);
-}
-function updateCountsDisplay(counts) {
-    Object.keys(counts).forEach(status => {
-        const button = document.querySelector(`.filter-btn[data-status="${status}"]`);
-        if (button) {
-            const countSpan = button.querySelector('.count');
-            if (countSpan) {
-                countSpan.textContent = counts[status];
-            }
-        }
-    });
-}
-/**
- * Formats the status text for display.
- * @param {string} status - The order status.
- * @returns {string} - Formatted status text.
- */
-function formatStatusText(status) {
-    return status.replace(/_/g, ' ').replace(/\b\w/g, char => char.toUpperCase());
-}
-
-/**
- * Handles updating the order status via AJAX.
- * @param {number} orderId - The ID of the order to update.
- * @param {string} newStatus - The new status to set.
- */
-function updateOrderStatus(orderId, newStatus) {
-    // Disable buttons to prevent multiple clicks
-    const card = document.querySelector(`[data-id="${orderId}"]`);
-    if (card) {
-        const buttons = card.querySelectorAll('.action-btn');
-        buttons.forEach(btn => btn.disabled = true);
-    }
-
-    fetch('management.php', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            action: 'update_order_status',
-            orderId: orderId,
-            status: newStatus
-        })
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return response.json();
-    })
-    .then(data => {
-        if (data.success) {
-            // Update the counts
-            if (data.counts) {
-            updateCountsDisplay(data.counts);
-        }
-            // Reload orders for the current active tab
-            const activeStatus = document.querySelector('.filter-btn.active').getAttribute('data-status');
-            loadOrders(activeStatus);
-        } else {
-            alert('Failed to update order status: ' + (data.message || 'Unknown error'));
-        }
-    })
-    .catch(error => {
-        console.error('Error updating order status:', error);
-        alert('An error occurred while updating the order status.');
-    })
-    .finally(() => {
-        // Re-enable buttons
-        if (card) {
-            const buttons = card.querySelectorAll('.action-btn');
-            buttons.forEach(btn => btn.disabled = false);
-        }
-    });
-}
 
 
-function handleUpdate(card) {
-    const orderId = card.getAttribute('data-id');
-    const currentStatus = card.getAttribute('data-status');
-    let newStatus;
-
-    console.log(`handleUpdate called for Order ID: ${orderId}, Current Status: ${currentStatus}`);
-
-    switch (currentStatus) {
-        case 'PENDING':
-            newStatus = 'PREPARING';
-            break;
-        case 'PREPARING':
-            newStatus = 'READY_FOR_PICKUP';
-            break;
-        case 'READY_FOR_PICKUP':
-            newStatus = 'COMPLETE';
-            break;
-        default:
-            console.error('Invalid current status:', currentStatus);
-            return;
-    }
-
-    updateOrderStatus(orderId, newStatus);
-}
 
 
-/**
- * Handles canceling the order.
- * @param {HTMLElement} card - The order card element.
- */
 
- function handleCancel(card) {
-    const orderId = card.getAttribute('data-id');
-    if (confirm('Are you sure you want to cancel this order?')) {
-        console.log(`handleCancel called for Order ID: ${orderId}`);
-        updateOrderStatus(orderId, 'CANCELED');
-    }
-}
+/*============================================================*/
 
 function addNewOrderCard(orderData) {
     const ordersContainer = document.querySelector('.orders-container');
@@ -5202,216 +5054,181 @@ function addNewOrderCard(orderData) {
     newCard.setAttribute('data-status', orderData.status);
     newCard.setAttribute('data-id', orderData.id);
 
-    // Create menu items HTML
-    let menuItemsHtml;
+    const nextStatusClass = getNextStatusClass(orderData.status); // Get the next status class
 
-    if (orderData.status === 'PREPARING') {
-        // For 'PREPARING' status, include buttons for each menu item
-        menuItemsHtml = `
-            <table class="order-items">
-                <thead>
-                    <tr>
-                        <th>Menu Item</th>
-                        <th>Price</th>
-                        <th>Quantity</th>
-                        <th>Subtotal</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${orderData.menuItems.map(item => `
-                        <tr data-menu-item-id="${item.id}">
-                            <td>${item.name}</td>
-                            <td>Php ${parseFloat(item.price).toFixed(2)}</td>
-                            <td>${item.quantity}</td>
-                            <td>Php ${(parseFloat(item.price) * item.quantity).toFixed(2)}</td>
-                            <td>
-                                <button class="menu-item-status-btn" data-status="${item.menu_item_status}">
-                                    ${item.menu_item_status}
-                                </button>
-                            </td>
-                        </tr>
-                    `).join('')}
-                    <tr>
-                        <td colspan="4" style="text-align: right;"><strong>TOTAL</strong></td>
-                        <td>Php ${orderData.total.toFixed(2)}</td>
-                    </tr>
-                    ${orderData.discountCode ? `
-                        <tr>
-                            <td colspan="4" style="text-align: right;"><em>Discount Code</em></td>
-                            <td>${orderData.discountCode}</td>
-                        </tr>
-                    ` : ''}
-                </tbody>
-            </table>
-        `;
-    } else {
-        // For other statuses, no buttons
-        menuItemsHtml = `
-            <table class="order-items">
-                <thead>
-                    <tr>
-                        <th>Menu Item</th>
-                        <th>Price</th>
-                        <th>Quantity</th>
-                        <th>Subtotal</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${orderData.menuItems.map(item => `
-                        <tr>
-                            <td>${item.name}</td>
-                            <td>Php ${parseFloat(item.price).toFixed(2)}</td>
-                            <td>${item.quantity}</td>
-                            <td>Php ${(parseFloat(item.price) * item.quantity).toFixed(2)}</td>
-                        </tr>
-                    `).join('')}
-                    <tr>
-                        <td colspan="3" style="text-align: right;"><strong>TOTAL</strong></td>
-                        <td>Php ${orderData.total.toFixed(2)}</td>
-                    </tr>
-                    ${orderData.discountCode ? `
-                        <tr>
-                            <td colspan="3" style="text-align: right;"><em>Discount Code</em></td>
-                            <td>${orderData.discountCode}</td>
-                        </tr>
-                    ` : ''}
-                </tbody>
-            </table>
-        `;
-    }
+    // Sample menu items for the order with clickable icon
+    const menuItems = orderData.menuItems.map(item => `
+    <tr class="menu-item-row" onclick="toggleIcon(event)" style="cursor: ${['PREPARING', 'COMPLETE', 'CANCELED'].includes(orderData.status) ? 'pointer' : 'default'};" data-wasted-ingredients="">
+        <td>
+        <div class="icon-container">
+            <span class="icon hourglass-icon" data-state="hourglass" style="display:${orderData.status === 'PREPARING' ? 'inline-block' : 'none'};">
+                <i class="fas fa-hourglass-start"></i>
+                <span class="tooltip">Click to change status of menu item</span>
+            </span>
+            <span class="icon fire-icon" data-state="fire" style="display:none;">
+                <i class="fas fa-fire"></i>
+                <span class="tooltip">Click to change status of menu item</span>
+            </span>
+            <span class="icon bell-icon" data-state="bell" style="display:none;">
+                <i class="fas fa-concierge-bell"></i>
+                <span class="tooltip">Click to change status of menu item</span>
+                </span>
+            <span class="icon waste-icon" data-state="waste" style="display:${orderData.status === 'COMPLETE' || orderData.status === 'CANCELED' ? 'inline' : 'none'};">
+                <i class="fas fa-trash-alt"></i>
+                <span class="tooltip">Click to assign wasted ingredients (if any)</span>
+            </span>
+            ${item.name}
+        </div>
+        </td>
+        <td>Php ${parseFloat(item.price).toFixed(2)}</td>
+        <td>${item.quantity}</td>
+        <td>Php${(parseFloat(item.price) * item.quantity).toFixed(2)}</td>
+    </tr>
+    `).join('');
 
-    // Create the complete order card HTML
-    const orderHtml = `
+    newCard.innerHTML = `
         <div class="order-header">
             <h2>Order ID #${orderData.id}</h2>
-            <span class="status ${orderData.status.toLowerCase().replace(/_/g, '-')}">
-                ${orderData.statusText}
+            <span class="status ${orderData.status.toLowerCase().replace(/ /g, '-')}">
+            ${orderData.statusText}
             </span>
         </div>
-        <div class="order-details">
-            <table id="order-card-details">
-                <tr>
-                    <td>Order Date & Time:</td>
-                    <td>${new Date(orderData.orderDateTime).toLocaleString()}</td>
-                </tr>
-                <tr>
-                    <td>Order Type:</td>
-                    <td>${orderData.orderType}</td>
-                </tr>
-                ${orderData.orderType === 'DINE_IN' ? `
-                <tr>
-                  <td>Table Number:</td>
-                  <td>${orderData.tableNumber || 'N/A'}</td>
-                </tr>
-                ` : orderData.orderType === 'DELIVERY' ? `
-                  <tr>
-                 <td>Address:</td>
-                    <td>${orderData.customerInfo.address || 'N/A'}</td>
-                </tr>
-                 <tr>
-                <td>Contact Number:</td>
-                  <td>${orderData.customerInfo.phone || 'N/A'}</td>
-                 </tr>
-                ` : ''}
-            </table>
-            ${menuItemsHtml}
-            <div class="order-actions">
-                ${getActionButtons(orderData.status)}
+
+        <table id="order-card-details">
+            <tr>
+            <td>Order Date & Time:</td>
+            <td>${orderData.orderDateTime || 'N/A'}</td>
+            </tr>
+            <tr>
+            <td>Order Type:</td>
+            <td>${orderData.orderType || 'N/A'}</td>
+            </tr>
+            <tr>
+            <td>Table Number:</td>
+            <td>${orderData.orderTableNum || 'N/A'}</td>
+            </tr>
+            <tr>
+            <td>Address:</td>
+            <td>${orderData.customerInfo.address || 'N/A'}</td>
+            </tr>
+            <tr>
+            <td>Contact Number:</td>
+            <td>${orderData.customerInfo.phone || 'N/A'}</td>
+            </tr>
+        </table>
+
+        <table class="order-table">
+            <tr>
+            <th>Menu Item</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Subtotal</th>
+            </tr>
+            ${menuItems}
+            <tr>
+            <td colspan="3" class="total-label">TOTAL</td>
+            <td>Php ${orderData.total}</td>
+            </tr>
+            <tr>
+            <td colspan="3" class="discount-label">Discount Code</td>
+            <td>${orderData.discountCode || 'N/A'}</td>
+            </tr>
+        </table>
+        <div class="action-buttons">
+            ${getRevertButton(orderData.status)}
+            <div class="right-buttons">
+            <button class="action-btn update ${nextStatusClass}" 
+                ${orderData.status === 'COMPLETE' || orderData.status === 'CANCELED' ? 'style="display:none;"' : ''}>
+                ${getButtonText(orderData.status)}
+            </button>
+            <button class="action-btn cancel" 
+                ${orderData.status === 'PREPARING' || orderData.status === 'READY FOR PICKUP' || orderData.status === 'COMPLETE' || orderData.status === 'CANCELED' ? 'style="display:none;"' : ''}>
+                Cancel Order
+            </button>
             </div>
         </div>
     `;
-
-    newCard.innerHTML = orderHtml;
-    ordersContainer.appendChild(newCard);
-
-    // Attach event listeners to the action buttons
-    attachEventListeners(newCard);
     
-    // If order status is 'PREPARING', attach event listeners to menu item status buttons
-    if (orderData.status === 'PREPARING') {
-    const menuItemButtons = newCard.querySelectorAll('.menu-item-status-btn');
-    menuItemButtons.forEach(button => {
-        button.addEventListener('click', () => handleMenuItemStatusClick(button, newCard));
-        updateMenuItemButtonStyle(button); // Set initial style
-    });
-    // Check if 'MARK READY' button should be enabled or disabled
-    updateMarkReadyButtonState(newCard);
-}
+    ordersContainer.appendChild(newCard);
+    attachEventListeners(newCard);
+    updateCounts();
+    reapplyCurrentFilter();
+
+    // Update the update button state
+    updateUpdateButtonState(newCard); // Check button state when a new card is added
+    rearrangeOrderCards();
 }
 
-function handleMenuItemStatusClick(button, card) {
-    // Cycle through statuses
-    const currentStatus = button.getAttribute('data-status');
-    let newStatus;
+/*==============================*/
 
-    switch (currentStatus) {
-        case 'PENDING':
-            newStatus = 'PREPARING';
-            break;
-        case 'PREPARING':
-            newStatus = 'READY FOR PICKUP';
-            break;
-        case 'READY FOR PICKUP':
-            newStatus = 'PENDING';
-            break;
-        default:
-            newStatus = 'PENDING';
-            break;
-    }
+// Function to rearrange order cards in descending order by ID
+function rearrangeOrderCards() {
+    const ordersContainer = document.querySelector('.orders');
+    const orderCards = Array.from(ordersContainer.children); // Get all order cards as an array
 
-    // Update the button's data-status and text
-    button.setAttribute('data-status', newStatus);
-    button.textContent = newStatus;
-
-    // Update the button's style
-    updateMenuItemButtonStyle(button);
-
-    // Update the 'MARK READY' button state
-    updateMarkReadyButtonState(card);
-
-    // Send an AJAX request to update the menu item status in the database
-    updateMenuItemStatusInDatabase(card.getAttribute('data-id'), button.closest('tr').getAttribute('data-menu-item-id'), newStatus);
-}
-
-function updateMenuItemButtonStyle(button) {
-    const status = button.getAttribute('data-status');
-    button.classList.remove('pending', 'preparing', 'ready-for-pickup');
-    switch (status) {
-        case 'PENDING':
-            button.classList.add('pending');
-            break;
-        case 'PREPARING':
-            button.classList.add('preparing');
-            break;
-        case 'READY FOR PICKUP':
-            button.classList.add('ready-for-pickup');
-            break;
-        default:
-            button.classList.add('pending');
-            break;
-    }
-}
-
-function updateMarkReadyButtonState(card) {
-    const menuItemButtons = card.querySelectorAll('.menu-item-status-btn');
-    let allReady = true;
-
-    menuItemButtons.forEach(button => {
-        if (button.getAttribute('data-status') !== 'READY FOR PICKUP') {
-            allReady = false;
-        }
+    // Sort the order cards by ID in descending order
+    orderCards.sort((a, b) => {
+        const idA = parseInt(a.querySelector('.order-header h2').textContent.match(/\d+/)[0]); // Extract ID from the header
+        const idB = parseInt(b.querySelector('.order-header h2').textContent.match(/\d+/)[0]);
+        return idB - idA; // Sort in descending order
     });
 
-    const markReadyButton = card.querySelector('.action-btn.update');
+    // Clear the container and append sorted cards
+    ordersContainer.innerHTML = ''; // Clear existing cards
+    orderCards.forEach(card => ordersContainer.appendChild(card)); // Append sorted cards
+}
 
-    if (markReadyButton && markReadyButton.textContent === 'Mark Ready') {
-        if (allReady) {
-            markReadyButton.disabled = false;
-        } else {
-            markReadyButton.disabled = true;
-        }
+/*==============================*/
+
+function toggleIcon(event) {
+    const card = event.currentTarget.closest('.order-card'); // Get the card
+    const status = card.getAttribute('data-status'); // Get the status of the card
+
+    // Check if the status is COMPLETE or CANCELED
+    if (status === 'COMPLETE' || status === 'CANCELED') {
+        // Remove 'clicked-menu-item-row' class from all menu item rows
+        const allMenuItemRows = document.querySelectorAll('.menu-item-row');
+        allMenuItemRows.forEach(row => row.classList.remove('clicked-menu-item-row'));
+
+        // Add 'clicked-menu-item-row' class to the current row
+        const currentRow = event.currentTarget.closest('tr'); // Assuming the row is a <tr>
+        currentRow.classList.add('clicked-menu-item-row');
+
+        showWastedIngredientsModal(); // Show the modal for wasted ingredients
+        return; // Exit the function to prevent further icon toggling
     }
+
+    const icons = event.currentTarget.querySelectorAll('.icon');
+    const questionIcon = icons[0]; // Question icon
+    const fireIcon = icons[1];      // Fire icon
+    const bellIcon = icons[2];      // Bell icon
+
+    let newStatus = 'PENDING'; // Default status
+
+    // Check which icon is currently displayed and toggle accordingly
+    if (questionIcon.style.display !== 'none') {
+        // If the question icon is displayed, switch to fire icon
+        questionIcon.style.display = 'none'; // Hide question icon
+        fireIcon.style.display = 'inline';    // Show fire icon
+        newStatus = 'PREPARING'; // Update status
+    } else if (fireIcon.style.display !== 'none') {
+        // If the fire icon is displayed, switch to bell icon
+        fireIcon.style.display = 'none'; // Hide fire icon
+        bellIcon.style.display = 'inline'; // Show bell icon
+        newStatus = 'READY FOR PICKUP'; // Update status
+    } else {
+        // If the bell icon is displayed, reset to question mark
+        bellIcon.style.display = 'none'; // Hide bell icon
+        questionIcon.style.display = 'inline'; // Show question icon
+        newStatus = 'PENDING'; // Update status
+    }
+
+    // Update the status in the database
+    const orderId = card.getAttribute('data-id');
+    const menuItemId = event.currentTarget.closest('tr').getAttribute('data-menu-item-id');
+    updateMenuItemStatusInDatabase(orderId, menuItemId, newStatus);
+
+    updateUpdateButtonState(card); // Call update function for this card
 }
 
 function updateMenuItemStatusInDatabase(orderId, menuItemId, newStatus) {
@@ -5422,7 +5239,6 @@ function updateMenuItemStatusInDatabase(orderId, menuItemId, newStatus) {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-            action: 'update_menu_item_status',
             orderId: orderId,
             menuItemId: menuItemId,
             status: newStatus
@@ -5440,111 +5256,542 @@ function updateMenuItemStatusInDatabase(orderId, menuItemId, newStatus) {
     });
 }
 
+/*==============================*/
 
-function getActionButtons(status) {
-    if (status === 'COMPLETE' || status === 'CANCELED') {
+// Function to show the modal for wasted ingredients
+function showWastedIngredientsModal() {
+    const modal = document.getElementById('wasted-ingredients-modal'); // Get the modal
+    const tableBody = document.getElementById('wasted-ingredients-table-body'); // Get the table body
+
+    // Clear existing rows in the modal table
+    tableBody.innerHTML = '';
+
+    // Get all rows from the ingredient table
+    const ingredientTable = document.getElementById('ingredient-table');
+    const ingredientRows = ingredientTable.querySelectorAll('tbody tr');
+
+    // Get the clicked menu item row to check for existing data
+    const clickedRow = document.querySelector('.clicked-menu-item-row'); // Use the new class
+    let wastedIngredientsData = {};
+
+    // Get the menu item name from the clicked row
+    const menuItemName = clickedRow ? clickedRow.querySelector('.icon-container').lastChild.textContent.trim().toUpperCase() : 'MENU ITEM'; // Adjusted to use lastChild
+
+    // Update the modal header
+    const menuItemLabelRow = document.getElementById('menu-item-label-row');
+    menuItemLabelRow.innerHTML = menuItemName; // Set the new header
+
+    if (clickedRow) {
+        const existingData = clickedRow.getAttribute('data-wasted-ingredients');
+        if (existingData) {
+            wastedIngredientsData = JSON.parse(existingData); // Parse existing data
+        } else {
+            // Initialize to empty if no data exists
+            wastedIngredientsData = {};
+        }
+    }
+
+    // Loop through each ingredient row to populate the modal
+    ingredientRows.forEach(row => {
+        const ingredientData = JSON.parse(row.getAttribute('data-ingredient')); // Get ingredient data
+        const ingredientID = ingredientData.id; // Get ingredient ID
+        const ingredientName = ingredientData.name; // Get ingredient name
+        const ingredientUnit = ingredientData.unit; // Get ingredient unit
+
+        // Get the quantity consumed from the ingredient list table
+        const ingredientListTableBody = document.getElementById('ingredient-list-table-body');
+        const ingredientListRows = ingredientListTableBody.querySelectorAll('tr');
+
+        let quantityConsumed = 0; // Initialize quantity consumed
+
+        ingredientListRows.forEach(listRow => {
+            const listData = JSON.parse(listRow.getAttribute('data-ingredient')); // Get ingredient list data
+            if (listData.ingredientID === ingredientID) {
+                quantityConsumed = listData.quantityConsumed; // Get the quantity consumed
+            }
+        });
+
+        // Create a new row for the modal table
+        const newRow = document.createElement('tr');
+        newRow.innerHTML = `
+            <td>[${ingredientID}] ${ingredientName}<br><small>(${ingredientUnit})</small></td>
+            <td>
+                <input type="number" min="0" placeholder="Qty" value="${wastedIngredientsData[ingredientID] || quantityConsumed}" />
+                <br>
+                <span>${ingredientUnit}</span>
+            </td>
+        `;
+        tableBody.appendChild(newRow); // Append the new row to the table body
+    });
+
+    modal.style.display = 'flex'; // Show the modal
+
+    // Add event listener to close the modal when clicking outside of it
+    window.onclick = function(event) {
+        if (event.target === modal) {
+            modal.style.display = 'none'; // Close the modal
+        }
+    };
+
+    document.getElementById('confirm-wasted-ingredients').addEventListener('click', confirmWastedIngredientsData);
+}
+
+/*==============================*/
+
+function confirmWastedIngredientsData() {
+    const tableBody = document.getElementById('wasted-ingredients-table-body');
+    const rows = tableBody.querySelectorAll('tr');
+    
+    // Create an object to hold wasted ingredients data
+    const wastedIngredientsData = {};
+
+    rows.forEach(row => {
+        const ingredientCell = row.cells[0];
+        const quantityInput = row.cells[1].querySelector('input[type="number"]');
+
+        if (ingredientCell && quantityInput) {
+            const ingredientIDMatch = ingredientCell.textContent.match(/\[(\d+)\]/);
+            if (ingredientIDMatch) {
+                const ingredientID = ingredientIDMatch[1];
+                const quantityWasted = parseFloat(quantityInput.value);
+                wastedIngredientsData[ingredientID] = quantityWasted;
+            }
+        }
+    });
+
+    const clickedRow = document.querySelector('.clicked-menu-item-row');
+    if (clickedRow) {
+        const menuItemName = clickedRow.querySelector('.icon-container').lastChild.textContent.trim();
+        const hasWastedIngredients = Object.values(wastedIngredientsData).some(value => parseFloat(value) > 0);
+
+        // Show appropriate notification based on whether there are wasted ingredients
+        if (hasWastedIngredients) {
+            showNotification(`Successfully assigned some wasted ingredients on "${menuItemName}".`);
+        } else {
+            showNotification(`Successfully reset wasted ingredients for "${menuItemName}" to none.`);
+        }
+
+        // Store as JSON string
+        clickedRow.setAttribute('data-wasted-ingredients', JSON.stringify(wastedIngredientsData));
+    }
+
+    updateWasteIconStyles();
+
+    // Close the modal after confirming
+    const modal = document.getElementById('wasted-ingredients-modal');
+    modal.style.display = 'none';
+}
+
+/*==============================*/
+
+function updateWasteIconStyles() {
+    const menuItemRows = document.querySelectorAll('.menu-item-row');
+    menuItemRows.forEach(row => {
+    const wasteIcon = row.querySelector('.waste-icon i');
+    const wastedIngredientsData = row.getAttribute('data-wasted-ingredients');
+    
+    if (wastedIngredientsData) {
+        const data = JSON.parse(wastedIngredientsData);
+        const hasWastedIngredients = Object.values(data).some(value => parseFloat(value) > 0);
+
+        if (hasWastedIngredients) {
+        wasteIcon.style.border = '2px solid red';
+        wasteIcon.style.color = 'red';
+        wasteIcon.style.backgroundColor = 'rgb(255, 157, 157)'
+        } else {
+        wasteIcon.style.border = '';
+        wasteIcon.style.color = '';
+        wasteIcon.style.backgroundColor = '';
+        }
+    } else {
+        wasteIcon.style.border = '';
+        wasteIcon.style.color = '';
+        wasteIcon.style.backgroundColor = '';
+    }
+    });
+}
+
+/*==============================*/
+
+// Function to determine button text and class based on order status
+function getButtonText(status) {
+    switch (status) {
+    case 'PENDING':
+        return 'Prepare Order';
+    case 'PREPARING':
+        return 'Mark Ready';
+    case 'READY FOR PICKUP':
+        return 'Mark Complete';
+    default:
         return '';
     }
-
-    let leftButtons = '';
-    let rightButtons = `
-        <button class="action-btn update ${getNextStatusClass(status)}">
-            ${getButtonText(status)}
-        </button>
-        <button class="action-btn cancel">
-            Cancel
-        </button>
-    `;
-
-    // Add "Revert to Pending" button if status is "PREPARING"
-    if (status === 'PREPARING') {
-        leftButtons += `
-            <button class="action-btn revert yellow-btn">
-                Revert to Pending
-            </button>
-        `;
-    }
-    if (status === 'READY_FOR_PICKUP') {
-    leftButtons += `
-        <button class="action-btn revert red-btn">
-            Revert to Preparing
-        </button>
-    `;
-    }
-
-    return `
-        <div class="order-actions">
-            <div class="action-left">
-                ${leftButtons}
-            </div>
-            <div class="action-right">
-                ${rightButtons}
-            </div>
-        </div>
-    `;
 }
+
+/*==============================*/
+
+// Function to get the class corresponding to the next status
+function getButtonClassForStatus(status) {
+    switch (status) {
+    case 'PENDING':
+        return 'status-preparing';
+    case 'PREPARING':
+        return 'status-ready-for-pickup';
+    case 'READY FOR PICKUP':
+        return 'status-complete';
+    default:
+        return '';
+    }
+}
+
+/*==============================*/
 
 function getNextStatusClass(currentStatus) {
     switch (currentStatus) {
-        case 'PENDING':
-            return 'prepare-btn';
-        case 'PREPARING':
-            return 'ready-btn';
-        case 'READY_FOR_PICKUP':
-            return 'complete-btn';
-        default:
-            return '';
+    case 'PENDING':
+        return 'preparing'; // Transitioning from PENDING to PREPARING
+    case 'PREPARING':
+        return 'ready-for-pickup'; // Transitioning from PREPARING to READY FOR PICKUP
+    case 'READY FOR PICKUP':
+        return 'complete'; // Transitioning from READY FOR PICKUP to COMPLETE
+    default:
+        return ''; // No further transitions for COMPLETE or CANCELED
     }
 }
 
-function getButtonText(status) {
+/*==============================*/
+
+// Function to add the "Revert" button with status-based class
+function getRevertButton(status) {
+    let revertTo;
+    let revertClass;
+
+    switch (status) {
+    case 'PREPARING':
+        revertTo = 'PENDING';
+        revertClass = 'status-pending';
+        break;
+    case 'READY FOR PICKUP':
+        revertTo = 'PREPARING';
+        revertClass = 'status-preparing';
+        break;
+    default:
+        return ''; // No revert button for COMPLETE or CANCELED
+    }
+
+    return `
+    <button class="action-btn revert ${revertClass}" data-revert-to="${revertTo}">
+        Revert to ${revertTo.replace('_', ' ')}
+    </button>
+    `;
+}
+
+/*==============================*/
+
+function reapplyCurrentFilter() {
+    const activeButton = document.querySelector('.filter-btn.active');
+    if (activeButton) {
+    const status = activeButton.getAttribute('data-status');
+    const orderCards = document.querySelectorAll('.order-card');
+    orderCards.forEach(card => {
+        const cardStatus = card.getAttribute('data-status');
+        card.style.display = (status === 'ALL' || status === cardStatus) ? 'block' : 'none';
+    });
+    }
+}
+
+/*==============================*/
+
+const ordersContainer = document.querySelector('.orders');
+const filterButtons = document.querySelectorAll('.filter-btn');
+
+// Attach event listeners to existing order cards
+const orderCards = document.querySelectorAll('.order-card');
+orderCards.forEach(card => attachEventListeners(card));
+
+// Attach event listeners to filter buttons
+filterButtons.forEach(button => {
+    button.addEventListener('click', () => filterOrders(button));
+});
+
+/*==============================*/
+
+// Function to handle the revert button click
+function handleRevert(event) {
+    const button = event.target;
+    if (button.classList.contains('revert')) {
+    const newStatus = button.getAttribute('data-revert-to'); // Get the status to revert to
+    const card = button.closest('.order-card'); // Get the associated order card
+    const orderId = card.querySelector('.order-header h2').textContent.match(/\d+/)[0]; // Extract order ID
+    
+    // Convert status to title case
+    const formattedStatus = newStatus.toLowerCase().replace(/(^|\s)\S/g, letter => letter.toUpperCase());
+    
+    updateOrderStatus(card, newStatus, formattedStatus, getButtonText(newStatus)); // Update status
+    showNotification(`Order ID #${orderId} has been reverted to "${formattedStatus}".`); // Notify user
+    }
+}
+
+/*==============================*/
+
+// Function to handle the update button click
+function handleUpdate(card) {
+    const updateButton = card.querySelector('.action-btn.update.ready-for-pickup');
+
+    const status = card.getAttribute('data-status');
+    
+    // Use areAllIconsBell to check if all icons are bell icons
+    if (!areAllIconsBell(card) && status === 'PREPARING') {
+        showNotification('Please ensure all menu items are marked as "Ready For Pickup" before proceeding.');
+        return; // Exit function if not all icons are bell icons
+    }
+    
+    const orderId = card.querySelector('.order-header h2').textContent.match(/\d+/)[0]; // Extract order ID
+
     switch (status) {
         case 'PENDING':
-            return 'Prepare';
+            updateOrderStatus(card, 'PREPARING', 'Preparing', 'Mark Ready');
+            showNotification(`Order ID #${orderId} has been updated to "Preparing".`);
+            break;
         case 'PREPARING':
-            return 'Mark Ready';
-        case 'READY_FOR_PICKUP':
-            return 'Mark Complete';
+            // Check if all menu items have the bell icon displayed
+            if (areAllIconsBell(card)) {
+                updateOrderStatus(card, 'READY FOR PICKUP', 'Ready for Pickup', 'Mark Complete');
+                showNotification(`Order ID #${orderId} has been updated to "Ready for Pickup".`);
+            }
+            break;
+        case 'READY FOR PICKUP':
+            updateOrderStatus(card, 'COMPLETE', 'Complete', null);
+            showNotification(`Order ID #${orderId} has been updated to "Complete".`);
+            break;
         default:
-            return '';
+            console.warn('Unexpected status:', status);
+            break;
     }
 }
+
+/*==============================*/
+
+// Function to check if all icons are the bell icon
+function areAllIconsBell(card) {
+    const menuItemRows = card.querySelectorAll('.menu-item-row');
+    return Array.from(menuItemRows).every(row => {
+    const icons = row.querySelectorAll('.icon');
+    return icons[2].style.display === 'inline'; // Check if the bell icon is displayed
+    });
+}
+
+/*==============================*/
+
+// Update the update button state based on icons
+function updateUpdateButtonState(card) {
+    const updateButton = card.querySelector('.action-btn.update.ready-for-pickup');
+    if (updateButton) {
+        if (areAllIconsBell(card)) {
+            updateButton.style.filter = 'none'; // Reset filter to normal
+            const orderId = card.querySelector('.order-header h2').textContent.match(/\d+/)[0]; // Extract order ID
+            showNotification(`Order ID #${orderId} is ready to be marked as "Ready for Pickup".`); // Notify user
+        } else {
+            updateButton.style.filter = 'brightness(0.5)'; // Lower brightness
+        }
+    }
+}
+
+/*==============================*/
+
+// Function to handle the cancel button click
+function handleCancel(card) {
+    // Show the modal
+    const modal = document.getElementById('cancel-order-modal');
+    modal.style.display = 'flex';
+
+    // Get the confirm and close buttons
+    const confirmCancelButton = document.getElementById('confirmCancel');
+    const closeModalButton = document.getElementById('closeModal');
+
+    // Confirm cancel action
+    confirmCancelButton.onclick = function() {
+        updateOrderStatus(card, 'CANCELED', 'Canceled', null);
+        modal.style.display = 'none'; // Close the modal
+
+        const orderId = card.querySelector('.order-header h2').textContent.match(/\d+/)[0]; // Extract order ID
+        showNotification(`Order ID #${orderId} has been canceled.`); // Notify user
+    };
+
+    // Close modal without action
+    closeModalButton.onclick = function() {
+        modal.style.display = 'none'; // Close the modal
+    };
+}
+
+/*==============================*/
 
 function attachEventListeners(card) {
-    const status = card.getAttribute('data-status');
-    if (!status) {
-        console.error('No status attribute found on card');
-        return;
-    }
-
+    const revertButton = card.querySelector('.action-btn.revert'); 
     const updateButton = card.querySelector('.action-btn.update');
     const cancelButton = card.querySelector('.action-btn.cancel');
-    const revertButton = card.querySelector('.action-btn.revert'); // New line
+    
+    // Add click event listener to menu item rows if the status is PREPARING, COMPLETE, or CANCELED
+    const status = card.getAttribute('data-status');
+    if (status === 'PREPARING' || status === 'COMPLETE' || status === 'CANCELED') {
+        const menuItemRows = card.querySelectorAll('.menu-item-row');
+        menuItemRows.forEach(row => {
+            row.addEventListener('click', toggleIcon);
+        });
+    }
+
+    if (revertButton) {
+    revertButton.addEventListener('click', handleRevert);
+    }
 
     if (updateButton) {
-        updateButton.addEventListener('click', () => handleUpdate(card));
+    updateButton.addEventListener('click', () => handleUpdate(card));
     }
+
     if (cancelButton) {
-        cancelButton.addEventListener('click', () => handleCancel(card));
-    }
-    if (revertButton) { // New condition
-        revertButton.addEventListener('click', () => handleRevert(card));
+    cancelButton.addEventListener('click', () => handleCancel(card));
     }
 }
 
-function handleRevert(card) {
-    const orderId = card.getAttribute('data-id');
-    const currentStatus = card.getAttribute('data-status');
+/*==============================*/
 
-    if (currentStatus === 'PREPARING') {
-        updateOrderStatus(orderId, 'PENDING');
-    } else if (currentStatus === 'READY_FOR_PICKUP') {
-        updateOrderStatus(orderId, 'PREPARING');
+function updateOrderStatus(card, newStatus, newStatusText, newButtonText) {
+    card.setAttribute('data-status', newStatus);
+
+    // Update the status span with the new status and class
+    const statusSpan = card.querySelector('.status');
+    statusSpan.textContent = newStatusText;
+    statusSpan.className = `status ${newStatus.toLowerCase().replace(/ /g, '-')}`;
+
+    // Create or update the status update time element
+    let statusUpdateTime = card.querySelector('.status-update-time');
+    const currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); // Get the current time in HH:MM format
+    if (!statusUpdateTime) {
+    // If it doesn't exist, create it
+    statusUpdateTime = document.createElement('table'); // Use a table for layout
+    statusUpdateTime.className = 'status-update-time';
+    card.appendChild(statusUpdateTime);
+    }
+    
+    // Append the new status update to the existing updates
+    const newUpdateRow = document.createElement('tr'); // Create a new row for the update
+    const statusCell = document.createElement('td'); // Create a cell for the status
+    const timeCell = document.createElement('td'); // Create a cell for the time
+
+    statusCell.textContent = `${newStatusText.toUpperCase()}`; // Set the status text
+    timeCell.textContent = currentTime; // Set the current time
+
+    // Style the cells
+    statusCell.style.textAlign = 'left'; // Align status text to the left
+    timeCell.style.textAlign = 'right'; // Align time text to the right
+    statusCell.style.border = 'none'; // Hide border for the status cell
+    timeCell.style.border = 'none'; // Hide border for the time cell
+
+    newUpdateRow.appendChild(statusCell); // Add status cell to the row
+    newUpdateRow.appendChild(timeCell); // Add time cell to the row
+    statusUpdateTime.appendChild(newUpdateRow)
+
+    // Determine the new class for the update button based on the new status
+    const nextStatusClass = getNextStatusClass(newStatus);
+
+    // Update the action buttons dynamically
+    const actionButtons = card.querySelector('.action-buttons');
+    actionButtons.innerHTML = `
+    ${getRevertButton(newStatus)}
+    <div class="right-buttons">
+        <button class="action-btn update ${nextStatusClass}" 
+        ${newStatus === 'COMPLETE' || newStatus === 'CANCELED' ? 'style="display:none;"' : ''}>
+        ${newButtonText || getButtonText(newStatus)}
+        </button>
+        <button class="action-btn cancel status-canceled"
+        ${newStatus === 'COMPLETE' || newStatus === 'CANCELED' ? 'style="display:none;"' : ''}>
+        Cancel Order
+        </button>
+    </div>
+    `;
+
+    // Re-attach event listeners to the new buttons
+    attachEventListeners(card);
+
+    const menuItemRows = card.querySelectorAll('.menu-item-row');
+
+    if (newStatus !== 'PREPARING' && newStatus !== 'COMPLETE' && newStatus !== 'CANCELED') {
+    // Hide icons and remove clickability from menu item rows
+    menuItemRows.forEach(row => {
+        const icons = row.querySelectorAll('.icon');
+        icons.forEach(icon => {
+        icon.style.display = 'none'; // Hide all icons
+        });
+        row.style.cursor = 'default'; // Change cursor to default
+        row.removeEventListener('click', toggleIcon); // Remove click event listener
+    });
+    } else if (newStatus === 'PREPARING') {
+    // If status is 'PREPARING', show the first icon and attach click event listeners
+    menuItemRows.forEach(row => {
+        const icons = row.querySelectorAll('.icon');
+        // Show the question icon and hide others
+        icons[0].style.display = 'inline'; // Show the question icon
+        icons[1].style.display = 'none';   // Hide the fire icon
+        icons[2].style.display = 'none';   // Hide the bell icon
+        row.style.cursor = 'pointer'; // Change cursor to pointer
+        row.addEventListener('click', toggleIcon); // Reattach click event listener
+    });
     } else {
-        console.error('Cannot revert order that is not in PREPARING or READY_FOR_PICKUP status');
-        return;
+    // If status is 'COMPLETE' or 'CANCELED', show all waste icons
+    menuItemRows.forEach(row => {
+        const icons = row.querySelectorAll('.icon');
+        // Show the waste icon and hide others
+        icons[3].style.display = 'inline'; // Show the waste icon
+        row.style.cursor = 'pointer'; // Change cursor to pointer
+        row.addEventListener('click', toggleIcon); // Reattach click event listener
+    });
     }
+
+    updateCounts();  // Update the filter button counts
+    reapplyCurrentFilter();  // Apply the active filter to update the UI
+
+    // Update the update button state based on icons
+    updateUpdateButtonState(card);
 }
+
+/*==============================*/
+
+function updateCounts() {
+    const statuses = ['ALL', 'PENDING', 'PREPARING', 'READY FOR PICKUP', 'COMPLETE', 'CANCELED'];
+    statuses.forEach(status => {
+    const count = status === 'ALL' 
+        ? document.querySelectorAll('.order-card').length 
+        : document.querySelectorAll(`.order-card[data-status="${status}"]`).length;
+    document.getElementById(`count-${status}`).textContent = count;
+    });
+}
+
+/*==============================*/
+
+function filterOrders(button) {
+    const status = button.getAttribute('data-status');
+    orderCards.forEach(card => {
+    if (status === 'ALL' || card.getAttribute('data-status') === status) {
+        card.style.display = 'block';
+    } else {
+        card.style.display = 'none';
+    }
+    });
+}
+
+/*==============================*/
+
+// Initial count update
+updateCounts();
+
+// Simulate a click on the "ALL" filter button on page load
+const allButton = document.querySelector('.filter-btn[data-status="ALL"]');
+if (allButton) {
+    allButton.click();
+}
+
+/*============================================================*/
+
+
     </script>
       
     <!-- ============================================================ -->
