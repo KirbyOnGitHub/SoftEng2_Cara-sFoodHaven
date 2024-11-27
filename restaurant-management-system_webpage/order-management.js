@@ -165,14 +165,14 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       const icons = event.currentTarget.querySelectorAll('.icon');
-      const questionIcon = icons[0]; // Question icon
+      const hourglassIcon = icons[0]; // Question icon
       const fireIcon = icons[1];      // Fire icon
       const bellIcon = icons[2];      // Bell icon
 
       // Check which icon is currently displayed and toggle accordingly
-      if (questionIcon.style.display !== 'none') {
+      if (hourglassIcon.style.display !== 'none') {
           // If the question icon is displayed, switch to fire icon
-          questionIcon.style.display = 'none'; // Hide question icon
+          hourglassIcon.style.display = 'none'; // Hide question icon
           fireIcon.style.display = 'inline';    // Show fire icon
       } else if (fireIcon.style.display !== 'none') {
           // If the fire icon is displayed, switch to bell icon
@@ -181,7 +181,7 @@ document.addEventListener('DOMContentLoaded', () => {
       } else {
           // If the bell icon is displayed, reset to question mark
           bellIcon.style.display = 'none'; // Hide bell icon
-          questionIcon.style.display = 'inline'; // Show question icon
+          hourglassIcon.style.display = 'inline'; // Show question icon
       }
 
       updateUpdateButtonState(card); // Call update function for this card
