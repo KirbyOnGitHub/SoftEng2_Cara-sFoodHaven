@@ -4,6 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="index.css">
     <script src="index.js"></script>
     <title> Home Page | Cara's Food Haven </title>
@@ -11,6 +12,45 @@
 </head>
 
 <body>
+      
+  <!-- ============================================================ -->
+  <!-- ============================================================ -->
+  <!-- ============================================================ -->
+  
+  <nav>
+    <span> <img src="../RestaurantLogo-Cut.png" class="RestaurantLogo_Nav"> </span>
+    <div class="search-bar">
+        <input type="text" placeholder="What are you looking for?">
+        <button type="submit">Search</button>
+    </div>
+    <ul>
+      <li><a href="#" id="current-page"><i class="fas fa-home"></i> <span>Home</span></a></li>
+      <li><a href="../menu_webpage/menu.html"><i class="fas fa-utensils"></i> <span>Menu</span></a></li>
+      <li><a href="../my-orders_webpage/my-orders.html"><i class="fas fa-receipt"></i> <span>My Orders</span></a></li>
+      <li><a href="#"><i class="fas fa-info-circle"></i> <span>About Us</span></a></li>
+    </ul>
+    <ul>
+      <li class="account-dropdown">
+        <div class="account-info">
+          <img id="account-img" src="../account-img-placeholder.jpg" alt="Avatar">
+          <div>
+            <span class="account-name">Account Name</span>
+            <span class="account-role">Guest</span>
+          </div>
+          <i class="fas fa-caret-down" id="dropdown-arrow"></i>
+        </div>
+        <div class="dropdown-content">
+          <a href="#">
+            <i class="fas fa-sign-out-alt"></i> Login
+          </a>
+        </div>
+      </li>
+    </ul>
+  </nav>
+    
+  <!-- ============================================================ -->
+  <!-- ============================================================ -->
+  <!-- ============================================================ -->
     
 
 
@@ -18,11 +58,9 @@
 
   <!-- ============================================================ -->
   
-  <nav>
-    
-    <!-- ============================================================ -->
+  <!-- <nav> -->
 
-    <a href="#"> <img src="RestaurantLogo-Cut.png" class="RestaurantLogo_Nav"> </a>
+    <!-- <a href="#"> <img src="RestaurantLogo-Cut.png" class="RestaurantLogo_Nav"> </a>
     <div class="search-bar">
       <input type="text" placeholder="What are you looking for?">
       <button type="submit">Search</button>
@@ -33,11 +71,9 @@
       <li><a href="view-orders_webpage/view-orders.html">View Orders</a></li>
       <li><a href="#">About Us</a></li>
       <li><a href="restaurant-management-system_webpage/restaurant-management-system.html">Register</a></li>
-    </ul>
-    
-    <!-- ============================================================ -->
+    </ul> -->
 
-  </nav>
+  <!-- </nav> -->
     
   <!-- ============================================================ -->
 
@@ -65,7 +101,7 @@
     <div class="card">
       <div class="imgBox">
         <a href="#">
-          <img src="menu-category_imgs/carasspecial.png">
+          <img src="image_container/specials.jpg">
         </a>
       </div>
         <h2> CARA'S SPECIALS <br> “Exclusive Culinary Delights” </h2>
@@ -79,7 +115,7 @@
     <div class="card">
       <div class="imgBox">
         <a href="#">
-          <img src="menu-category_imgs/appetizers.png">
+          <img src="image_container/appetizers.jpg">
         </a>
       </div>
         <h2> APPETIZERS <br> “Savor the First Bite” </h2>
@@ -93,7 +129,7 @@
     <div class="card">
       <div class="imgBox">
         <a href="#">
-          <img src="menu-category_imgs/platters.png">
+          <img src="image_container/platters.jpg">
         </a>
       </div>
         <h2> PLATTERS <br> “Feast Like Royalty” </h2>
@@ -107,7 +143,7 @@
     <div class="card">
       <div class="imgBox">
         <a href="#">
-          <img src="menu-category_imgs/sizzles.png">
+          <img src="image_container/sizzling.jpg">
         </a>
       </div>
         <h2> SIZZLES <br> “Hot Plates, Sizzling Flavors” </h2>
@@ -121,12 +157,12 @@
     <div class="card">
       <div class="imgBox">
         <a href="#">
-          <img src="menu-category_imgs/soup.png">
+          <img src="image_container/delighted_bites.jpg">
         </a>
       </div>
-        <h2> SOUP <br> “Comfort in a Bowl" </h2>
+        <h2> DELIGHTED BITES <br> “Sweet Moments, Bite by Bite” </h2>
         <p><br>
-          Warm your soul with our variety of soups! Whether it’s the hearty Sinigang na Baboy or the delicate Nilagang Baka, every spoonful brings you closer to home. Let the comforting flavors envelop you.
+          Our Delighted Bites are tiny packages of joy! These delectable treats are designed to delight your taste buds and lift your spirits. From bite-sized cupcakes adorned with colorful sprinkles to delicate macarons that melt in your mouth, every morsel is a celebration. Share them with friends or savor them all to yourself – because life is sweeter with every delightful bite!
         </p>
     </div>
     
@@ -135,35 +171,7 @@
     <div class="card">
       <div class="imgBox">
         <a href="#">
-          <img src="menu-category_imgs/pastas.png">
-        </a>
-      </div>
-        <h2> PASTA <br> “A Taste of Italy” </h2>
-        <p><br>
-          Unleash your love for Italian cuisine with our pasta offerings! From Baked Macaroni’s cheesy goodness to Pasta Aglio-olio’s aromatic allure, every dish is crafted to perfection. Al dente pasta, rich sauces, and premium ingredients come together for an unforgettable culinary journey.
-        </p>
-    </div>
-    
-    <!-- ============================================================ -->
-
-    <div class="card">
-      <div class="imgBox">
-        <a href="#">
-          <img src="menu-category_imgs/sandwiches.png">
-        </a>
-      </div>
-        <h2> SANDWICHES <br> “Handheld Happiness” </h2>
-        <p><br>
-          Indulge in our selection of hearty sandwiches! Whether you’re craving the classic Ham & Cheese or looking to try something new like our Chicken Sandwich, each bite is packed with fresh ingredients and rich flavors. Perfect for a quick lunch or a light dinner – satisfaction is just a bite away!
-        </p>
-    </div>
-    
-    <!-- ============================================================ -->
-
-    <div class="card">
-      <div class="imgBox">
-        <a href="#">
-          <img src="menu-category_imgs/frosties.png">
+          <img src="image_container/frosties.jpg">
         </a>
       </div>
         <h2> FROSTIES <br> “Chill Out with Cara’s Frosties” </h2>
@@ -177,7 +185,7 @@
     <div class="card">
       <div class="imgBox">
         <a href="#">
-          <img src="menu-category_imgs/beverages.png">
+          <img src="image_container/beverages.jpg">
         </a>
       </div>
         <h2> BEVERAGES <br> “Sip Your Way to Bliss” </h2>
@@ -191,12 +199,40 @@
     <div class="card">
       <div class="imgBox">
         <a href="#">
-          <img src="menu-category_imgs/delightedbites.png">
+          <img src="image_container/soup.jpg">
         </a>
       </div>
-        <h2> DELIGHTED BITES <br> “Sweet Moments, Bite by Bite” </h2>
+        <h2> SOUP <br> “Comfort in a Bowl" </h2>
         <p><br>
-          Our Delighted Bites are tiny packages of joy! These delectable treats are designed to delight your taste buds and lift your spirits. From bite-sized cupcakes adorned with colorful sprinkles to delicate macarons that melt in your mouth, every morsel is a celebration. Share them with friends or savor them all to yourself – because life is sweeter with every delightful bite!
+          Warm your soul with our variety of soups! Whether it’s the hearty Sinigang na Baboy or the delicate Nilagang Baka, every spoonful brings you closer to home. Let the comforting flavors envelop you.
+        </p>
+    </div>
+    
+    <!-- ============================================================ -->
+
+    <div class="card">
+      <div class="imgBox">
+        <a href="#">
+          <img src="image_container/pasta.jpg">
+        </a>
+      </div>
+        <h2> PASTA <br> “A Taste of Italy” </h2>
+        <p><br>
+          Unleash your love for Italian cuisine with our pasta offerings! From Baked Macaroni’s cheesy goodness to Pasta Aglio-olio’s aromatic allure, every dish is crafted to perfection. Al dente pasta, rich sauces, and premium ingredients come together for an unforgettable culinary journey.
+        </p>
+    </div>
+    
+    <!-- ============================================================ -->
+
+    <div class="card">
+      <div class="imgBox">
+        <a href="#">
+          <img src="image_container/sandwich.jpg">
+        </a>
+      </div>
+        <h2> SANDWICHES <br> “Handheld Happiness” </h2>
+        <p><br>
+          Indulge in our selection of hearty sandwiches! Whether you’re craving the classic Ham & Cheese or looking to try something new like our Chicken Sandwich, each bite is packed with fresh ingredients and rich flavors. Perfect for a quick lunch or a light dinner – satisfaction is just a bite away!
         </p>
     </div>
     
