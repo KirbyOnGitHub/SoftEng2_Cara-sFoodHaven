@@ -43,8 +43,6 @@ body, html {
     transition: opacity 0.5s ease-in-out;
 }
 
-
-
 nav {
     position: fixed;
     top: 0;
